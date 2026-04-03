@@ -1,9 +1,14 @@
 /**
  * Listado de las 12 paradas de la Ruta Expo.
- * Los campos marcados como TODO deben completarse con los datos reales.
  *
- * sector: usado para agrupar paradas y calcular elegibilidad del cupón.
- *   Valores posibles (pendiente lista real): 'centro', 'juderia', 'axerquia'
+ * qrToken: token único por parada embebido en el QR físico.
+ *   Formato URL: https://rutaexpo.es/scan?p=<id>&t=<qrToken>
+ *   TODO: generar tokens reales y sustituir los placeholders.
+ *
+ * mapsUrl: deep link a Google Maps para navegar a pie a la siguiente parada.
+ *   Formato: https://www.google.com/maps/dir/?api=1&destination=LAT,LNG&travelmode=walking
+ *
+ * sector: usado para el modelo alternativo de cupón por sectores (pendiente de confirmar).
  */
 export const PARADAS = [
   {
@@ -12,11 +17,13 @@ export const PARADAS = [
     nombre: 'Palacio de Viana',
     ubicacion: 'Plaza de Don Gome, 2',
     sector: 'centro',
-    descripcion: 'Inicio de la ruta. El Palacio de Viana, conocido como el museo de los patios, acoge la primera obra de la exposición.', // TODO: descripción real
+    descripcion: 'Inicio de la ruta. El Palacio de Viana, conocido como el museo de los patios, acoge la primera obra de la exposición.',
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
-    coordenadas: { lat: 37.8916, lng: -4.7743 }, // TODO: verificar
-    imagen: null, // TODO: '/images/parada-01.jpg'
+    coordenadas: { lat: 37.8916, lng: -4.7743 },
+    qrToken: 'TODO_TOKEN_01',
+    mapsUrl: 'https://www.google.com/maps/dir/?api=1&destination=37.8916,-4.7743&travelmode=walking',
+    imagen: null,
   },
   {
     id: 2,
@@ -28,6 +35,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_02',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -40,6 +49,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_03',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -52,6 +63,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_04',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -64,6 +77,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_05',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -76,6 +91,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_06',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -88,6 +105,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_07',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -100,6 +119,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_08',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -112,6 +133,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_09',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -124,6 +147,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_10',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -136,6 +161,8 @@ export const PARADAS = [
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
     coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_11',
+    mapsUrl: null,
     imagen: null,
   },
   {
@@ -144,14 +171,23 @@ export const PARADAS = [
     nombre: 'La Inaudita',
     ubicacion: 'TODO: dirección La Inaudita',
     sector: 'axerquia',
-    descripcion: 'Parada final de la ruta. La Inaudita cierra el recorrido con la última obra de la exposición. Aquí podrás canjear tu descuento.', // TODO: descripción real
+    descripcion: 'Parada final de la ruta. La Inaudita cierra el recorrido con la última obra de la exposición. Aquí podrás canjear tu descuento.',
     artista: 'TODO: nombre artista',
     obra: 'TODO: título obra',
-    coordenadas: { lat: 0, lng: 0 }, // TODO
+    coordenadas: { lat: 0, lng: 0 },
+    qrToken: 'TODO_TOKEN_12',
+    mapsUrl: null,
     imagen: null,
     esFinal: true,
   },
 ]
+
+/** Valida que un token QR escaneado pertenece a la parada indicada. */
+export function validateQrToken(paradaId, token) {
+  const parada = PARADAS.find(p => p.id === Number(paradaId))
+  if (!parada) return false
+  return parada.qrToken === token
+}
 
 export function getParadaById(id) {
   return PARADAS.find(p => p.id === Number(id))

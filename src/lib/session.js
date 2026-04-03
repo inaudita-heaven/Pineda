@@ -1,7 +1,13 @@
+/**
+ * Gestión de sesión anónima en localStorage.
+ * El session_id se usa como clave en la tabla `visitantes` de Supabase.
+ * El usuario nunca ve este ID — es transparente.
+ */
 const KEY = 'rutaexpo_session'
 
 function generateSessionId() {
-  return 'ses_' + Math.random().toString(36).slice(2, 11) + Date.now().toString(36)
+  // Prefijo + timestamp + random para unicidad práctica
+  return 'ses_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9)
 }
 
 export function loadSession() {
@@ -18,7 +24,7 @@ export function saveSession(state) {
   try {
     localStorage.setItem(KEY, JSON.stringify(state))
   } catch {
-    // localStorage not available (private mode, etc.)
+    // localStorage no disponible (modo privado extremo, etc.)
   }
 }
 
@@ -26,16 +32,11 @@ export function clearSession() {
   localStorage.removeItem(KEY)
 }
 
-export function getOrCreateSessionId() {
-  const existing = loadSession()
-  if (existing?.sessionId) return existing.sessionId
-  return generateSessionId()
-}
-
 export const INITIAL_SESSION = {
   sessionId: generateSessionId(),
-  completedStops: [],   // array of stop ids (1–12)
+  completedStops: [],     // array de stop ids (1–12)
   hasSeenWarning: false,
-  contact: null,        // { email?, phone? } — captura opcional al final
+  contact: null,          // { email?, phone? } — captura opcional al final
+  rgpdConsent: false,     // se activa al enviar contacto
   startedAt: new Date().toISOString(),
 }

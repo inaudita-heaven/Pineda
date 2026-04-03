@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import StopPage from './pages/StopPage'
 import CouponPage from './pages/CouponPage'
+import ScanLanding from './pages/ScanLanding'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -9,6 +10,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/scan" element={<ScanLanding />} />
         <Route path="/parada/:id" element={<StopPage />} />
         <Route path="/cupon" element={<CouponPage />} />
         <Route path="*" element={<NotFound />} />
