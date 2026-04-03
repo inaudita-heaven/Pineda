@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+  <script>
+    // SPA redirect trick para GitHub Pages
+    var l = window.location;
+    l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 2).join('/') +
+      '/?p=' + l.pathname.slice(1).split('/').join('/') +
+      (l.search ? '&q=' + l.search.slice(1).split('&').join('~') : '') +
+      l.hash);
+  </script>
+</head>
+</html>
