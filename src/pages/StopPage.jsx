@@ -52,6 +52,13 @@ export default function StopPage() {
     )
   }
 
+  // Modo prueba: sella sin QR cuando el token está pendiente de configurar
+  const isTestMode = parada?.qrToken?.startsWith('TODO_')
+
+  async function handleSealDirect() {
+    await handleSealAfterValidation()
+  }
+
   async function handleSealWithToken(token) {
     if (scanLock || sealing) return
 
@@ -61,16 +68,21 @@ export default function StopPage() {
       return
     }
 
+    await handleSealAfterValidation()
+  }
+
+  async function handleSealAfterValidation() {
+    if (scanLock || sealing) return
+
     setSealing(true)
     setShowScanner(false)
     const result = await completeStop(paradaId)
     setSealing(false)
 
-    if (result?.ok === false && result.reason === 'duplicate') return // ya completada
+    if (result?.ok === false && result.reason === 'duplicate') return
 
     setScanFeedback('ok')
 
-    // Aviso post-Viana (primera parada)
     if (paradaId === 1 && !hasSeenWarning) {
       setShowWarning(true)
       return
@@ -168,13 +180,27 @@ export default function StopPage() {
                 </button>
               </div>
             ) : (
-              <button
-                className="btn btn--primary"
-                onClick={() => setShowScanner(true)}
-                disabled={sealing}
-              >
-                {sealing ? 'Sellando…' : '📷 Escanear QR de esta parada'}
-              </button>
+              <>
+                <button
+                  className="btn btn--primary"
+                  onClick={() => setShowScanner(true)}
+                  disabled={sealing}
+                >
+                  {sealing ? 'Sellando…' : '📷 Escanear QR de esta parada'}
+                </button>
+
+                {/* Botón de prueba — solo visible mientras los tokens son TODO */}
+                {isTestMode && (
+                  <button
+                    className="btn btn--ghost"
+                    style={{ marginTop: 10, fontSize: '0.8rem', opacity: 0.6 }}
+                    onClick={handleSealDirect}
+                    disabled={sealing}
+                  >
+                    ✎ Sellar sin QR (modo prueba)
+                  </button>
+                )}
+              </>
             )}
           </>
         )}

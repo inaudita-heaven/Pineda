@@ -1,14 +1,20 @@
 <!doctype html>
 <html>
 <head>
+  <meta charset="utf-8" />
   <script>
-    // SPA redirect trick para GitHub Pages
+    // SPA redirect para GitHub Pages en subdirectorio /Pineda/
+    // Guarda la ruta como query string y redirige al index
+    var pathSegmentsToKeep = 1; // 1 = mantener /Pineda/
     var l = window.location;
-    l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      l.pathname.split('/').slice(0, 2).join('/') +
-      '/?p=' + l.pathname.slice(1).split('/').join('/') +
-      (l.search ? '&q=' + l.search.slice(1).split('&').join('~') : '') +
-      l.hash);
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
   </script>
 </head>
+<body></body>
 </html>
