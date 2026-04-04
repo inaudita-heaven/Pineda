@@ -5,16 +5,18 @@ export default function StopCard({ parada }) {
   const navigate = useNavigate()
   const isCompleted = usePassportStore(s => s.completedStops.includes(parada.id))
 
-  function handleClick() {
-    navigate(`/parada/${parada.id}`)
-  }
-
   return (
     <button
       className={`stop-card${isCompleted ? ' stop-card--completed' : ''}`}
-      onClick={handleClick}
+      onClick={() => navigate(`/parada/${parada.id}`)}
       aria-label={`Parada ${parada.id}: ${parada.nombre}`}
     >
+      {parada.required && (
+        <span style={{
+          position: 'absolute', top: 3, left: 4,
+          fontSize: '0.55rem', color: 'var(--accent-gold)',
+        }}>⭐</span>
+      )}
       <span className="stop-card__number">{String(parada.id).padStart(2, '0')}</span>
       <span className="stop-card__name">{parada.nombre}</span>
     </button>

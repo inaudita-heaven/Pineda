@@ -18,7 +18,7 @@ export default function PassportHeader({ showBack = false }) {
             ←
           </button>
         )}
-        <span className="passport-header__logo">RUTA EXPO</span>
+        <span className="passport-header__logo">PINEDA · CÓRDOBA</span>
       </div>
       <span className="passport-header__counter">
         {completedStops.length}/{TOTAL_PARADAS} paradas

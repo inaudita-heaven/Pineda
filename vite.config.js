@@ -18,9 +18,9 @@ export default defineConfig(async () => {
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/*.png'],
       manifest: {
-        name: 'Ruta Expo · Pasaporte Digital',
-        short_name: 'Ruta Expo',
-        description: 'Pasaporte digital gamificado · 12 paradas por Córdoba',
+        name: 'Rafael Pineda · Pintor de Córdoba',
+        short_name: 'Pineda Córdoba',
+        description: 'Pasaporte digital · Exposición Rafael Pineda Pintor de Córdoba · 12 espacios',
         theme_color: '#b5451b',
         background_color: '#faf7f2',
         display: 'standalone',
