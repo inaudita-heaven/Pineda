@@ -125,19 +125,6 @@ export default function StopPage() {
 
       <ParadaContent paradaId={paradaId} parada={parada} />
 
-      {/* Navegación a esta parada */}
-      {parada.mapsUrl && !isCompleted && (
-        <a
-          href={parada.mapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn btn--ghost"
-          style={{ marginBottom: 12 }}
-        >
-          🗺 Llévame aquí · Google Maps
-        </a>
-      )}
-
       {/* Feedback de escaneo */}
       {scanFeedback === 'invalid' && (
         <div style={{

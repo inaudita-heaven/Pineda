@@ -14,7 +14,8 @@ import Parada08 from './Parada08'
 import Parada09 from './Parada09'
 import Parada10 from './Parada10'
 import Parada11 from './Parada11'
-import Parada12 from './Parada12_LaInaudita'
+import Parada12 from './Parada12'
+import Parada13 from './Parada13_LaInaudita'
 
 const MAP = {
   1:  Parada01,
@@ -29,6 +30,7 @@ const MAP = {
   10: Parada10,
   11: Parada11,
   12: Parada12,
+  13: Parada13,
 }
 
 export default function ParadaContent({ paradaId, parada }) {
