@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 
 export default function QrScanner({ onScan, onClose }) {
   const [error, setError] = useState(null);
@@ -11,28 +11,27 @@ export default function QrScanner({ onScan, onClose }) {
     if (mountedRef.current) return;
     mountedRef.current = true;
 
-    const scanner = new Html5QrcodeScanner(
-      'qr-reader',
-      { fps: 10, qrbox: { width: 240, height: 240 }, rememberLastUsedCamera: false },
-      /* verbose */ false
-    );
-
-    scanner.render(
-      (decodedText) => {
-        scanner.clear().catch(() => {});
-        onScan(decodedText);
-      },
-      () => {
-        // scan errors are expected — ignore
-      }
-    );
-
+    const scanner = new Html5Qrcode('qr-reader');
     scannerRef.current = scanner;
 
+    scanner
+      .start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 240, height: 240 } },
+        (decodedText) => {
+          scanner.stop().catch(() => {});
+          onScan(decodedText);
+        },
+        () => {
+          // scan errors are expected — ignore
+        }
+      )
+      .catch(() => {
+        setError('No se pudo acceder a la cámara. Verifica los permisos.');
+      });
+
     return () => {
-      if (scannerRef.current) {
-        scannerRef.current.clear().catch(() => {});
-      }
+      scannerRef.current?.stop().catch(() => {});
     };
   }, [onScan]);
 
