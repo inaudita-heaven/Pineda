@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 export default function TravelScreen({ stop }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      window.open(stop.mapsUrl, '_blank', 'noopener,noreferrer');
+      window.location.href = stop.mapsUrl;
     }, 600);
     return () => clearTimeout(timer);
   }, [stop.mapsUrl]);
@@ -24,8 +24,6 @@ export default function TravelScreen({ stop }) {
 
         <a
           href={stop.mapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
           className="travel-screen__maps-link"
         >
           Abrir Google Maps →

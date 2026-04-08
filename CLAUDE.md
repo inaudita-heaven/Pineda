@@ -2,7 +2,7 @@
 ### Rafael Pineda, Pintor de Córdoba · Viana ➜ La Inaudita · Abril–Mayo 2025
 
 > **Documento vivo.** Actualizar en cada decisión técnica relevante.  
-> Última revisión: abril 2026 — v2.3
+> Última revisión: abril 2026 — v2.4
 
 ---
 
@@ -427,7 +427,9 @@ Abrir Google Maps →       ← enlace de texto discreto
 ```
 
 > ✅ **Implementado.** Fondo blanco. Texto serif grande centrado.
-> Google Maps se abre automáticamente (600 ms de delay).
+> Google Maps se abre automáticamente (600 ms de delay) usando `window.location.href`
+> — misma pestaña, sin pestaña vacía. Si el dispositivo tiene Maps instalado, el SO
+> lo intercepta y abre la app nativa; si no, carga Google Maps en el navegador.
 > La pantalla **no desaparece sola** — permanece hasta que el usuario
 > escanea el QR físico en la puerta, lo que recarga la app con los params del token.
 > Sin botón de volver. Sin ruido visual.
