@@ -2,7 +2,7 @@
 ### Rafael Pineda, Pintor de Córdoba · Viana ➜ La Inaudita · Abril–Mayo 2025
 
 > **Documento vivo.** Actualizar en cada decisión técnica relevante.  
-> Última revisión: abril 2026 — v2.1
+> Última revisión: abril 2026 — v2.2
 
 ---
 
@@ -132,7 +132,7 @@ SUR — Rodríguez Marín
 |---|---|---|
 | **Frontend** | React + Vite | Ecosistema moderno, rápido de desarrollar |
 | **PWA** | Vite PWA Plugin | Caché offline para callejuelas sin 4G |
-| **Escáner QR** | `html5-qrcode` | Integrado en cliente, cero APIs externas |
+| **Escáner QR** | `html5-qrcode` (`Html5Qrcode` directo) | Cámara trasera automática (`facingMode: 'environment'`), sin selector de cámara |
 | **Navegación** | Google Maps Deep Links | Sin mapa embebido — abre app nativa del usuario |
 | **Geolocalización** | Browser Geolocation API | Opcional — bonus de comodidad, no dependencia |
 | **Hosting frontend** | GitHub Pages (actual) / Cloudflare Pages | CDN global, absorbe picos gratis |
@@ -439,10 +439,22 @@ PINEDA30-X7K2M9
 Canjeable en La Inaudita
 L–S · 10–14h / 18–20:30h
 ─────────────────────
-[GUARDAR POR EMAIL]
-[Lo recuerdo yo →]
+Guarda tu cupón por email
+[tu@email.com          ]
+☐ Acepto que La Inaudita use mi email
+  para enviarme el cupón y comunicaciones
+  culturales. Derechos: info@lainaudita.es
+
+[GUARDAR POR EMAIL]    ← desactivado sin email + checkbox
+[Lo recuerdo yo]       ← guarda flag en localStorage, no vuelve a preguntar
+─────────────────────
+[VOLVER AL PASAPORTE]
 ─────────────────────
 ```
+
+> ✅ **Implementado.** El formulario de email solo aparece en este momento (nunca antes).
+> Si el usuario pulsa "Lo recuerdo yo", se guarda `ruta_expo_email_dismissed` en
+> localStorage y el formulario no vuelve a mostrarse en aperturas futuras del cupón.
 
 ### Flujo completo
 
@@ -466,7 +478,7 @@ Llega al local → escanea QR físico en la puerta
 Al sellar 5+ paradas con las 3 salas:
 🎉 Cupón PINEDA30 desbloqueado
         ↓
-Sugerencia suave de guardar por email
+Formulario email + RGPD (solo aquí, nunca antes)
         ↓
 Muestra cupón en caja de La Inaudita → 30%
 ```
@@ -633,7 +645,10 @@ https://inaudita-heaven.github.io/Pineda/?stop=4&token=casa12pb-zt7j-2025
 
 ### Texto legal (momento de pedir email)
 
-> *Responsable: La Inaudita. Finalidad: envío de tu cupón de descuento y comunicaciones culturales. Legitimación: consentimiento. Puedes ejercer tus derechos en [email]. Más info en [política de privacidad].*
+> *Acepto que La Inaudita use mi email para enviarme el cupón y comunicaciones culturales. Puedo ejercer mis derechos escribiendo a info@lainaudita.es.*
+
+> ✅ **Implementado en `CouponView.jsx`** — checkbox obligatorio, enlace `mailto:info@lainaudita.es`.
+> Email guardado en localStorage (`ruta_expo_coupon_email`) hasta integración Supabase.
 
 ---
 
@@ -664,6 +679,7 @@ https://inaudita-heaven.github.io/Pineda/?stop=4&token=casa12pb-zt7j-2025
 - El pasaporte digital debe parecer un **objeto de coleccionista**, no un formulario.
 - Las obras de Pineda son el centro visual — la UI es el marco, no el cuadro.
 - Nada de iconos genéricos ni colores corporativos planos.
+- **Touch targets móvil:** todos los botones de acción tienen `min-height: 48px` (CSS base `.btn`). ✅
 
 ### Pegatina QR física
 
@@ -724,7 +740,9 @@ https://inaudita-heaven.github.io/Pineda/?stop=4&token=casa12pb-zt7j-2025
 - [ ] Implementar lógica de horarios (tarjetas abiertas/cerradas)
 - [ ] Aviso domingo en La Inaudita
 - [ ] `catalog.js` con obras y precios (datos de La Inaudita) (D-07)
-- [ ] Integrar escáner QR real (`html5-qrcode` con cámara)
+- [x] Escáner QR real — `Html5Qrcode` con `facingMode: 'environment'`, cámara trasera directa, sin selector
+- [x] Formulario email + RGPD en pantalla de cupón (nunca antes); "Lo recuerdo yo" persiste en localStorage
+- [x] Touch targets 48px en todos los botones de acción
 - [ ] Pantalla de bienvenida con texto sobre Pineda (D-10)
 - [ ] Pantalla intermedia "De camino a..." con anzuelos (D-09)
 
