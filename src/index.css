@@ -522,69 +522,38 @@ body {
   align-items: center;
   justify-content: center;
   padding: 2rem 1.5rem;
-  background: var(--bg);
+  background: #fff;
 }
 .travel-screen__inner {
   max-width: 440px;
   width: 100%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
 }
 .travel-screen__eyebrow {
-  font-size: .7rem;
-  letter-spacing: .12em;
+  font-size: .75rem;
+  letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--light);
-  margin-bottom: .75rem;
 }
-.travel-screen__name {
+.travel-screen__instruction {
   font-family: var(--serif);
-  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  font-size: clamp(1.75rem, 6vw, 2.5rem);
   font-weight: 400;
-  line-height: 1.2;
-  margin-bottom: .5rem;
+  line-height: 1.45;
+  color: var(--black);
 }
-.travel-screen__address {
-  font-size: .85rem;
-  color: var(--mid);
-  margin-bottom: 1.5rem;
+.travel-screen__maps-link {
+  font-size: .78rem;
+  color: var(--light);
+  text-decoration: none;
+  letter-spacing: .05em;
+  transition: color .15s;
 }
-.travel-screen__maps-note {
-  background: #f0f4ff;
-  border: 1px solid #c5d0f5;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 1.75rem;
-}
-.travel-screen__maps-note p {
-  font-size: .85rem;
-  color: var(--mid);
-  margin-bottom: .75rem;
-}
-.travel-screen__maps-btn {
-  display: inline-flex;
-}
-.travel-screen__anzuelo {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.05rem;
-  line-height: 1.65;
-  color: var(--dark);
-  border-left: 3px solid var(--gold);
-  padding: .75rem 1rem;
-  text-align: left;
-  margin: 0 0 1.75rem;
-  background: var(--gold-lt);
-  border-radius: 0 4px 4px 0;
-}
-.travel-screen__hint {
-  font-size: .82rem;
-  color: var(--mid);
-  line-height: 1.6;
-  margin-bottom: 2rem;
-}
-.travel-screen__back {
-  display: inline-flex;
-}
+.travel-screen__maps-link:hover { color: var(--dark); }
 
 /* ── Coupon overlay ─────────────────────────────────────── */
 .coupon-overlay {

@@ -2,7 +2,7 @@
 ### Rafael Pineda, Pintor de Córdoba · Viana ➜ La Inaudita · Abril–Mayo 2025
 
 > **Documento vivo.** Actualizar en cada decisión técnica relevante.  
-> Última revisión: abril 2026 — v2.2
+> Última revisión: abril 2026 — v2.3
 
 ---
 
@@ -411,19 +411,26 @@ Progreso: ●●●○○○○○○○○○○
 
 ```
 ─────────────────────
-DE CAMINO A
-Taberna San Miguel
-Plaza de San Miguel, 1
+TABERNA SAN MIGUEL        ← nombre en mayúsculas pequeñas, color tenue
 ─────────────────────
-Google Maps se ha abierto.
-Cuando llegues, busca el cartel
-en la puerta y escanea el QR.
+
+
+  Cuando llegues
+  abre la cámara de tu móvil
+  y apunta al cartel de Pineda
+  que encontrarás en la entrada
+
+
 ─────────────────────
-MIENTRAS CAMINAS
-[texto anzuelo literario]
+Abrir Google Maps →       ← enlace de texto discreto
 ─────────────────────
-[< VOLVER A LA RUTA]
 ```
+
+> ✅ **Implementado.** Fondo blanco. Texto serif grande centrado.
+> Google Maps se abre automáticamente (600 ms de delay).
+> La pantalla **no desaparece sola** — permanece hasta que el usuario
+> escanea el QR físico en la puerta, lo que recarga la app con los params del token.
+> Sin botón de volver. Sin ruido visual.
 
 ### Pantalla 3 — Desbloqueo del cupón
 

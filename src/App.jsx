@@ -124,7 +124,7 @@ export default function App() {
 
   // ── Travel screen ─────────────────────────────────────────────────────────
   if (travelStop) {
-    return <TravelScreen stop={travelStop} onClose={() => setTravelStop(null)} />;
+    return <TravelScreen stop={travelStop} />;
   }
 
   // ── Main passport view ────────────────────────────────────────────────────
