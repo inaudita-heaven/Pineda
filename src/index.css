@@ -135,6 +135,45 @@ body {
 }
 .welcome__prize strong { color: var(--dark); }
 
+/* ── Welcome portrait placeholder ───────────────────────── */
+.welcome__portrait {
+  margin: 0 auto 2rem;
+  width: 120px;
+  height: 150px;
+}
+.welcome__portrait-frame {
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--border);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-lt);
+  position: relative;
+}
+.welcome__portrait-frame::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid #e8d8a0;
+  border-radius: 1px;
+}
+.welcome__portrait-initials {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: .1em;
+}
+.welcome__meta {
+  font-size: .75rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: 1.5rem;
+}
+
 /* ── App / Header ───────────────────────────────────────── */
 .app { min-height: 100dvh; }
 
@@ -332,6 +371,218 @@ body {
   display: flex;
   gap: .5rem;
   flex-wrap: wrap;
+}
+
+/* ── Stop card: horario status ──────────────────────────── */
+.stop-card__status {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .72rem;
+  color: var(--mid);
+  margin-top: .25rem;
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-dot--green { background: #3a9e5f; }
+.status-dot--red   { background: #c0392b; }
+.status-dot--gray  { background: var(--light); }
+.stop-card__status--open  { color: #2e7d50; }
+.stop-card__status--closed { color: #a33; }
+
+/* ── Stop card: closed state ────────────────────────────── */
+.stop-card--closed:not(.stop-card--sealed) {
+  background: #f8f7f5;
+}
+.stop-card--closed:not(.stop-card--sealed) .stop-card__name {
+  opacity: .7;
+}
+
+/* ── Stop card: sealed row ──────────────────────────────── */
+.stop-card__sealed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Stop card: sunday warning ──────────────────────────── */
+.stop-card__sunday-warning {
+  margin-top: .4rem;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 3px;
+  padding: .4rem .6rem;
+  font-size: .72rem;
+  color: #7a6210;
+  line-height: 1.4;
+}
+
+/* ── btn small ──────────────────────────────────────────── */
+.btn--sm {
+  padding: .3rem .75rem;
+  font-size: .72rem;
+}
+
+/* ── Header scanner row ─────────────────────────────────── */
+.header__scanner-row {
+  padding: .5rem 1.25rem .75rem;
+}
+.btn--scan {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ── QR error toast ─────────────────────────────────────── */
+.qr-error-toast {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: #c0392b;
+  color: #fff;
+  padding: .6rem 1.25rem;
+  border-radius: 4px;
+  font-size: .82rem;
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+/* ── QR Scanner overlay ─────────────────────────────────── */
+.qr-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 150;
+  padding: 1rem;
+}
+@media (min-width: 500px) {
+  .qr-overlay { align-items: center; }
+}
+.qr-modal {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem 1.25rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+.qr-modal__title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+.qr-modal__error {
+  color: #c0392b;
+  font-size: .82rem;
+  margin-bottom: .75rem;
+}
+.qr-modal__cancel { margin-top: 1rem; }
+
+/* html5-qrcode overrides */
+.qr-reader {
+  border-radius: 4px;
+  overflow: hidden;
+}
+#qr-reader {
+  border: none !important;
+  width: 100% !important;
+}
+#qr-reader video {
+  border-radius: 4px;
+}
+#qr-reader__dashboard_section_csr button {
+  background: var(--black) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: .5rem 1rem !important;
+  border-radius: var(--radius) !important;
+  cursor: pointer !important;
+  font-size: .82rem !important;
+}
+#qr-reader__dashboard_section_fsr { display: none !important; }
+#qr-reader__status_span { font-size: .75rem; color: var(--mid); }
+
+/* ── Travel screen ──────────────────────────────────────── */
+.travel-screen {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: var(--bg);
+}
+.travel-screen__inner {
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+}
+.travel-screen__eyebrow {
+  font-size: .7rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: .75rem;
+}
+.travel-screen__name {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: .5rem;
+}
+.travel-screen__address {
+  font-size: .85rem;
+  color: var(--mid);
+  margin-bottom: 1.5rem;
+}
+.travel-screen__maps-note {
+  background: #f0f4ff;
+  border: 1px solid #c5d0f5;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1.75rem;
+}
+.travel-screen__maps-note p {
+  font-size: .85rem;
+  color: var(--mid);
+  margin-bottom: .75rem;
+}
+.travel-screen__maps-btn {
+  display: inline-flex;
+}
+.travel-screen__anzuelo {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--dark);
+  border-left: 3px solid var(--gold);
+  padding: .75rem 1rem;
+  text-align: left;
+  margin: 0 0 1.75rem;
+  background: var(--gold-lt);
+  border-radius: 0 4px 4px 0;
+}
+.travel-screen__hint {
+  font-size: .82rem;
+  color: var(--mid);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+.travel-screen__back {
+  display: inline-flex;
 }
 
 /* ── Coupon overlay ─────────────────────────────────────── */
