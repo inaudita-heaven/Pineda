@@ -1,11 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function TravelScreen({ stop }) {
+  const [count, setCount] = useState(3);
+  const intervalRef = useRef(null);
+
+  function openMaps() {
+    clearInterval(intervalRef.current);
+    window.location.href = stop.mapsUrl;
+  }
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      window.location.href = stop.mapsUrl;
-    }, 600);
-    return () => clearTimeout(timer);
+    intervalRef.current = setInterval(() => {
+      setCount(prev => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          window.location.href = stop.mapsUrl;
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(intervalRef.current);
   }, [stop.mapsUrl]);
 
   return (
@@ -22,12 +37,14 @@ export default function TravelScreen({ stop }) {
           que encontrarás en la entrada
         </p>
 
-        <a
-          href={stop.mapsUrl}
-          className="travel-screen__maps-link"
-        >
-          Abrir Google Maps →
-        </a>
+        <div className="travel-screen__maps-row">
+          <p className="travel-screen__countdown">
+            {count > 0 ? `Abriendo Maps en ${count}…` : 'Abriendo Maps…'}
+          </p>
+          <button className="btn btn--primary travel-screen__now-btn" onClick={openMaps}>
+            Ir ahora
+          </button>
+        </div>
       </div>
     </div>
   );

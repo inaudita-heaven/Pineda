@@ -546,14 +546,20 @@ body {
   line-height: 1.45;
   color: var(--black);
 }
-.travel-screen__maps-link {
-  font-size: .78rem;
-  color: var(--light);
-  text-decoration: none;
-  letter-spacing: .05em;
-  transition: color .15s;
+.travel-screen__maps-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
-.travel-screen__maps-link:hover { color: var(--dark); }
+.travel-screen__countdown {
+  font-size: .88rem;
+  color: var(--mid);
+  letter-spacing: .03em;
+}
+.travel-screen__now-btn {
+  min-width: 160px;
+}
 
 /* ── Coupon overlay ─────────────────────────────────────── */
 .coupon-overlay {
