@@ -34,6 +34,7 @@ body {
   justify-content: center;
   gap: .4rem;
   padding: .5rem 1.1rem;
+  min-height: 48px;
   border-radius: var(--radius);
   font-family: var(--sans);
   font-size: .8rem;
@@ -671,6 +672,65 @@ body {
 }
 
 .coupon__close { width: 100%; }
+
+.coupon__email-form {
+  border-top: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+  padding-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  text-align: left;
+}
+.coupon__email-label {
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--dark);
+}
+.coupon__email-input {
+  width: 100%;
+  padding: .65rem .85rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: .9rem;
+  color: var(--dark);
+  background: #fff;
+  min-height: 48px;
+  transition: border-color .15s;
+}
+.coupon__email-input:focus {
+  outline: none;
+  border-color: var(--black);
+}
+.coupon__rgpd {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  font-size: .75rem;
+  color: var(--mid);
+  line-height: 1.5;
+  cursor: pointer;
+}
+.coupon__rgpd input[type="checkbox"] {
+  margin-top: .15rem;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.coupon__rgpd a { color: var(--dark); }
+.coupon__email-btn { width: 100%; }
+.coupon__dismiss-btn { width: 100%; }
+.coupon__email-saved {
+  font-size: .82rem;
+  color: #2e7d50;
+  margin-bottom: 1rem;
+  padding: .6rem;
+  background: #edf7f1;
+  border-radius: var(--radius);
+  text-align: center;
+}
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 380px) {
