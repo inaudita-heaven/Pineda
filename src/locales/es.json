@@ -1,0 +1,41 @@
+{
+  "travel": {
+    "instruction": "Cuando llegues\nabre la cámara de tu móvil\ny apunta al cartel de Pineda\nque encontrarás en la entrada",
+    "countdown": "Abriendo Maps en {{count}}…",
+    "opening": "Abriendo Maps…",
+    "go_now": "Ir ahora"
+  },
+  "caja": {
+    "title": "La Inaudita · Panel",
+    "logout": "Salir",
+    "new": "Nueva validación",
+    "pin": {
+      "title": "Panel de caja",
+      "prompt": "Introduce el PIN"
+    },
+    "nav": {
+      "copa": "Barra",
+      "compra": "Caja"
+    },
+    "copa": {
+      "subtitle": "Escanea o introduce el código del cupón del cliente",
+      "scan": "Escanear QR",
+      "voice": "Dictado",
+      "validate": "Validar copa",
+      "success": "✓ Copa validada",
+      "already_used": "Esta copa ya fue usada",
+      "invalid": "Código de cupón no válido"
+    },
+    "compra": {
+      "subtitle": "Escanea o introduce el código del cupón del cliente",
+      "scan": "Escanear QR",
+      "voice": "Dictado",
+      "validate": "Confirmar compra",
+      "obra_placeholder": "Número de obra",
+      "price_placeholder": "Precio final (€)",
+      "fields_required": "Introduce el número de obra y el precio",
+      "success": "✓ Compra registrada",
+      "already_used": "Cupón ya canjeado"
+    }
+  }
+}

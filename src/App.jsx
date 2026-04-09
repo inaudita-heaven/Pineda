@@ -176,13 +176,13 @@ export default function App() {
                   .join(', ')}
               </span>
             )}
-            {eligibility.remaining > 0 && eligibility.missingRequired.length === 0 && (
+            {eligibility.missingFree > 0 && eligibility.missingRequired.length === 0 && (
               <span>
-                {eligibility.remaining} parada{eligibility.remaining > 1 ? 's' : ''} más para tu cupón
+                {eligibility.missingFree} taberna{eligibility.missingFree > 1 ? 's' : ''} más para tu cupón
               </span>
             )}
-            {eligibility.remaining > 0 && eligibility.missingRequired.length > 0 && (
-              <span> · {eligibility.remaining} parada{eligibility.remaining > 1 ? 's' : ''} más</span>
+            {eligibility.missingFree > 0 && eligibility.missingRequired.length > 0 && (
+              <span> · {eligibility.missingFree} taberna{eligibility.missingFree > 1 ? 's' : ''} más</span>
             )}
           </div>
         )}

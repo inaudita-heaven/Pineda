@@ -1,0 +1,41 @@
+{
+  "travel": {
+    "instruction": "À votre arrivée\nouvrez l'appareil photo de votre téléphone\net pointez-le sur le panneau Pineda\nque vous trouverez à l'entrée",
+    "countdown": "Ouverture de Maps dans {{count}}…",
+    "opening": "Ouverture de Maps…",
+    "go_now": "Y aller"
+  },
+  "caja": {
+    "title": "La Inaudita · Panneau",
+    "logout": "Déconnexion",
+    "new": "Nouvelle validation",
+    "pin": {
+      "title": "Panneau de caisse",
+      "prompt": "Entrez le code PIN"
+    },
+    "nav": {
+      "copa": "Bar",
+      "compra": "Caisse"
+    },
+    "copa": {
+      "subtitle": "Scannez ou saisissez le code du bon du client",
+      "scan": "Scanner QR",
+      "voice": "Dicter",
+      "validate": "Valider la boisson",
+      "success": "✓ Boisson validée",
+      "already_used": "Boisson déjà utilisée",
+      "invalid": "Code de bon invalide"
+    },
+    "compra": {
+      "subtitle": "Scannez ou saisissez le code du bon du client",
+      "scan": "Scanner QR",
+      "voice": "Dicter",
+      "validate": "Confirmer l'achat",
+      "obra_placeholder": "Numéro d'œuvre",
+      "price_placeholder": "Prix final (€)",
+      "fields_required": "Saisissez le numéro d'œuvre et le prix",
+      "success": "✓ Achat enregistré",
+      "already_used": "Bon déjà utilisé"
+    }
+  }
+}

@@ -23,6 +23,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: https://esrqbldyrelortlttxva.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzcnFibGR5cmVsb3J0bHR0eHZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NDE3NDIsImV4cCI6MjA5MDUxNzc0Mn0.gChIQJaDg0RztOxDXcSX2J5NZOuww7YPI_d1Z8bN08I
+          VITE_CAJA_PIN: ${{ secrets.VITE_CAJA_PIN }}
 
       - uses: peaceiris/actions-gh-pages@v3
         with:

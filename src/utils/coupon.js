@@ -1,13 +1,14 @@
-import { REQUIRED_STOP_IDS, MIN_STOPS_FOR_COUPON } from '../data/stops';
+import { REQUIRED_STOP_IDS, MIN_FREE_STOPS } from '../data/stops';
 
 export function checkCouponEligibility(visitedStopIds) {
   const visited = new Set(visitedStopIds);
   const missingRequired = REQUIRED_STOP_IDS.filter(id => !visited.has(id));
-  const remaining = Math.max(0, MIN_STOPS_FOR_COUPON - visited.size);
+  const freeVisited = [...visited].filter(id => !REQUIRED_STOP_IDS.includes(id)).length;
+  const missingFree = Math.max(0, MIN_FREE_STOPS - freeVisited);
   return {
-    eligible: missingRequired.length === 0 && visited.size >= MIN_STOPS_FOR_COUPON,
+    eligible: missingRequired.length === 0 && freeVisited >= MIN_FREE_STOPS,
     missingRequired,
-    remaining,
+    missingFree,
     total: visited.size,
   };
 }

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function TravelScreen({ stop }) {
+  const { t } = useTranslation();
   const [count, setCount] = useState(3);
   const intervalRef = useRef(null);
 
@@ -31,18 +33,15 @@ export default function TravelScreen({ stop }) {
         </p>
 
         <p className="travel-screen__instruction">
-          Cuando llegues<br />
-          abre la cámara de tu móvil<br />
-          y apunta al cartel de Pineda<br />
-          que encontrarás en la entrada
+          {t('travel.instruction')}
         </p>
 
         <div className="travel-screen__maps-row">
           <p className="travel-screen__countdown">
-            {count > 0 ? `Abriendo Maps en ${count}…` : 'Abriendo Maps…'}
+            {count > 0 ? t('travel.countdown', { count }) : t('travel.opening')}
           </p>
           <button className="btn btn--primary travel-screen__now-btn" onClick={openMaps}>
-            Ir ahora
+            {t('travel.go_now')}
           </button>
         </div>
       </div>

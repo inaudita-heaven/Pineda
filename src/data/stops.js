@@ -264,4 +264,4 @@ export const STOPS = [
 ];
 
 export const REQUIRED_STOP_IDS = [1, 4, 13];
-export const MIN_STOPS_FOR_COUPON = 5;
+export const MIN_FREE_STOPS = 2;   // tabernas libres mínimas (además de las 3 salas)

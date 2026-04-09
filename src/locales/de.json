@@ -1,0 +1,41 @@
+{
+  "travel": {
+    "instruction": "Wenn Sie ankommen\nöffnen Sie die Kamera Ihres Handys\nund richten Sie sie auf das Pineda-Schild\ndas Sie am Eingang finden",
+    "countdown": "Maps öffnet in {{count}}…",
+    "opening": "Maps öffnet…",
+    "go_now": "Jetzt gehen"
+  },
+  "caja": {
+    "title": "La Inaudita · Panel",
+    "logout": "Abmelden",
+    "new": "Neue Validierung",
+    "pin": {
+      "title": "Kassenpanel",
+      "prompt": "PIN eingeben"
+    },
+    "nav": {
+      "copa": "Bar",
+      "compra": "Kasse"
+    },
+    "copa": {
+      "subtitle": "QR scannen oder Gutscheincode des Kunden eingeben",
+      "scan": "QR scannen",
+      "voice": "Diktieren",
+      "validate": "Getränk validieren",
+      "success": "✓ Getränk validiert",
+      "already_used": "Getränk bereits eingelöst",
+      "invalid": "Ungültiger Gutscheincode"
+    },
+    "compra": {
+      "subtitle": "QR scannen oder Gutscheincode des Kunden eingeben",
+      "scan": "QR scannen",
+      "voice": "Diktieren",
+      "validate": "Kauf bestätigen",
+      "obra_placeholder": "Kunstwerk-Nummer",
+      "price_placeholder": "Endpreis (€)",
+      "fields_required": "Kunstwerk-Nummer und Preis eingeben",
+      "success": "✓ Kauf registriert",
+      "already_used": "Gutschein bereits eingelöst"
+    }
+  }
+}

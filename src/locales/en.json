@@ -1,0 +1,41 @@
+{
+  "travel": {
+    "instruction": "When you arrive\nopen your phone camera\nand point it at the Pineda sign\nthat you'll find at the entrance",
+    "countdown": "Opening Maps in {{count}}…",
+    "opening": "Opening Maps…",
+    "go_now": "Go now"
+  },
+  "caja": {
+    "title": "La Inaudita · Staff Panel",
+    "logout": "Sign out",
+    "new": "New validation",
+    "pin": {
+      "title": "Staff panel",
+      "prompt": "Enter the 4-digit PIN"
+    },
+    "nav": {
+      "copa": "Bar",
+      "compra": "Checkout"
+    },
+    "copa": {
+      "subtitle": "Scan or enter the customer's coupon code",
+      "scan": "Scan QR",
+      "voice": "Dictate",
+      "validate": "Validate drink",
+      "success": "✓ Drink validated",
+      "already_used": "Drink already redeemed",
+      "invalid": "Invalid coupon code"
+    },
+    "compra": {
+      "subtitle": "Scan or enter the customer's coupon code",
+      "scan": "Scan QR",
+      "voice": "Dictate",
+      "validate": "Confirm purchase",
+      "obra_placeholder": "Artwork number",
+      "price_placeholder": "Final price (€)",
+      "fields_required": "Enter artwork number and price",
+      "success": "✓ Purchase registered",
+      "already_used": "Coupon already redeemed"
+    }
+  }
+}

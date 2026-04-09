@@ -2,7 +2,7 @@
 ### Rafael Pineda, Pintor de Córdoba · Viana ➜ La Inaudita · Abril–Mayo 2025
 
 > **Documento vivo.** Actualizar en cada decisión técnica relevante.  
-> Última revisión: abril 2026 — v2.5
+> Última revisión: abril 2026 — v2.6
 
 ---
 
@@ -188,8 +188,9 @@ TOTAL:                            0 € → 25 €/mes
 ### Condiciones para desbloquear PINEDA30
 
 ```
-✅ Mínimo 5 paradas selladas
 ✅ Las 3 salas principales incluidas (Viana · Casa 12PB · La Inaudita)
+✅ Mínimo 2 tabernas libres (cualquiera de las 10 no obligatorias)
+= 5 paradas en total como mínimo
 ❌ NO canjeable en domingo (La Inaudita cerrada)
 ```
 
@@ -197,21 +198,19 @@ TOTAL:                            0 € → 25 €/mes
 
 ```js
 export const REQUIRED_STOP_IDS = [1, 4, 13];   // Viana, Casa 12PB, La Inaudita
-export const MIN_STOPS_FOR_COUPON = 5;
+export const MIN_FREE_STOPS = 2;                 // tabernas libres mínimas
 
 export function checkCouponEligibility(visitedStopIds) {
   const visited = new Set(visitedStopIds);
   const missingRequired = REQUIRED_STOP_IDS.filter(id => !visited.has(id));
-  const remaining = Math.max(0, MIN_STOPS_FOR_COUPON - visited.size);
+  const freeVisited = [...visited].filter(id => !REQUIRED_STOP_IDS.includes(id)).length;
+  const missingFree = Math.max(0, MIN_FREE_STOPS - freeVisited);
   return {
-    eligible: missingRequired.length === 0 && visited.size >= MIN_STOPS_FOR_COUPON,
+    eligible: missingRequired.length === 0 && freeVisited >= MIN_FREE_STOPS,
     missingRequired,
-    remaining
+    missingFree,
+    total: visited.size,
   };
-}
-
-export function isCouponRedeemableToday() {
-  return new Date().getDay() !== 0;  // 0 = domingo
 }
 ```
 
@@ -548,12 +547,16 @@ CREATE TABLE escaneos_paradas (
 -- TABLA 4: Cupones
 -- ============================================================
 CREATE TABLE cupones (
-  id          UUID      PRIMARY KEY DEFAULT gen_random_uuid(),
-  session_id  UUID      UNIQUE NOT NULL REFERENCES visitantes(id),
-  codigo      TEXT      UNIQUE NOT NULL,
-  creado_en   TIMESTAMP DEFAULT NOW(),
-  canjeado    BOOLEAN   DEFAULT false,
-  canjeado_en TIMESTAMP
+  id             UUID      PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id     UUID      UNIQUE NOT NULL REFERENCES visitantes(id),
+  codigo         TEXT      UNIQUE NOT NULL,
+  creado_en      TIMESTAMP DEFAULT NOW(),
+  canjeado       BOOLEAN   DEFAULT false,
+  canjeado_en    TIMESTAMP,
+  copa_usada     BOOLEAN   DEFAULT false,
+  copa_usada_en  TIMESTAMP,
+  obra_comprada  TEXT,
+  precio_final   NUMERIC
 );
 
 -- ============================================================
@@ -754,8 +757,13 @@ https://inaudita-heaven.github.io/Pineda/?stop=4&token=casa12pb-zt7j-2025
 - [x] Escáner QR real — `Html5Qrcode` con `facingMode: 'environment'`, cámara trasera directa, sin selector
 - [x] Formulario email + RGPD en pantalla de cupón (nunca antes); "Lo recuerdo yo" persiste en localStorage
 - [x] Touch targets 48px en todos los botones de acción
+- [x] Regla del cupón: 3 salas obligatorias + 2 tabernas libres (= 5 mínimo)
+- [x] Panel de caja en `/caja` — PIN protegido, flujo copa (barra) y compra (caja)
+- [x] i18next — ES/EN/FR/DE con detección automática por idioma del móvil
 - [ ] Pantalla de bienvenida con texto sobre Pineda (D-10)
 - [ ] Pantalla intermedia "De camino a..." con anzuelos (D-09)
+- [ ] Integración Supabase en panel de caja (copa_usada, obra_comprada, precio_final)
+- [ ] Migrar componentes restantes a i18n (App.jsx, StopCard, CouponView)
 
 ### 📋 Fase 3 — Diseño Visual
 
@@ -778,19 +786,114 @@ https://inaudita-heaven.github.io/Pineda/?stop=4&token=casa12pb-zt7j-2025
 | # | Decisión | Estado | Impacto |
 |---|---|---|---|
 | D-01 | **Autenticación** | ✅ Sesión anónima (`session_id` localStorage) | Cerrado |
-| D-02 | **Mínimo de paradas** | ✅ 5 paradas + 3 obligatorias | Cerrado |
+| D-02 | **Mínimo de paradas** | ✅ 3 salas + 2 tabernas libres = 5 total | Cerrado |
 | D-03 | **Caducidad del cupón** | ⚠️ Pendiente | ¿Sin caducidad? ¿Hasta fin del evento? |
 | D-04 | **Dominio definitivo** | ⚠️ Pendiente | Necesario antes de imprimir QRs |
-| D-05 | **Panel de admin** | ⚠️ Pendiente | Supabase Dashboard vs panel custom |
+| D-05 | **Panel de caja** | ✅ Implementado en `/caja` — PIN + copa + compra | Cerrado |
 | D-06 | **Horarios faltantes** | ⚠️ Pendiente | Santa Marina, Casa 12PB, La Tasquería |
 | D-07 | **Obras del catálogo** | ⚠️ Pendiente | Lista, precios, imágenes (La Inaudita) |
 | D-08 | **Referencia visual** | ✅ Confirmada — estilo Ansorena, blanco/negro/serif | Cerrado |
 | D-09 | **Anzuelos entre paradas** | ✅ Redactados — pendiente validar con material de Pineda | Fase 2 |
 | D-10 | **Texto quién es Pineda** | ⚠️ Pendiente — hay material en La Inaudita | Fase 2 |
+| D-11 | **PIN del panel de caja** | ⚠️ Configurar secret `VITE_CAJA_PIN` en GitHub antes de producción | Producción |
+| D-12 | **Idiomas app principal** | ⚠️ i18n instalado; migrar App.jsx, StopCard, CouponView | Fase 3 |
 
 ---
 
-## 18. Glosario
+## 18. Panel de Caja (`/caja`)
+
+### Acceso
+
+URL: `[dominio]/caja` — visible solo para personal de La Inaudita.
+Protegido con PIN de 4 dígitos configurado en la variable de entorno `VITE_CAJA_PIN`
+(GitHub Secret). Si el secret no está configurado, el PIN por defecto es `0000` — **cambiar antes de producción** (D-11).
+
+### Dos flujos diferenciados
+
+| Flujo | Tab | Acción | Registra en BD |
+|---|---|---|---|
+| **Barra** | "Barra" | Validar copa del cliente | `copa_usada=true`, `copa_usada_en` |
+| **Caja** | "Caja" | Registrar compra de obra | `canjeado=true`, `obra_comprada`, `precio_final` |
+
+### Métodos de entrada del código
+
+1. **QR** — abre `Html5Qrcode` apuntando a la cámara trasera (misma lógica que el escáner de la ruta)
+2. **Manual** — campo de texto, se normaliza a mayúsculas automáticamente
+3. **Dictado** — Web Speech API (`SpeechRecognition`), solo si el navegador lo soporta
+
+### Validación (MVP — sin Supabase)
+
+Hasta la integración Supabase, la validación se hace en localStorage del dispositivo de caja:
+- `caja_copa_PINEDA30-XXXXXX` → ISO timestamp de uso
+- `caja_compra_PINEDA30-XXXXXX` → JSON `{ obra, precio, ts }`
+
+Pendiente (D-05 cerrado como diseño, integración Supabase pendiente):
+```sql
+-- Copa:
+UPDATE cupones SET copa_usada=true, copa_usada_en=NOW() WHERE codigo=?;
+
+-- Compra:
+UPDATE cupones SET canjeado=true, canjeado_en=NOW(),
+  obra_comprada=?, precio_final=? WHERE codigo=?;
+```
+
+### Routing en GitHub Pages
+
+El path `/caja` no existe como fichero físico. Se resuelve con:
+1. `public/404.html` — guarda el path en `sessionStorage` y redirige a `/`
+2. `index.html` — restaura el path con `history.replaceState`
+3. `main.jsx` — detecta `pathname.endsWith('/caja')` y renderiza `<CajaPanel />`
+
+---
+
+## 19. Internacionalización (i18n)
+
+### Stack
+
+| Librería | Versión | Rol |
+|---|---|---|
+| `i18next` | ^26 | Motor principal |
+| `react-i18next` | ^17 | Bindings React (`useTranslation`) |
+| `i18next-browser-languagedetector` | ^8 | Detección por `navigator.language` |
+
+### Idiomas soportados
+
+| Código | Idioma | Estado |
+|---|---|---|
+| `es` | Español | ✅ Base — todos los textos |
+| `en` | English | ✅ Completo |
+| `fr` | Français | ✅ Completo |
+| `de` | Deutsch | ✅ Completo |
+
+Detección automática por idioma del sistema operativo del móvil (`order: ['navigator']`).
+Fallback a `es` si el idioma no está entre los cuatro.
+
+### Ficheros
+
+```
+src/
+  i18n.js              ← configuración y carga de locales
+  locales/
+    es.json            ← español (base)
+    en.json
+    fr.json
+    de.json
+```
+
+### Componentes migrados
+
+- ✅ `TravelScreen.jsx` — instrucción principal + cuenta atrás + botón
+- ✅ `CajaPanel.jsx` — panel de caja completo
+
+### Componentes pendientes de migrar (D-12)
+
+- `App.jsx` — textos del pasaporte, banners, pantalla de bienvenida
+- `StopCard.jsx` — badge "Sala principal", estados abierto/cerrado
+- `CouponView.jsx` — cupón y formulario RGPD
+
+---
+
+## 20. Glosario  <!-- antiguo §18 —renumerado —>
 
 | Término | Definición |
 |---|---|
