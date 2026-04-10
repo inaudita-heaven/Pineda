@@ -1,226 +1,901 @@
-import { useState, useCallback } from 'react';
-import { STOPS, REQUIRED_STOP_IDS } from './data/stops';
+/**
+ * App.jsx — Orquestador principal de Ruta Expo Pineda
+ * src/App.jsx
+ *
+ * Flujo de pantallas:
+ *   creditos → bienvenida → lista_paradas ↔ escaner ↔ parada_sellada ↔ intermedia
+ *                                        ↕
+ *                                    modal_cupon (cuando eligible)
+ *
+ * Rutas especiales:
+ *   ?stop=N&token=XXX  → QR físico — se guarda en qrPendiente, NO salta pantallas
+ *   /caja              → CajaPanelComponent (PIN protegido)
+ *
+ * Bugs corregidos en esta versión:
+ *   [1] abrirMaps usa window.open (nueva pestaña) — nunca window.location.href
+ *   [2] QR en URL se guarda en qrPendiente, no salta PantallaCreditos/Bienvenida
+ *   [3] scanLock se libera con setTimeout(SCAN_LOCK_MS) — anti-doble-escaneo
+ *   [4] PantallaCreditos.onClose → siempre va a bienvenida
+ */
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+
+// ── Componentes de pantalla ────────────────────────────────────────────────────
+import PantallaCreditos      from './components/PantallaCreditos';
+import PantallaBienvenida    from './components/PantallaBienvenida';
+import PantallaIntermedia    from './components/PantallaIntermedia';
+import CouponUnlockedModal   from './components/CouponUnlockedModal';
+import ProgresoCupon         from './components/ProgresoCupon';
+import LanguageSelector      from './components/LanguageSelector';
+import CajaPanelComponent    from './components/CajaPanelComponent';
+
+// ── Lógica de dominio ──────────────────────────────────────────────────────────
+import { stops, getStopByToken, isStopOpen, getNextOpenTime } from './data/stops';
 import {
-  getOrCreateSessionId,
-  getVisitedStops,
-  saveVisitedStops,
-  checkCouponEligibility,
-} from './utils/coupon';
-import StopCard from './components/StopCard';
-import CouponView from './components/CouponView';
-import QrScanner from './components/QrScanner';
-import TravelScreen from './components/TravelScreen';
+  getSessionId, getVisitedStops, addVisitedStop,
+  isStopVisited, hasSeenCredits, markCreditsSeen,
+  saveCoupon, getSavedCoupon, hasCoupon,
+} from './lib/session';
+import { checkCouponEligibility } from './lib/coupon';
+import { supabase } from './lib/supabaseClient';
 
-const sessionId = getOrCreateSessionId();
+// ── Constante anti-doble-escaneo ───────────────────────────────────────────────
+const SCAN_LOCK_MS = 3000;
 
+// ══════════════════════════════════════════════════════════════════════════════
 export default function App() {
-  const [visited, setVisited] = useState(() => new Set(getVisitedStops()));
-  const [showCoupon, setShowCoupon] = useState(false);
-  const [started, setStarted] = useState(visited.size > 0);
-  const [showScanner, setShowScanner] = useState(false);
-  const [travelStop, setTravelStop] = useState(null); // stop object to travel to
-  const [qrError, setQrError] = useState(null);
+  const { t } = useTranslation();
 
-  const eligibility = checkCouponEligibility([...visited]);
-
-  function handleSeal(stopId) {
-    const next = new Set(visited);
-    next.add(stopId);
-    setVisited(next);
-    saveVisitedStops([...next]);
+  // ── /caja — ruta especial del personal ────────────────────────────────────
+  if (window.location.pathname.includes('/caja')) {
+    return <CajaPanelComponent />;
   }
 
-  function handleStart() {
-    setStarted(true);
-    // Parada 1 se sella automáticamente: el usuario está en Viana al comenzar
-    handleSeal(1);
-  }
+  // ── Leer parámetros QR de la URL ───────────────────────────────────────────
+  const urlParams = new URLSearchParams(window.location.search);
+  const qrStopId  = parseInt(urlParams.get('stop') || '0', 10);
+  const qrToken   = urlParams.get('token') || '';
 
-  // Called by QrScanner when it successfully reads a code
-  const handleQrScan = useCallback((decodedText) => {
-    setShowScanner(false);
-    try {
-      const url = new URL(decodedText);
-      const stopId = parseInt(url.searchParams.get('stop'), 10);
-      const token = url.searchParams.get('token');
-      const stop = STOPS.find(s => s.id === stopId && s.token === token);
-      if (stop) {
-        handleSeal(stopId);
-        if (!started) setStarted(true);
-      } else {
-        setQrError('QR no reconocido. Asegúrate de escanear el cartel oficial de la ruta.');
-        setTimeout(() => setQrError(null), 4000);
-      }
-    } catch {
-      setQrError('No se pudo leer el QR. Inténtalo de nuevo.');
-      setTimeout(() => setQrError(null), 4000);
+  // ── Sesión ─────────────────────────────────────────────────────────────────
+  const [sessionId]    = useState(() => getSessionId());
+  const [visitedStops, setVisitedStops] = useState(() => getVisitedStops());
+
+  // ── QR pendiente de procesar ───────────────────────────────────────────────
+  // FIX [2]: El QR en URL NUNCA salta las pantallas de intro.
+  // Se guarda aquí y se procesa cuando el usuario pulsa [COMENZAR].
+  const [qrPendiente, setQrPendiente] = useState(() =>
+    qrStopId && qrToken ? { stopId: qrStopId, token: qrToken } : null
+  );
+
+  // ── Pantalla activa ────────────────────────────────────────────────────────
+  // FIX [2]: El estado inicial SIEMPRE muestra creditos o bienvenida.
+  // Nunca salta a 'escaner' aunque haya QR en la URL.
+  const [pantalla, setPantalla] = useState(() => {
+    if (!hasSeenCredits()) return 'creditos';
+    return 'bienvenida'; // QR pendiente se procesa en onComenzar
+  });
+
+  // ── Estado del escáner ─────────────────────────────────────────────────────
+  const [scanLock, setScanLock]           = useState(false);
+  const [scanError, setScanError]         = useState(null);
+  const [paradaActiva, setParadaActiva]   = useState(null);
+  const [scannerStopId, setScannerStopId] = useState(null);
+
+  // ── Estado de navegación entre paradas ────────────────────────────────────
+  const [intermediaData, setIntermediaData] = useState(null); // { fromStop, toStop, mapsUrl }
+
+  // ── Cupón ──────────────────────────────────────────────────────────────────
+  const [mostrarModalCupon, setMostrarModalCupon] = useState(false);
+  const [couponYaMostrado, setCouponYaMostrado]   = useState(() => hasCoupon());
+
+  // ── Procesar QR pendiente cuando llegamos a 'escaner_pendiente' ────────────
+  // FIX [2]: Solo se ejecuta desde onComenzar, no en el arranque.
+  useEffect(() => {
+    if (pantalla === 'escaner_pendiente' && qrPendiente) {
+      procesarEscaneo(qrPendiente.stopId, qrPendiente.token);
     }
-  }, [started, visited]);
+  }, [pantalla]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function handleOpenScanner() {
-    setShowScanner(true);
+  // ── Comprobar elegibilidad de cupón tras cada sello ───────────────────────
+  useEffect(() => {
+    if (couponYaMostrado) return;
+    const { eligible } = checkCouponEligibility(visitedStops);
+    if (eligible) {
+      if (!getSavedCoupon()) generateCode();
+      setMostrarModalCupon(true);
+      setCouponYaMostrado(true);
+    }
+  }, [visitedStops]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Lógica de escaneo QR
+  // ══════════════════════════════════════════════════════════════════════════
+
+  const procesarEscaneo = useCallback(async (stopId, token) => {
+    if (scanLock) return;
+    setScanLock(true);
+    setScanError(null);
+
+    // 1. Validar token
+    const stop = getStopByToken(token);
+    if (!stop || stop.id !== stopId) {
+      setScanError(t('escaner.error_token'));
+      setTimeout(() => {
+        setScanLock(false);
+        setScanError(null);
+        setPantalla('lista');
+      }, 2000);
+      return;
+    }
+
+    // 2. Idempotencia: ya sellada
+    if (isStopVisited(stopId)) {
+      setScanError(t('escaner.error_ya_sellada'));
+      setTimeout(() => {
+        setScanLock(false);
+        setScanError(null);
+        setPantalla('lista');
+      }, 2000);
+      return;
+    }
+
+    // 3. Registrar en Supabase (best-effort — no bloquea si falla)
+    try {
+      const idempotencyKey = `${sessionId}-${stopId}-${Math.floor(Date.now() / 60000)}`;
+      await supabase.from('escaneos_paradas').insert({
+        session_id:      sessionId,
+        parada_id:       stopId,
+        idempotency_key: idempotencyKey,
+      });
+    } catch (err) {
+      console.warn('[App] Supabase insert fallido (modo offline?):', err?.message);
+    }
+
+    // 4. Registrar visitante si es la primera parada
+    if (visitedStops.length === 0) {
+      try {
+        await supabase.from('visitantes').upsert(
+          { session_id: sessionId },
+          { onConflict: 'session_id' }
+        );
+      } catch (_) {}
+    }
+
+    // 5. Actualizar estado local
+    const updated = addVisitedStop(stopId);
+    setVisitedStops(updated);
+    setParadaActiva(stop);
+
+    // FIX [3]: liberar scanLock con delay — anti-doble-escaneo
+    setTimeout(() => setScanLock(false), SCAN_LOCK_MS);
+
+    // 6. Limpiar token de URL (sin recargar)
+    window.history.replaceState({}, '', window.location.pathname);
+
+    // 7. Limpiar qrPendiente
+    setQrPendiente(null);
+
+    setPantalla('parada_sellada');
+  }, [scanLock, sessionId, visitedStops, t]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Helper: genera código si no existe ────────────────────────────────────
+  function generateCode() {
+    const clean = sessionId.replace(/-/g, '').substring(0, 6).toUpperCase();
+    const code  = `PINEDA30-${clean}`;
+    saveCoupon(code);
+    return code;
   }
 
-  function handleTravel(nextStop) {
-    setTravelStop(nextStop);
-  }
+  // ── Ir a siguiente parada ─────────────────────────────────────────────────
+  const irASiguienteParada = useCallback((fromStopId) => {
+    const siguiente = stops.find(s => s.id === fromStopId + 1);
+    if (!siguiente) {
+      setPantalla('lista');
+      return;
+    }
+    setIntermediaData({
+      fromStop: fromStopId,
+      toStop:   siguiente.id,
+      mapsUrl:  siguiente.mapsUrl,
+    });
+    setPantalla('intermedia');
+  }, []);
 
-  const requiredVisited = REQUIRED_STOP_IDS.filter(id => visited.has(id));
+  // FIX [1]: NUNCA window.location.href — destruye la app React.
+  // Abre Maps en nueva pestaña (o app nativa vía OS intent) y vuelve a lista.
+  const abrirMaps = useCallback(() => {
+    if (!intermediaData?.mapsUrl) return;
+    window.open(intermediaData.mapsUrl, '_blank', 'noopener,noreferrer');
+    setTimeout(() => setPantalla('lista'), 300);
+  }, [intermediaData]);
 
-  // ── Welcome screen ────────────────────────────────────────────────────────
-  if (!started) {
-    return (
-      <div className="welcome">
-        <div className="welcome__inner">
-          <div className="welcome__portrait" aria-hidden="true">
-            <div className="welcome__portrait-frame">
-              <span className="welcome__portrait-initials">R.P.</span>
-            </div>
-          </div>
+  // ══════════════════════════════════════════════════════════════════════════
+  // RENDER
+  // ══════════════════════════════════════════════════════════════════════════
 
-          <p className="welcome__eyebrow">Córdoba · Abril–Mayo 2025</p>
-          <h1 className="welcome__title">
-            Rafael Pineda<br />
-            <span>Pintor de Córdoba</span>
-          </h1>
-
-          <p className="welcome__lead">
-            Treinta años pintando Córdoba desde dentro. Sus cuadros no son
-            postales: son memoria de barrio, luz de patio y la sombra exacta
-            que deja un capote al caer. Esta ruta te lleva a las tabernas y
-            espacios donde viven sus obras.
-          </p>
-
-          <div className="welcome__salas">
-            <div className="sala-badge">
-              <span className="sala-badge__num">I</span>
-              <span>Palacio de Viana</span>
-            </div>
-            <div className="sala-badge">
-              <span className="sala-badge__num">IV</span>
-              <span>Casa 12PB</span>
-            </div>
-            <div className="sala-badge">
-              <span className="sala-badge__num">XIII</span>
-              <span>La Inaudita</span>
-            </div>
-          </div>
-
-          <p className="welcome__meta">
-            13 paradas · Casco antiguo · ~2 horas a pie
-          </p>
-
-          <p className="welcome__prize">
-            Completa la ruta y obtén un <strong>30 % de descuento</strong> en obra seleccionada.
-          </p>
-
-          <button className="btn btn--primary btn--large" onClick={handleStart}>
-            Comenzar la ruta
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Travel screen ─────────────────────────────────────────────────────────
-  if (travelStop) {
-    return <TravelScreen stop={travelStop} />;
-  }
-
-  // ── Main passport view ────────────────────────────────────────────────────
   return (
-    <div className="app">
-      <header className="header">
-        <div className="header__inner">
-          <div className="header__meta">
-            <p className="header__eyebrow">Pasaporte digital</p>
-            <h1 className="header__title">Rafael Pineda</h1>
-            <p className="header__sub">Pintor de Córdoba</p>
-          </div>
-          <div className="header__progress">
-            <div className="progress-ring">
-              <span className="progress-ring__num">{visited.size}</span>
-              <span className="progress-ring__total">/13</span>
-            </div>
-          </div>
-        </div>
+    <div style={styles.root}>
 
-        <div className="progress-bar">
-          <div className="progress-bar__track">
-            <div
-              className="progress-bar__fill"
-              style={{ width: `${(visited.size / 13) * 100}%` }}
-            />
-          </div>
-          <div className="progress-pills">
-            {REQUIRED_STOP_IDS.map(id => (
-              <span key={id} className={`pill ${visited.has(id) ? 'pill--done' : ''}`}>
-                {STOPS.find(s => s.id === id).nombre.split(' ')[0]}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {eligibility.eligible ? (
-          <div className="coupon-banner" onClick={() => setShowCoupon(true)}>
-            <span>¡Tienes tu descuento!</span>
-            <span className="coupon-banner__cta">Ver cupón PINEDA30 →</span>
-          </div>
-        ) : (
-          <div className="missing-banner">
-            {eligibility.missingRequired.length > 0 && (
-              <span>
-                Salas pendientes:{' '}
-                {eligibility.missingRequired
-                  .map(id => STOPS.find(s => s.id === id).nombre)
-                  .join(', ')}
-              </span>
-            )}
-            {eligibility.missingFree > 0 && eligibility.missingRequired.length === 0 && (
-              <span>
-                {eligibility.missingFree} taberna{eligibility.missingFree > 1 ? 's' : ''} más para tu cupón
-              </span>
-            )}
-            {eligibility.missingFree > 0 && eligibility.missingRequired.length > 0 && (
-              <span> · {eligibility.missingFree} taberna{eligibility.missingFree > 1 ? 's' : ''} más</span>
-            )}
-          </div>
-        )}
-
-        <div className="header__scanner-row">
-          <button className="btn btn--primary btn--scan" onClick={handleOpenScanner}>
-            Escanear QR
-          </button>
-        </div>
-      </header>
-
-      {qrError && (
-        <div className="qr-error-toast">{qrError}</div>
+      {/* Selector de idioma flotante — oculto en creditos */}
+      {pantalla !== 'creditos' && (
+        <LanguageSelector variant="floating" />
       )}
 
-      <main className="passport">
-        {STOPS.map((stop, idx) => {
-          const nextStop = idx < STOPS.length - 1 ? STOPS[idx + 1] : null;
-          return (
-            <StopCard
-              key={stop.id}
-              stop={stop}
-              visited={visited.has(stop.id)}
-              nextStop={nextStop}
-              onScan={handleOpenScanner}
-              onTravel={handleTravel}
-            />
-          );
-        })}
-      </main>
-
-      {showScanner && (
-        <QrScanner onScan={handleQrScan} onClose={() => setShowScanner(false)} />
+      {/* ── PantallaCreditos — solo una vez ─────────────────────────────── */}
+      {pantalla === 'creditos' && (
+        // FIX [4]: onClose siempre va a 'bienvenida' (correcto)
+        <PantallaCreditos
+          onClose={() => {
+            markCreditsSeen();
+            setPantalla('bienvenida');
+          }}
+        />
       )}
 
-      {showCoupon && (
-        <CouponView sessionId={sessionId} onClose={() => setShowCoupon(false)} />
+      {/* ── PantallaBienvenida ───────────────────────────────────────────── */}
+      {pantalla === 'bienvenida' && (
+        <PantallaBienvenida
+          onComenzar={() => {
+            // FIX [2]: si hay QR pendiente, procesar ahora (ya vimos la intro)
+            if (qrPendiente) {
+              setPantalla('escaner_pendiente');
+            } else {
+              setPantalla('lista');
+            }
+          }}
+        />
       )}
+
+      {/* ── Lista de paradas ─────────────────────────────────────────────── */}
+      {pantalla === 'lista' && (
+        <ListaParadas
+          stops={stops}
+          visitedStops={visitedStops}
+          sessionId={sessionId}
+          onEscanear={(stopId) => {
+            setScannerStopId(stopId);
+            setPantalla('escaner');
+          }}
+          onVerCupon={() => setMostrarModalCupon(true)}
+          t={t}
+        />
+      )}
+
+      {/* ── Escáner QR (manual) ──────────────────────────────────────────── */}
+      {pantalla === 'escaner' && (
+        <PantallaEscaner
+          stopId={scannerStopId}
+          error={scanError}
+          locked={scanLock}
+          onScan={procesarEscaneo}
+          onCancelar={() => setPantalla('lista')}
+          t={t}
+        />
+      )}
+
+      {/* ── Validando QR de URL (pantalla de espera) ─────────────────────── */}
+      {/* FIX [2]: Pantalla placeholder mientras procesarEscaneo corre */}
+      {pantalla === 'escaner_pendiente' && (
+        <div style={styles.pendienteWrap}>
+          <p style={styles.pendienteTexto}>Validando parada…</p>
+        </div>
+      )}
+
+      {/* ── Parada sellada ───────────────────────────────────────────────── */}
+      {pantalla === 'parada_sellada' && paradaActiva && (
+        <PantallaParadaSellada
+          stop={paradaActiva}
+          visitedStops={visitedStops}
+          onSiguiente={() => irASiguienteParada(paradaActiva.id)}
+          onVolverLista={() => setPantalla('lista')}
+          t={t}
+        />
+      )}
+
+      {/* ── Pantalla intermedia / countdown Maps ─────────────────────────── */}
+      {pantalla === 'intermedia' && intermediaData && (
+        <PantallaIntermedia
+          fromStop={intermediaData.fromStop}
+          toStop={intermediaData.toStop}
+          onAbrirMaps={abrirMaps}
+          onVolver={() => setPantalla('lista')}
+        />
+      )}
+
+      {/* ── Modal cupón desbloqueado ──────────────────────────────────────── */}
+      {mostrarModalCupon && (
+        <CouponUnlockedModal
+          sessionId={sessionId}
+          onClose={() => setMostrarModalCupon(false)}
+        />
+      )}
+
     </div>
   );
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Sub-componentes inline
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Lista de paradas ──────────────────────────────────────────────────────────
+function ListaParadas({ stops, visitedStops, sessionId, onEscanear, onVerCupon, t }) {
+  const ahora  = new Date();
+
+  return (
+    <div style={styles.lista}>
+
+      {/* Header */}
+      <div style={styles.listaHeader}>
+        <h1 style={styles.listaTitulo}>{t('app.titulo')}</h1>
+        <p style={styles.listaSubtitulo}>{t('app.subtitulo')}</p>
+      </div>
+
+      {/* Widget progreso cupón */}
+      <div style={styles.progresoPad}>
+        <ProgresoCupon
+          visitedStopIds={visitedStops}
+          onVerCupon={onVerCupon}
+        />
+      </div>
+
+      {/* Tarjetas de paradas */}
+      <div style={styles.tarjetasWrap}>
+        {stops.map(stop => {
+          const sellada = visitedStops.includes(stop.id);
+          const abierta = isStopOpen(stop, ahora);
+          const proxima = abierta === false ? getNextOpenTime(stop, ahora) : null;
+
+          return (
+            <TarjetaParada
+              key={stop.id}
+              stop={stop}
+              sellada={sellada}
+              abierta={abierta}
+              proximaApertura={proxima}
+              onEscanear={() => onEscanear(stop.id)}
+              t={t}
+            />
+          );
+        })}
+      </div>
+
+      {/* Pie */}
+      <div style={styles.listaPie}>
+        <p style={styles.listaPieTexto}>
+          {visitedStops.length}/13 {t('cupon.paradas')}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── Tarjeta de parada ─────────────────────────────────────────────────────────
+function TarjetaParada({ stop, sellada, abierta, proximaApertura, onEscanear, t }) {
+  return (
+    <div style={{
+      ...styles.tarjeta,
+      borderLeft: stop.required ? '4px solid #000' : '4px solid #e0e0e0',
+      opacity: sellada ? 0.7 : 1,
+    }}>
+
+      {/* Número + nombre */}
+      <div style={styles.tarjetaTop}>
+        <span style={styles.tarjetaNum}>{stop.id}</span>
+        <div style={styles.tarjetaInfo}>
+          <p style={styles.tarjetaNombre}>{t(`paradas_nombres.p${stop.id}`)}</p>
+          <p style={styles.tarjetaDireccion}>{stop.address}</p>
+        </div>
+      </div>
+
+      {/* Badges */}
+      <div style={styles.tarjetaBadges}>
+        {stop.required && (
+          <span style={styles.badgeSala}>{t('parada.sala_obligatoria')} ⭐</span>
+        )}
+        {stop.hoursUnconfirmed ? (
+          <span style={styles.badgeInfo}>{t('parada.horario_sin_confirmar')}</span>
+        ) : abierta === true ? (
+          <span style={styles.badgeAbierta}>{t('parada.horario_abierto')}</span>
+        ) : abierta === false ? (
+          <span style={styles.badgeCerrada}>
+            {t('parada.horario_cerrado')}
+            {proximaApertura ? ` · ${t('parada.abre_a')} ${proximaApertura}` : ''}
+          </span>
+        ) : null}
+      </div>
+
+      {/* Botón */}
+      <div style={styles.tarjetaAccion}>
+        {sellada ? (
+          <span style={styles.sellada}>{t('parada.sellada')}</span>
+        ) : (
+          <button style={styles.botonEscanear} onClick={onEscanear}>
+            {t('parada.boton_escanear')}
+          </button>
+        )}
+        <a href={stop.mapsUrl} style={styles.botonMaps} target="_blank" rel="noreferrer">
+          {t('parada.ir_aqui')}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ── Escáner QR ────────────────────────────────────────────────────────────────
+function PantallaEscaner({ stopId, error, locked, onScan, onCancelar, t }) {
+  const scannerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    let scanner = null;
+
+    const iniciar = async () => {
+      const { Html5QrcodeScanner } = await import('html5-qrcode');
+      scanner = new Html5QrcodeScanner(
+        'qr-reader',
+        { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
+        false
+      );
+      scanner.render(
+        (decodedText) => {
+          try {
+            const url   = new URL(decodedText);
+            const sId   = parseInt(url.searchParams.get('stop') || '0', 10);
+            const token = url.searchParams.get('token') || '';
+            if (sId && token) onScan(sId, token);
+          } catch {
+            // QR inválido — ignorar
+          }
+        },
+        () => { /* errores continuos de lectura — ignorar */ }
+      );
+      scannerRef.current = scanner;
+    };
+
+    iniciar();
+    return () => { scannerRef.current?.clear().catch(() => {}); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div style={styles.scannerOverlay}>
+      <div style={styles.scannerModal}>
+        <h2 style={styles.scannerTitulo}>{t('escaner.titulo')}</h2>
+        <p style={styles.scannerInstruccion}>{t('escaner.instruccion')}</p>
+
+        <div id="qr-reader" style={styles.qrReader} />
+
+        {locked && !error && (
+          <p style={styles.scannerMensaje}>{t('escaner.buscando')}</p>
+        )}
+        {error && (
+          <p style={{ ...styles.scannerMensaje, color: '#c00' }}>{error}</p>
+        )}
+
+        <button onClick={onCancelar} style={styles.botonCancelar}>
+          {t('escaner.cancelar')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Parada sellada ────────────────────────────────────────────────────────────
+function PantallaParadaSellada({ stop, visitedStops, onSiguiente, onVolverLista, t }) {
+  const esSala = stop.required;
+
+  return (
+    <div style={styles.selladaOverlay}>
+      <div style={styles.selladaModal}>
+
+        <div style={styles.selladaHeader}>
+          <div style={styles.selladaCheck}>✓</div>
+          <h2 style={styles.selladaTitulo}>
+            {t('parada_sellada.titulo', { nombre: t(`paradas_nombres.p${stop.id}`) })}
+          </h2>
+          {esSala && (
+            <span style={styles.selladaBadgeSala}>
+              {t('parada_sellada.subtitulo_sala')}
+            </span>
+          )}
+        </div>
+
+        {esSala && (
+          <div style={styles.selladaSalaInfo}>
+            <p style={styles.selladaSalaTexto}>
+              {t(`salas.${stop.key}_gancho`)}
+            </p>
+          </div>
+        )}
+
+        <div style={styles.selladaDireccion}>
+          <p style={styles.selladaDireccionTexto}>{stop.address}</p>
+        </div>
+
+        <div style={styles.selladaProgreso}>
+          <ProgresoCupon visitedStopIds={visitedStops} onVerCupon={() => {}} />
+        </div>
+
+        <div style={styles.selladaBotones}>
+          {stop.id < 13 && (
+            <button onClick={onSiguiente} style={styles.botonPrimario}>
+              {t('parada_sellada.siguiente')}
+            </button>
+          )}
+          <button onClick={onVolverLista} style={styles.botonSecundario}>
+            {t('parada_sellada.volver_ruta')}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Estilos
+// ══════════════════════════════════════════════════════════════════════════════
+const SERIF = '"IM Fell English", "Cormorant Garamond", Georgia, serif';
+const SANS  = 'system-ui, -apple-system, sans-serif';
+
+const styles = {
+  root: {
+    fontFamily: SERIF,
+    backgroundColor: '#fff',
+    minHeight: '100vh',
+    color: '#0F0E0D',
+  },
+
+  // ── Espera QR pendiente ───────────────────────────────────────────────────
+  pendienteWrap: {
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  pendienteTexto: {
+    fontFamily: SERIF,
+    fontSize: '1rem',
+    color: '#999',
+    fontStyle: 'italic',
+  },
+
+  // ── Lista ─────────────────────────────────────────────────────────────────
+  lista: {
+    maxWidth: '680px',
+    margin: '0 auto',
+    padding: '1rem',
+    paddingBottom: '4rem',
+  },
+  listaHeader: {
+    textAlign: 'center',
+    padding: '3rem 1rem 2rem',
+    borderBottom: '3px solid #000',
+    marginBottom: '2rem',
+  },
+  listaTitulo: {
+    fontSize: 'clamp(1.6rem, 6vw, 2.8rem)',
+    fontWeight: '400',
+    margin: 0,
+    letterSpacing: '1.5px',
+    lineHeight: 1.1,
+  },
+  listaSubtitulo: {
+    fontFamily: SANS,
+    fontSize: '0.8rem',
+    color: '#888',
+    letterSpacing: '1.5px',
+    textTransform: 'uppercase',
+    margin: '0.75rem 0 0',
+  },
+  progresoPad: {
+    marginBottom: '2rem',
+  },
+  tarjetasWrap: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+  listaPie: {
+    marginTop: '2rem',
+    textAlign: 'center',
+    borderTop: '1px solid #e0e0e0',
+    paddingTop: '1.5rem',
+  },
+  listaPieTexto: {
+    fontFamily: SANS,
+    fontSize: '0.8rem',
+    color: '#aaa',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    margin: 0,
+  },
+
+  // ── Tarjeta de parada ─────────────────────────────────────────────────────
+  tarjeta: {
+    padding: '1.25rem',
+    border: '1px solid #e0e0e0',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    transition: 'opacity 0.2s',
+  },
+  tarjetaTop: {
+    display: 'flex',
+    gap: '0.875rem',
+    alignItems: 'flex-start',
+  },
+  tarjetaNum: {
+    fontFamily: SERIF,
+    fontSize: '1.6rem',
+    fontWeight: '400',
+    color: '#aaa',
+    lineHeight: 1,
+    minWidth: '2rem',
+    textAlign: 'center',
+    paddingTop: '2px',
+  },
+  tarjetaInfo: {
+    flex: 1,
+  },
+  tarjetaNombre: {
+    fontFamily: SERIF,
+    fontSize: '1.15rem',
+    fontWeight: '400',
+    margin: '0 0 0.2rem',
+    lineHeight: 1.2,
+  },
+  tarjetaDireccion: {
+    fontFamily: SANS,
+    fontSize: '0.78rem',
+    color: '#888',
+    margin: 0,
+    letterSpacing: '0.3px',
+  },
+  tarjetaBadges: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '0.4rem',
+  },
+  tarjetaAccion: {
+    display: 'flex',
+    gap: '0.75rem',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+
+  // ── Badges ────────────────────────────────────────────────────────────────
+  badgeSala: {
+    fontFamily: SANS,
+    fontSize: '0.68rem',
+    fontWeight: '700',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    backgroundColor: '#000',
+    color: '#fff',
+    padding: '2px 8px',
+  },
+  badgeAbierta: {
+    fontFamily: SANS,
+    fontSize: '0.68rem',
+    fontWeight: '600',
+    letterSpacing: '0.8px',
+    textTransform: 'uppercase',
+    color: '#2a7a2a',
+  },
+  badgeCerrada: {
+    fontFamily: SANS,
+    fontSize: '0.68rem',
+    fontWeight: '600',
+    letterSpacing: '0.8px',
+    textTransform: 'uppercase',
+    color: '#999',
+  },
+  badgeInfo: {
+    fontFamily: SANS,
+    fontSize: '0.68rem',
+    color: '#bbb',
+    fontStyle: 'italic',
+  },
+  sellada: {
+    fontFamily: SANS,
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    color: '#000',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+  },
+
+  // ── Botones ───────────────────────────────────────────────────────────────
+  botonEscanear: {
+    fontFamily: SANS,
+    fontSize: '0.8rem',
+    fontWeight: '600',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    padding: '0.6rem 1.25rem',
+    backgroundColor: '#000',
+    color: '#fff',
+    border: 'none',
+    cursor: 'pointer',
+    minHeight: '48px',
+  },
+  botonMaps: {
+    fontFamily: SANS,
+    fontSize: '0.78rem',
+    fontWeight: '600',
+    color: '#000',
+    letterSpacing: '0.5px',
+    textDecoration: 'underline',
+    textUnderlineOffset: '2px',
+  },
+  botonPrimario: {
+    fontFamily: SANS,
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    padding: '1rem',
+    backgroundColor: '#000',
+    color: '#fff',
+    border: 'none',
+    cursor: 'pointer',
+    width: '100%',
+    minHeight: '52px',
+  },
+  botonSecundario: {
+    fontFamily: SANS,
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    padding: '1rem',
+    backgroundColor: '#fff',
+    color: '#000',
+    border: '2px solid #000',
+    cursor: 'pointer',
+    width: '100%',
+    minHeight: '52px',
+  },
+
+  // ── Escáner ───────────────────────────────────────────────────────────────
+  scannerOverlay: {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 9000,
+    padding: '1rem',
+  },
+  scannerModal: {
+    backgroundColor: '#fff',
+    padding: '2rem',
+    maxWidth: '400px',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    alignItems: 'center',
+  },
+  scannerTitulo: {
+    fontFamily: SERIF,
+    fontSize: '1.4rem',
+    fontWeight: '400',
+    margin: 0,
+    textAlign: 'center',
+  },
+  scannerInstruccion: {
+    fontFamily: SANS,
+    fontSize: '0.85rem',
+    color: '#666',
+    textAlign: 'center',
+    margin: 0,
+  },
+  qrReader: {
+    width: '100%',
+  },
+  scannerMensaje: {
+    fontFamily: SANS,
+    fontSize: '0.85rem',
+    color: '#555',
+    margin: 0,
+    textAlign: 'center',
+  },
+  botonCancelar: {
+    fontFamily: SANS,
+    fontSize: '0.85rem',
+    fontWeight: '600',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    padding: '0.75rem 2rem',
+    backgroundColor: '#fff',
+    color: '#000',
+    border: '2px solid #000',
+    cursor: 'pointer',
+    marginTop: '0.5rem',
+    minHeight: '48px',
+  },
+
+  // ── Parada sellada ────────────────────────────────────────────────────────
+  selladaOverlay: {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: '#fff',
+    overflowY: 'auto',
+    zIndex: 8000,
+    padding: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  selladaModal: {
+    maxWidth: '560px',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+    paddingTop: '3rem',
+    paddingBottom: '3rem',
+  },
+  selladaHeader: {
+    textAlign: 'center',
+    borderBottom: '2px solid #000',
+    paddingBottom: '2rem',
+  },
+  selladaCheck: {
+    fontSize: '3rem',
+    lineHeight: 1,
+    marginBottom: '0.75rem',
+    fontFamily: SERIF,
+  },
+  selladaTitulo: {
+    fontFamily: SERIF,
+    fontSize: 'clamp(1.5rem, 5vw, 2.2rem)',
+    fontWeight: '400',
+    margin: 0,
+    letterSpacing: '1px',
+  },
+  selladaBadgeSala: {
+    display: 'inline-block',
+    marginTop: '0.75rem',
+    fontFamily: SANS,
+    fontSize: '0.72rem',
+    fontWeight: '700',
+    letterSpacing: '1.5px',
+    textTransform: 'uppercase',
+    backgroundColor: '#000',
+    color: '#fff',
+    padding: '3px 10px',
+  },
+  selladaSalaInfo: {
+    borderLeft: '3px solid #000',
+    paddingLeft: '1rem',
+  },
+  selladaSalaTexto: {
+    fontFamily: SERIF,
+    fontSize: '1rem',
+    fontStyle: 'italic',
+    lineHeight: 1.7,
+    margin: 0,
+    color: '#333',
+  },
+  selladaDireccion: {
+    paddingTop: '0.5rem',
+  },
+  selladaDireccionTexto: {
+    fontFamily: SANS,
+    fontSize: '0.82rem',
+    color: '#999',
+    margin: 0,
+  },
+  selladaProgreso: {
+    borderTop: '1px solid #e0e0e0',
+    paddingTop: '1.5rem',
+  },
+  selladaBotones: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+  },
+};

@@ -1,4 +1,108 @@
 {
+  "bienvenida": {
+    "eyebrow": "Córdoba · April–May 2025",
+    "pintor": "Painter of Córdoba",
+    "lead": "Thirty years painting Córdoba from the inside. His pictures are not postcards: they are neighbourhood memory, courtyard light and the exact shadow a cape leaves when it falls.",
+    "meta": "13 stops · Old Quarter · ~2 hours on foot",
+    "premio": "Complete the route and get a 30 % discount on selected artworks.",
+    "comenzar": "Start the route"
+  },
+  "app": {
+    "titulo": "Rafael Pineda",
+    "subtitulo": "Painter of Córdoba"
+  },
+  "salas": {
+    "viana_nombre": "Palacio de Viana",
+    "casa12pb_nombre": "Casa 12PB",
+    "inaudita_nombre": "La Inaudita",
+    "viana_gancho": "Landscape and local colour. A palace with twelve courtyards and five hundred years of secrets.",
+    "casa12pb_gancho": "The styles of Pineda. This is the second hall: the one that changes everything you thought you knew.",
+    "inaudita_gancho": "The dangers of bullfighting. The last hall. Where it all began."
+  },
+  "paradas_nombres": {
+    "p1":  "Palacio de Viana",
+    "p2":  "Taberna Santa Marina",
+    "p3":  "Taberna La Fuenseca",
+    "p4":  "Casa 12PB",
+    "p5":  "Taberna San Miguel",
+    "p6":  "Taberna El Olmo",
+    "p7":  "Taberna Casa Salinas",
+    "p8":  "Posada Caballo Blanco",
+    "p9":  "Puerta de Sevilla",
+    "p10": "Taberna La Viuda",
+    "p11": "La Tasquería",
+    "p12": "La Cazuela de la Espartería",
+    "p13": "La Inaudita"
+  },
+  "parada": {
+    "sala_obligatoria": "Main hall",
+    "horario_abierto": "Open now",
+    "horario_cerrado": "Closed",
+    "abre_a": "Opens at",
+    "horario_sin_confirmar": "Hours TBC",
+    "sellada": "✓ Stamped",
+    "boton_escanear": "Scan QR",
+    "ir_aqui": "Get directions →",
+    "zona_norte": "North · Santa Marina",
+    "zona_centro": "Centre",
+    "zona_juderia": "Jewish Quarter",
+    "zona_san_basilio": "San Basilio",
+    "zona_sur": "South · Rodríguez Marín"
+  },
+  "escaner": {
+    "titulo": "Scan QR",
+    "instruccion": "Point the camera at the QR code at the entrance",
+    "buscando": "Reading code…",
+    "cancelar": "Cancel",
+    "error_token": "QR not recognised. Make sure you scan the official route sign.",
+    "error_ya_sellada": "This stop is already stamped in your passport."
+  },
+  "parada_sellada": {
+    "titulo": "{{nombre}}",
+    "subtitulo_sala": "Main hall",
+    "siguiente": "Go to next stop →",
+    "volver_ruta": "View full route"
+  },
+  "intermedia": {
+    "instruccion": "When you arrive\nopen your phone camera\nand point it at the Pineda sign\nthat you'll find at the entrance",
+    "countdown": "Opening Maps in {{count}}…",
+    "opening": "Opening Maps…",
+    "go_now": "Go now",
+    "volver": "← Back to route",
+    "anzuelo_0_1":  "A palace with twelve courtyards and five hundred years of secrets. Pineda came here and saw all of Córdoba in a single whitewashed wall.",
+    "anzuelo_1_2":  "The Santa Marina neighbourhood smells of bullfighting. Manolete was born two streets away. Pineda painted him without painting him: the shadow of a cape is enough.",
+    "anzuelo_2_3":  "Since 1850, guitarists and poets have been drinking at La Fuenseca without anyone having invited them. The shows here are not scheduled: they improvise.",
+    "anzuelo_3_4":  "Here is the second hall. The one that changes everything you thought you knew about how Pineda paints.",
+    "anzuelo_4_5":  "Since 1880, El Pisto has seen Manolete, Julio Romero de Torres and the Córdoba rogue pass through. They all drank at the same bar.",
+    "anzuelo_5_6":  "Some taverns serve wine. Others keep paintings the owner won't sell at any price.",
+    "anzuelo_6_7":  "The Jewish Quarter cannot be explained: it must be walked. Every cobblestone has three civilisations beneath it. Pineda painted them all at once.",
+    "anzuelo_7_8":  "A 15th-century house next to the Royal Stables. It smells of Córdoba courtyards and home cooking.",
+    "anzuelo_8_9":  "San Basilio is the neighbourhood of courtyards. The gate that closes it to the south has been letting in those who know how to look for centuries.",
+    "anzuelo_9_10": "They say La Viuda has the coldest salmorejo in Córdoba and the hardest painting on the route to find. See for yourself.",
+    "anzuelo_10_11":"Rodríguez Marín. The street where the old quarter ends and something quieter, more neighbourhood-like begins. Pineda painted it exactly like that.",
+    "anzuelo_11_12":"Almost there. Two doors from La Inaudita there is a cazuela that carries the name of the trade that filled this street for centuries.",
+    "anzuelo_12_13":"The last hall. Where it all began. Here is the most important work, and here is where you redeem the coupon."
+  },
+  "cupon": {
+    "paradas": "stops",
+    "desbloqueado": "Coupon unlocked",
+    "ver": "View coupon",
+    "falta_salas": "{{n}} hall(s) remaining",
+    "falta_tabernas": "{{n}} more tavern(s)",
+    "modal_titulo": "You did it.",
+    "modal_sub": "30 % discount on selected artworks",
+    "codigo_label": "Your code",
+    "instruccion": "Show this code at the till at La Inaudita",
+    "aviso_domingo": "⚠️ La Inaudita is closed on Sundays. You can redeem it Monday–Saturday, 10:00–14:00 and 18:00–20:30.",
+    "fine_print": "Valid until 30 May 2025 · Single use · Not combinable",
+    "email_label": "Save your coupon by email",
+    "email_guardar": "Save by email",
+    "email_dismiss": "I'll remember it",
+    "email_saved": "✓ Email saved.",
+    "rgpd_texto_1": "I agree that La Inaudita may use my email to send me the coupon and cultural communications. I can exercise my rights at",
+    "rgpd_texto_2": ".",
+    "cerrar": "Back to passport"
+  },
   "travel": {
     "instruction": "When you arrive\nopen your phone camera\nand point it at the Pineda sign\nthat you'll find at the entrance",
     "countdown": "Opening Maps in {{count}}…",

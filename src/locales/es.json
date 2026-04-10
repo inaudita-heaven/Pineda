@@ -1,4 +1,108 @@
 {
+  "bienvenida": {
+    "eyebrow": "Córdoba · Abril–Mayo 2025",
+    "pintor": "Pintor de Córdoba",
+    "lead": "Treinta años pintando Córdoba desde dentro. Sus cuadros no son postales: son memoria de barrio, luz de patio y la sombra exacta que deja un capote al caer.",
+    "meta": "13 paradas · Casco antiguo · ~2 horas a pie",
+    "premio": "Completa la ruta y obtén un 30 % de descuento en obra seleccionada.",
+    "comenzar": "Comenzar la ruta"
+  },
+  "app": {
+    "titulo": "Rafael Pineda",
+    "subtitulo": "Pintor de Córdoba"
+  },
+  "salas": {
+    "viana_nombre": "Palacio de Viana",
+    "casa12pb_nombre": "Casa 12PB",
+    "inaudita_nombre": "La Inaudita",
+    "viana_gancho": "Paisaje y paisanaje cordobés. Un palacio con doce patios y quinientos años de secretos.",
+    "casa12pb_gancho": "Los estilos de Pineda. Aquí está la segunda sala: la que cambia todo lo que creías saber.",
+    "inaudita_gancho": "Los peligros del toreo. La última sala. El origen de todo."
+  },
+  "paradas_nombres": {
+    "p1":  "Palacio de Viana",
+    "p2":  "Taberna Santa Marina",
+    "p3":  "Taberna La Fuenseca",
+    "p4":  "Casa 12PB",
+    "p5":  "Taberna San Miguel",
+    "p6":  "Taberna El Olmo",
+    "p7":  "Taberna Casa Salinas",
+    "p8":  "Posada Caballo Blanco",
+    "p9":  "Puerta de Sevilla",
+    "p10": "Taberna La Viuda",
+    "p11": "La Tasquería",
+    "p12": "La Cazuela de la Espartería",
+    "p13": "La Inaudita"
+  },
+  "parada": {
+    "sala_obligatoria": "Sala principal",
+    "horario_abierto": "Abierta ahora",
+    "horario_cerrado": "Cerrada",
+    "abre_a": "Abre a las",
+    "horario_sin_confirmar": "Horario por confirmar",
+    "sellada": "✓ Sellada",
+    "boton_escanear": "Escanear QR",
+    "ir_aqui": "Cómo llegar →",
+    "zona_norte": "Norte · Santa Marina",
+    "zona_centro": "Centro",
+    "zona_juderia": "Judería",
+    "zona_san_basilio": "San Basilio",
+    "zona_sur": "Sur · Rodríguez Marín"
+  },
+  "escaner": {
+    "titulo": "Escanear QR",
+    "instruccion": "Apunta la cámara al código QR de la parada",
+    "buscando": "Leyendo código…",
+    "cancelar": "Cancelar",
+    "error_token": "QR no reconocido. Asegúrate de escanear el cartel oficial de la ruta.",
+    "error_ya_sellada": "Esta parada ya está sellada en tu pasaporte."
+  },
+  "parada_sellada": {
+    "titulo": "{{nombre}}",
+    "subtitulo_sala": "Sala principal",
+    "siguiente": "Ir a la siguiente parada →",
+    "volver_ruta": "Ver la ruta completa"
+  },
+  "intermedia": {
+    "instruccion": "Cuando llegues\nabre la cámara de tu móvil\ny apunta al cartel de Pineda\nque encontrarás en la entrada",
+    "countdown": "Abriendo Maps en {{count}}…",
+    "opening": "Abriendo Maps…",
+    "go_now": "Ir ahora",
+    "volver": "← Volver a la ruta",
+    "anzuelo_0_1":  "Un palacio con doce patios y quinientos años de secretos. Pineda entró aquí y vio Córdoba entera en un solo muro encalado.",
+    "anzuelo_1_2":  "El barrio de Santa Marina huele a torería. Manolete nació a dos calles. Pineda lo pintó sin pintarlo: la sombra de un capote basta.",
+    "anzuelo_2_3":  "Desde 1850, guitarristas y poetas beben en La Fuenseca sin que nadie los haya invitado. Los espectáculos aquí no se programan: se improvisan.",
+    "anzuelo_3_4":  "Aquí está la segunda sala. La que cambia todo lo que creías saber sobre cómo pinta Pineda.",
+    "anzuelo_4_5":  "Desde 1880, El Pisto ha visto pasar a Manolete, a Julio Romero de Torres y a la picaresca cordobesa. Todos bebieron en la misma barra.",
+    "anzuelo_5_6":  "Hay tabernas que sirven vino. Y tabernas que guardan cuadros que el dueño no quiere vender a ningún precio.",
+    "anzuelo_6_7":  "La Judería no se explica: se camina. Cada adoquín tiene tres civilizaciones debajo. Pineda las pintó todas a la vez.",
+    "anzuelo_7_8":  "Una casa del siglo XV al lado de las Caballerizas Reales. Aquí huele a patio cordobés y a cocina de siempre.",
+    "anzuelo_8_9":  "San Basilio es el barrio de los patios. La puerta que lo cierra por el sur lleva siglos dejando pasar a quien sabe mirar.",
+    "anzuelo_9_10": "Dicen que La Viuda guarda el salmorejo más frío de Córdoba y el cuadro más difícil de ver de la ruta. Compruébalo.",
+    "anzuelo_10_11":"Rodríguez Marín. La calle donde termina el casco antiguo y empieza algo más tranquilo, más de barrio. Pineda lo pintó justo así.",
+    "anzuelo_11_12":"Ya casi estás. A dos puertas de La Inaudita hay una cazuela que lleva el nombre del oficio que llenó esta calle durante siglos.",
+    "anzuelo_12_13":"La última sala. El origen de todo. Aquí nació la exposición, aquí está la obra más importante, y aquí se canjea el cupón."
+  },
+  "cupon": {
+    "paradas": "paradas",
+    "desbloqueado": "Cupón desbloqueado",
+    "ver": "Ver cupón",
+    "falta_salas": "{{n}} sala(s) pendiente(s)",
+    "falta_tabernas": "{{n}} taberna(s) más",
+    "modal_titulo": "Lo has conseguido.",
+    "modal_sub": "30 % de descuento en obra seleccionada",
+    "codigo_label": "Tu código",
+    "instruccion": "Muestra este código en caja de La Inaudita",
+    "aviso_domingo": "⚠️ La Inaudita cierra los domingos. Puedes canjearlo de lunes a sábado, de 10:00 a 14:00 y de 18:00 a 20:30.",
+    "fine_print": "Válido hasta el 30 de mayo de 2025 · Un solo uso · No acumulable",
+    "email_label": "Guarda tu cupón por email",
+    "email_guardar": "Guardar por email",
+    "email_dismiss": "Lo recuerdo yo",
+    "email_saved": "✓ Email guardado.",
+    "rgpd_texto_1": "Acepto que La Inaudita use mi email para enviarme el cupón y comunicaciones culturales. Puedo ejercer mis derechos en",
+    "rgpd_texto_2": ".",
+    "cerrar": "Volver al pasaporte"
+  },
   "travel": {
     "instruction": "Cuando llegues\nabre la cámara de tu móvil\ny apunta al cartel de Pineda\nque encontrarás en la entrada",
     "countdown": "Abriendo Maps en {{count}}…",

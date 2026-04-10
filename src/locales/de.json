@@ -1,4 +1,108 @@
 {
+  "bienvenida": {
+    "eyebrow": "Córdoba · April–Mai 2025",
+    "pintor": "Maler von Córdoba",
+    "lead": "Dreißig Jahre lang hat er Córdoba von innen gemalt. Seine Bilder sind keine Postkarten: Sie sind Stadtteilgedächtnis, Hofliebe und der genaue Schatten, den ein Capote beim Fallen hinterlässt.",
+    "meta": "13 Stationen · Altstadt · ~2 Stunden zu Fuß",
+    "premio": "Schließen Sie die Route ab und erhalten Sie 30 % Rabatt auf ausgewählte Werke.",
+    "comenzar": "Route starten"
+  },
+  "app": {
+    "titulo": "Rafael Pineda",
+    "subtitulo": "Maler von Córdoba"
+  },
+  "salas": {
+    "viana_nombre": "Palacio de Viana",
+    "casa12pb_nombre": "Casa 12PB",
+    "inaudita_nombre": "La Inaudita",
+    "viana_gancho": "Landschaft und Volkstypen. Ein Palast mit zwölf Innenhöfen und fünfhundert Jahren Geheimnisse.",
+    "casa12pb_gancho": "Die Stile von Pineda. Dies ist der zweite Saal: der, der alles verändert, was Sie zu wissen glaubten.",
+    "inaudita_gancho": "Die Gefahren des Stierkampfs. Der letzte Saal. Der Ursprung von allem."
+  },
+  "paradas_nombres": {
+    "p1":  "Palacio de Viana",
+    "p2":  "Taberna Santa Marina",
+    "p3":  "Taberna La Fuenseca",
+    "p4":  "Casa 12PB",
+    "p5":  "Taberna San Miguel",
+    "p6":  "Taberna El Olmo",
+    "p7":  "Taberna Casa Salinas",
+    "p8":  "Posada Caballo Blanco",
+    "p9":  "Puerta de Sevilla",
+    "p10": "Taberna La Viuda",
+    "p11": "La Tasquería",
+    "p12": "La Cazuela de la Espartería",
+    "p13": "La Inaudita"
+  },
+  "parada": {
+    "sala_obligatoria": "Hauptsaal",
+    "horario_abierto": "Jetzt geöffnet",
+    "horario_cerrado": "Geschlossen",
+    "abre_a": "Öffnet um",
+    "horario_sin_confirmar": "Öffnungszeiten nicht bestätigt",
+    "sellada": "✓ Gestempelt",
+    "boton_escanear": "QR scannen",
+    "ir_aqui": "Route →",
+    "zona_norte": "Nord · Santa Marina",
+    "zona_centro": "Zentrum",
+    "zona_juderia": "Judenviertel",
+    "zona_san_basilio": "San Basilio",
+    "zona_sur": "Süd · Rodríguez Marín"
+  },
+  "escaner": {
+    "titulo": "QR scannen",
+    "instruccion": "Richten Sie die Kamera auf den QR-Code der Station",
+    "buscando": "Code wird gelesen…",
+    "cancelar": "Abbrechen",
+    "error_token": "QR nicht erkannt. Scannen Sie das offizielle Routenschild.",
+    "error_ya_sellada": "Diese Station ist bereits in Ihrem Pass gestempelt."
+  },
+  "parada_sellada": {
+    "titulo": "{{nombre}}",
+    "subtitulo_sala": "Hauptsaal",
+    "siguiente": "Zur nächsten Station →",
+    "volver_ruta": "Gesamte Route ansehen"
+  },
+  "intermedia": {
+    "instruccion": "Wenn Sie ankommen\nöffnen Sie die Kamera Ihres Handys\nund richten Sie sie auf das Pineda-Schild\ndas Sie am Eingang finden",
+    "countdown": "Maps öffnet in {{count}}…",
+    "opening": "Maps öffnet…",
+    "go_now": "Jetzt gehen",
+    "volver": "← Zurück zur Route",
+    "anzuelo_0_1":  "Ein Palast mit zwölf Innenhöfen und fünfhundert Jahren Geheimnisse. Pineda kam hierher und sah ganz Córdoba in einer einzigen getünchten Wand.",
+    "anzuelo_1_2":  "Das Viertel Santa Marina riecht nach Stierkampf. Manolete wurde zwei Straßen entfernt geboren. Pineda malte ihn, ohne ihn zu malen: der Schatten eines Capote reicht.",
+    "anzuelo_2_3":  "Seit 1850 trinken Gitarristen und Dichter in La Fuenseca, ohne dass jemand sie eingeladen hätte. Die Aufführungen hier sind nicht geplant: sie improvisieren.",
+    "anzuelo_3_4":  "Hier ist der zweite Saal. Der, der alles verändert, was Sie über Pinedas Malweise zu wissen glaubten.",
+    "anzuelo_4_5":  "Seit 1880 hat El Pisto Manolete, Julio Romero de Torres und die cordobanische Schelmengeschichte gesehen. Alle tranken an derselben Theke.",
+    "anzuelo_5_6":  "Manche Tavernen servieren Wein. Andere bewahren Gemälde auf, die der Besitzer zu keinem Preis verkaufen möchte.",
+    "anzuelo_6_7":  "Das Judenviertel lässt sich nicht erklären: man muss es begehen. Jedes Pflasterstein hat drei Zivilisationen darunter. Pineda hat sie alle auf einmal gemalt.",
+    "anzuelo_7_8":  "Ein Haus aus dem 15. Jahrhundert neben den Königlichen Stallungen. Es riecht nach córdobanischen Innenhöfen und Hausmannskost.",
+    "anzuelo_8_9":  "San Basilio ist das Viertel der Innenhöfe. Das Tor, das es im Süden schließt, lässt seit Jahrhunderten jene passieren, die zu schauen verstehen.",
+    "anzuelo_9_10": "Man sagt, La Viuda hat den kältesten Salmorejo in Córdoba und das schwierigste Gemälde auf der Route. Prüfen Sie es selbst.",
+    "anzuelo_10_11":"Rodríguez Marín. Die Straße, wo die Altstadt endet und etwas Ruhigeres, Nachbarschaftlicheres beginnt. Pineda hat sie genau so gemalt.",
+    "anzuelo_11_12":"Fast da. Zwei Türen von La Inaudita entfernt gibt es eine Cazuela, die den Namen des Handwerks trägt, das diese Straße jahrhundertelang füllte.",
+    "anzuelo_12_13":"Der letzte Saal. Der Ursprung von allem. Hier begann die Ausstellung, hier ist das wichtigste Werk, und hier wird der Gutschein eingelöst."
+  },
+  "cupon": {
+    "paradas": "Stationen",
+    "desbloqueado": "Gutschein freigeschaltet",
+    "ver": "Gutschein ansehen",
+    "falta_salas": "{{n}} Saal/Säle fehlen noch",
+    "falta_tabernas": "{{n}} Taverne(n) mehr",
+    "modal_titulo": "Geschafft!",
+    "modal_sub": "30 % Rabatt auf ausgewählte Werke",
+    "codigo_label": "Ihr Code",
+    "instruccion": "Zeigen Sie diesen Code an der Kasse von La Inaudita",
+    "aviso_domingo": "⚠️ La Inaudita ist sonntags geschlossen. Sie können ihn montags bis samstags von 10:00–14:00 und 18:00–20:30 Uhr einlösen.",
+    "fine_print": "Gültig bis 30. Mai 2025 · Einmalverwendung · Nicht kombinierbar",
+    "email_label": "Gutschein per E-Mail speichern",
+    "email_guardar": "Per E-Mail speichern",
+    "email_dismiss": "Ich merke es mir",
+    "email_saved": "✓ E-Mail gespeichert.",
+    "rgpd_texto_1": "Ich stimme zu, dass La Inaudita meine E-Mail-Adresse verwendet, um mir den Gutschein und kulturelle Mitteilungen zu senden. Ich kann meine Rechte ausüben unter",
+    "rgpd_texto_2": ".",
+    "cerrar": "Zurück zum Pass"
+  },
   "travel": {
     "instruction": "Wenn Sie ankommen\nöffnen Sie die Kamera Ihres Handys\nund richten Sie sie auf das Pineda-Schild\ndas Sie am Eingang finden",
     "countdown": "Maps öffnet in {{count}}…",

@@ -1,4 +1,108 @@
 {
+  "bienvenida": {
+    "eyebrow": "Cordoue · Avril–Mai 2025",
+    "pintor": "Peintre de Cordoue",
+    "lead": "Trente ans à peindre Cordoue de l'intérieur. Ses tableaux ne sont pas des cartes postales : ce sont des mémoires de quartier, la lumière des patios et l'ombre exacte que laisse un capote en tombant.",
+    "meta": "13 étapes · Vieille ville · ~2 h à pied",
+    "premio": "Complétez le parcours et obtenez 30 % de réduction sur des œuvres sélectionnées.",
+    "comenzar": "Commencer le parcours"
+  },
+  "app": {
+    "titulo": "Rafael Pineda",
+    "subtitulo": "Peintre de Cordoue"
+  },
+  "salas": {
+    "viana_nombre": "Palacio de Viana",
+    "casa12pb_nombre": "Casa 12PB",
+    "inaudita_nombre": "La Inaudita",
+    "viana_gancho": "Paysage et types cordobans. Un palais aux douze patios et cinq cents ans de secrets.",
+    "casa12pb_gancho": "Les styles de Pineda. Voici la deuxième salle : celle qui change tout ce que vous croyiez savoir.",
+    "inaudita_gancho": "Les dangers de la tauromachie. La dernière salle. L'origine de tout."
+  },
+  "paradas_nombres": {
+    "p1":  "Palacio de Viana",
+    "p2":  "Taberna Santa Marina",
+    "p3":  "Taberna La Fuenseca",
+    "p4":  "Casa 12PB",
+    "p5":  "Taberna San Miguel",
+    "p6":  "Taberna El Olmo",
+    "p7":  "Taberna Casa Salinas",
+    "p8":  "Posada Caballo Blanco",
+    "p9":  "Puerta de Sevilla",
+    "p10": "Taberna La Viuda",
+    "p11": "La Tasquería",
+    "p12": "La Cazuela de la Espartería",
+    "p13": "La Inaudita"
+  },
+  "parada": {
+    "sala_obligatoria": "Salle principale",
+    "horario_abierto": "Ouvert maintenant",
+    "horario_cerrado": "Fermé",
+    "abre_a": "Ouvre à",
+    "horario_sin_confirmar": "Horaires à confirmer",
+    "sellada": "✓ Tamponné",
+    "boton_escanear": "Scanner QR",
+    "ir_aqui": "Itinéraire →",
+    "zona_norte": "Nord · Santa Marina",
+    "zona_centro": "Centre",
+    "zona_juderia": "Quartier juif",
+    "zona_san_basilio": "San Basilio",
+    "zona_sur": "Sud · Rodríguez Marín"
+  },
+  "escaner": {
+    "titulo": "Scanner QR",
+    "instruccion": "Pointez l'appareil photo sur le code QR de l'étape",
+    "buscando": "Lecture du code…",
+    "cancelar": "Annuler",
+    "error_token": "QR non reconnu. Assurez-vous de scanner le panneau officiel du parcours.",
+    "error_ya_sellada": "Cette étape est déjà tamponnée dans votre passeport."
+  },
+  "parada_sellada": {
+    "titulo": "{{nombre}}",
+    "subtitulo_sala": "Salle principale",
+    "siguiente": "Aller à l'étape suivante →",
+    "volver_ruta": "Voir le parcours complet"
+  },
+  "intermedia": {
+    "instruccion": "À votre arrivée\nouvrez l'appareil photo de votre téléphone\net pointez-le sur le panneau Pineda\nque vous trouverez à l'entrée",
+    "countdown": "Ouverture de Maps dans {{count}}…",
+    "opening": "Ouverture de Maps…",
+    "go_now": "Y aller",
+    "volver": "← Retour au parcours",
+    "anzuelo_0_1":  "Un palais aux douze patios et cinq cents ans de secrets. Pineda est entré ici et a vu tout Cordoue dans un seul mur blanchi à la chaux.",
+    "anzuelo_1_2":  "Le quartier de Santa Marina sent la tauromachie. Manolete est né à deux rues d'ici. Pineda l'a peint sans le peindre : l'ombre d'un capote suffit.",
+    "anzuelo_2_3":  "Depuis 1850, guitaristes et poètes boivent à La Fuenseca sans que personne les ait invités. Les spectacles ici ne sont pas programmés : ils s'improvisent.",
+    "anzuelo_3_4":  "Voici la deuxième salle. Celle qui change tout ce que vous croyiez savoir sur la façon dont Pineda peint.",
+    "anzuelo_4_5":  "Depuis 1880, El Pisto a vu passer Manolete, Julio Romero de Torres et la picaresque cordobane. Tous ont bu au même comptoir.",
+    "anzuelo_5_6":  "Certaines tavernes servent du vin. D'autres gardent des tableaux que le propriétaire ne veut vendre à aucun prix.",
+    "anzuelo_6_7":  "Le Quartier juif ne s'explique pas : il se marche. Chaque pavé a trois civilisations en dessous. Pineda les a toutes peintes en même temps.",
+    "anzuelo_7_8":  "Une maison du XVe siècle à côté des Écuries Royales. Cela sent les patios de Cordoue et la cuisine traditionnelle.",
+    "anzuelo_8_9":  "San Basilio est le quartier des patios. La porte qui le ferme au sud laisse passer depuis des siècles ceux qui savent regarder.",
+    "anzuelo_9_10": "On dit que La Viuda a le salmorejo le plus froid de Cordoue et le tableau le plus difficile à voir du parcours. Vérifiez par vous-même.",
+    "anzuelo_10_11":"Rodríguez Marín. La rue où la vieille ville se termine et où commence quelque chose de plus tranquille, de plus populaire. Pineda l'a peinte exactement ainsi.",
+    "anzuelo_11_12":"Vous y êtes presque. À deux portes de La Inaudita, il y a une cazuela qui porte le nom du métier qui a rempli cette rue pendant des siècles.",
+    "anzuelo_12_13":"La dernière salle. L'origine de tout. C'est ici qu'est née l'exposition, ici qu'est l'œuvre la plus importante, et ici que se rachat le coupon."
+  },
+  "cupon": {
+    "paradas": "étapes",
+    "desbloqueado": "Coupon débloqué",
+    "ver": "Voir le coupon",
+    "falta_salas": "{{n}} salle(s) restante(s)",
+    "falta_tabernas": "{{n}} taverne(s) de plus",
+    "modal_titulo": "Vous l'avez !",
+    "modal_sub": "30 % de réduction sur des œuvres sélectionnées",
+    "codigo_label": "Votre code",
+    "instruccion": "Montrez ce code à la caisse de La Inaudita",
+    "aviso_domingo": "⚠️ La Inaudita est fermée le dimanche. Vous pouvez l'utiliser du lundi au samedi, de 10 h à 14 h et de 18 h à 20 h 30.",
+    "fine_print": "Valable jusqu'au 30 mai 2025 · Usage unique · Non cumulable",
+    "email_label": "Enregistrez votre coupon par e-mail",
+    "email_guardar": "Enregistrer par e-mail",
+    "email_dismiss": "Je m'en souviens",
+    "email_saved": "✓ E-mail enregistré.",
+    "rgpd_texto_1": "J'accepte que La Inaudita utilise mon e-mail pour m'envoyer le coupon et des communications culturelles. Je peux exercer mes droits à",
+    "rgpd_texto_2": ".",
+    "cerrar": "Retour au passeport"
+  },
   "travel": {
     "instruction": "À votre arrivée\nouvrez l'appareil photo de votre téléphone\net pointez-le sur le panneau Pineda\nque vous trouverez à l'entrée",
     "countdown": "Ouverture de Maps dans {{count}}…",
