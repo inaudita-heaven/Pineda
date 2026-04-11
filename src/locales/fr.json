@@ -69,7 +69,8 @@
     "cupón_desbloqueado": "COUPON DÉVERROUILLÉ!",
     "dirígete_inaudita": "Va à La Inaudita pour échanger ta dégustation de vin gratuite.",
     "sigue_explorando": "Continue l'exploration...",
-    "completa_salas": "Complète les galeries obligatoires et visite 2+ tavernes."
+    "completa_salas": "Complète les galeries obligatoires et visite 2+ tavernes.",
+    "narrativa": "Visitez les trois salles d'exposition et deux tavernes du parcours. Une fois terminé, vous débloquez une dégustation de vin gratuite et une réduction de 30% sur une œuvre sélectionnée."
   },
   "modal_cupon": {
     "titulo": "FÉLICITATIONS!",
