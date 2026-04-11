@@ -1,27 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-/**
- * PantallaBienvenida
- * Se muestra tras PantallaCreditos, antes de la app principal.
- *
- * Props:
- *   onComenzar  callback cuando el visitante pulsa "Comenzar la ruta"
- */
 export default function PantallaBienvenida({ onComenzar = () => {} }) {
   const { t } = useTranslation();
   const [saliendo, setSaliendo] = useState(false);
 
-  // Hover dinámico — inyectado en useEffect, no a nivel de módulo
   useEffect(() => {
     const style = document.createElement('style');
     style.id = 'bienvenida-hover';
     style.textContent = `
-      .bienvenida-boton:hover {
-        background-color: #333 !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      }
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap');
+      .bienvenida-boton:hover { background-color: #333 !important; }
     `;
     if (!document.getElementById('bienvenida-hover')) {
       document.head.appendChild(style);
@@ -39,19 +28,23 @@ export default function PantallaBienvenida({ onComenzar = () => {} }) {
 
   return (
     <div style={{ ...styles.overlay, opacity: saliendo ? 0 : 1 }}>
-      <div
-        style={{
-          ...styles.contenedor,
-          transform: saliendo ? 'translateY(20px)' : 'translateY(0)',
-        }}
-      >
+      <div style={{
+        ...styles.contenedor,
+        transform: saliendo ? 'translateY(20px)' : 'translateY(0)',
+      }}>
+
+        {/* Retrato — sin marco */}
+        <div style={styles.retratoWrap}>
+          <img src="/images/autopineda.png" alt="Rafael Pineda" style={styles.retrato} />
+        </div>
+
         {/* Header */}
         <div style={styles.header}>
           <h1 style={styles.titulo}>{t('pantalla_bienvenida.titulo')}</h1>
           <p style={styles.subtitulo}>{t('app.subtitulo')}</p>
         </div>
 
-        {/* Texto Pineda — multiidioma */}
+        {/* Texto Pineda */}
         <div style={styles.textoContenedor}>
           {t('pantalla_bienvenida.texto_pineda')
             .split('\n\n')
@@ -64,21 +57,18 @@ export default function PantallaBienvenida({ onComenzar = () => {} }) {
 
         {/* Footer */}
         <div style={styles.footer}>
-          <p style={styles.periodo}>{t('app.subtitulo')}</p>
-          <button
-            className="bienvenida-boton"
-            onClick={comenzar}
-            style={styles.boton}
-          >
+          <button className="bienvenida-boton" onClick={comenzar} style={styles.boton}>
             {t('pantalla_bienvenida.boton_comenzar')}
           </button>
         </div>
+
       </div>
     </div>
   );
 }
 
-// ── Estilos — estética Ansorena ───────────────────────────────────────────────
+const PLAYFAIR = '"Playfair Display", "IM Fell English", Georgia, serif';
+
 const styles = {
   overlay: {
     position: 'fixed',
@@ -89,90 +79,79 @@ const styles = {
     alignItems: 'flex-start',
     overflowY: 'auto',
     zIndex: 9999,
-    fontFamily: '"IM Fell English", "Cormorant Garamond", Georgia, serif',
+    fontFamily: PLAYFAIR,
     transition: 'opacity 0.4s ease',
     padding: '2rem 1rem',
   },
-
   contenedor: {
-    maxWidth: '680px',
+    maxWidth: '620px',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     gap: '2rem',
     transition: 'transform 0.4s ease',
-    paddingBottom: '2rem',
+    paddingBottom: '3rem',
   },
-
+  retratoWrap: {
+    textAlign: 'center',
+    paddingTop: '1rem',
+  },
+  retrato: {
+    width: '180px',
+    height: 'auto',
+    objectFit: 'contain',
+    display: 'block',
+    margin: '0 auto',
+  },
   header: {
     textAlign: 'center',
     paddingBottom: '2rem',
-    borderBottom: '3px solid #000',
+    borderBottom: '2px solid #0F0E0D',
   },
-
   titulo: {
-    fontSize: 'clamp(2rem, 8vw, 3.5rem)',
+    fontFamily: PLAYFAIR,
+    fontSize: 'clamp(1.6rem, 6vw, 2.8rem)',
     fontWeight: '400',
     margin: 0,
-    letterSpacing: '2px',
-    color: '#000',
-    lineHeight: '1',
+    letterSpacing: '0.05em',
+    color: '#0F0E0D',
+    lineHeight: '1.15',
   },
-
   subtitulo: {
-    fontSize: 'clamp(0.9rem, 3vw, 1.1rem)',
+    fontFamily: PLAYFAIR,
+    fontSize: '0.9rem',
     fontStyle: 'italic',
-    color: '#555',
+    color: 'rgba(15,14,13,0.5)',
     margin: '0.75rem 0 0 0',
-    letterSpacing: '1px',
-    fontWeight: '300',
+    letterSpacing: '0.04em',
   },
-
   textoContenedor: {
-    padding: '1rem 0',
+    padding: '0.5rem 0',
   },
-
   parrafo: {
-    fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
-    lineHeight: '1.8',
-    color: '#333',
+    fontFamily: PLAYFAIR,
+    fontSize: 'clamp(0.95rem, 2.5vw, 1.05rem)',
+    lineHeight: '1.85',
+    color: 'rgba(15,14,13,0.8)',
     margin: 0,
-    textAlign: 'justify',
-    fontWeight: '300',
-    letterSpacing: '0.3px',
+    fontWeight: '400',
   },
-
   footer: {
     textAlign: 'center',
-    borderTop: '3px solid #000',
+    borderTop: '2px solid #0F0E0D',
     paddingTop: '2rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-    alignItems: 'center',
   },
-
-  periodo: {
-    fontSize: '0.8rem',
-    color: '#888',
-    letterSpacing: '1.5px',
-    textTransform: 'uppercase',
-    margin: 0,
-    fontWeight: '600',
-    fontFamily: 'system-ui, sans-serif',
-  },
-
   boton: {
-    padding: '1.25rem 3rem',
-    backgroundColor: '#000',
+    padding: '1.1rem 3rem',
+    backgroundColor: '#0F0E0D',
     color: '#fff',
     border: 'none',
-    fontSize: 'clamp(0.85rem, 2vw, 1rem)',
-    fontWeight: '600',
-    letterSpacing: '1.5px',
+    fontSize: '0.72rem',
+    fontWeight: '400',
+    letterSpacing: '0.18em',
     textTransform: 'uppercase',
     cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    fontFamily: 'system-ui, sans-serif',
+    fontFamily: PLAYFAIR,
+    transition: 'background-color 0.2s ease',
   },
 };

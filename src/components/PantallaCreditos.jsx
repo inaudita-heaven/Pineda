@@ -35,31 +35,19 @@ export default function PantallaCreditos({ onClose = () => {} }) {
   return (
     <div style={{ ...styles.overlay, opacity: saliendo ? 0 : 1 }} onClick={cerrar}>
       <div
-        style={{
-          ...styles.modal,
-          transform: saliendo ? 'scale(0.97)' : 'scale(1)',
-        }}
+        style={{ ...styles.modal, transform: saliendo ? 'scale(0.97)' : 'scale(1)' }}
         onClick={e => e.stopPropagation()}
       >
-
-        {/* Retrato Pineda */}
+        {/* Retrato — sin marco */}
         <div style={styles.retratoWrap}>
-          <img
-            src="/images/autopineda.png"
-            alt="Rafael Pineda"
-            style={styles.retrato}
-          />
+          <img src="/images/autopineda.png" alt="Rafael Pineda" style={styles.retrato} />
         </div>
 
         {/* Produce */}
         <div style={styles.seccion}>
           <p style={styles.label}>{t('creditos.produce')}</p>
           <div style={styles.logoWrap}>
-            <img
-              src="/logos/INA_Branding_Negro.png"
-              alt="La Inaudita"
-              style={styles.logo}
-            />
+            <img src="/logos/INA_Branding_Negro.png" alt="La Inaudita" style={styles.logo} />
           </div>
         </div>
 
@@ -69,16 +57,8 @@ export default function PantallaCreditos({ onClose = () => {} }) {
         <div style={styles.seccion}>
           <p style={styles.label}>{t('creditos.colaboran')}</p>
           <div style={styles.logoFila}>
-            <img
-              src="/logos/logoviana.png"
-              alt="Palacio de Viana"
-              style={styles.logoSmall}
-            />
-            <img
-              src="/logos/logo-casa12pb.png.png"
-              alt="Casa 12PB"
-              style={styles.logoSmall}
-            />
+            <img src="/logos/logoviana.png" alt="Palacio de Viana" style={styles.logoSmall} />
+            <img src="/logos/logo-casa12pb.png.png" alt="Casa 12PB" style={styles.logoSmall} />
           </div>
         </div>
 
@@ -94,17 +74,18 @@ export default function PantallaCreditos({ onClose = () => {} }) {
           </div>
         </div>
 
-        {/* Botón */}
         <div style={styles.footer}>
           <button onClick={cerrar} style={styles.boton}>
             {t('pantalla_bienvenida.boton_comenzar')}
           </button>
         </div>
-
       </div>
     </div>
   );
 }
+
+const PLAYFAIR = '"Playfair Display", "IM Fell English", Georgia, serif';
+const SANS = 'system-ui, sans-serif';
 
 const styles = {
   overlay: {
@@ -116,7 +97,7 @@ const styles = {
     alignItems: 'flex-start',
     overflowY: 'auto',
     zIndex: 9998,
-    fontFamily: '"IM Fell English", "Cormorant Garamond", serif',
+    fontFamily: PLAYFAIR,
     transition: 'opacity 0.3s ease',
     padding: '2rem 1rem',
   },
@@ -134,17 +115,14 @@ const styles = {
   retratoWrap: {
     textAlign: 'center',
     paddingBottom: '1.5rem',
-    borderBottom: '2px solid #000',
+    borderBottom: '2px solid #0F0E0D',
   },
   retrato: {
-    width: '140px',
-    height: '140px',
-    objectFit: 'cover',
-    objectPosition: 'center top',
-    borderRadius: '50%',
-    border: '2px solid #000',
-    margin: '0 auto',
+    width: '160px',
+    height: 'auto',
+    objectFit: 'contain',
     display: 'block',
+    margin: '0 auto',
   },
   seccion: {
     display: 'flex',
@@ -154,10 +132,10 @@ const styles = {
     textAlign: 'center',
   },
   label: {
-    fontFamily: 'system-ui, sans-serif',
-    fontSize: '0.68rem',
-    fontWeight: '700',
-    letterSpacing: '0.18em',
+    fontFamily: PLAYFAIR,
+    fontSize: '0.7rem',
+    fontWeight: '400',
+    letterSpacing: '0.2em',
     textTransform: 'uppercase',
     color: 'rgba(15,14,13,0.4)',
     margin: 0,
@@ -190,15 +168,18 @@ const styles = {
   listaParticipantes: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '0.4rem 1.5rem',
+    gap: '0.5rem 1.5rem',
     width: '100%',
   },
   participa: {
-    fontFamily: 'system-ui, sans-serif',
-    fontSize: '0.82rem',
+    fontFamily: PLAYFAIR,
+    fontSize: '0.78rem',
+    fontWeight: '400',
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
     margin: 0,
-    color: 'rgba(15,14,13,0.6)',
-    lineHeight: '1.4',
+    color: 'rgba(15,14,13,0.65)',
+    lineHeight: '1.5',
     textAlign: 'left',
   },
   footer: {
@@ -211,11 +192,11 @@ const styles = {
     backgroundColor: '#0F0E0D',
     color: '#fff',
     border: 'none',
-    fontSize: '0.75rem',
+    fontSize: '0.72rem',
     fontWeight: '400',
-    letterSpacing: '0.14em',
+    letterSpacing: '0.16em',
     textTransform: 'uppercase',
     cursor: 'pointer',
-    fontFamily: 'system-ui, sans-serif',
+    fontFamily: PLAYFAIR,
   },
 };
