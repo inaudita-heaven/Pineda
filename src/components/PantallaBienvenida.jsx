@@ -159,20 +159,21 @@ const styles = {
     marginBottom: '1.5rem',
   },
   logoGrande: {
-    height: '40px',
+    height: '56px',
     objectFit: 'contain',
-    opacity: 0.75,
+    opacity: 0.85,
   },
   logosColaboran: {
     display: 'flex',
-    gap: '2rem',
+    gap: '2.5rem',
     alignItems: 'center',
+    marginTop: '0.5rem',
   },
   logoSmall: {
-    height: '28px',
-    maxWidth: '100px',
+    height: '44px',
+    maxWidth: '140px',
     objectFit: 'contain',
-    opacity: 0.6,
+    opacity: 0.75,
   },
   boton: {
     padding: '1.1rem 3rem',

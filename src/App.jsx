@@ -225,6 +225,32 @@ export default function App() {
   return (
     <div style={styles.root}>
 
+      {/* Logo La Inaudita fijo — esquina superior derecha */}
+      {pantalla !== 'creditos' && (
+        <a
+          href="https://lainaudita.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            position: 'fixed',
+            top: '0.75rem',
+            right: '0.75rem',
+            zIndex: 200,
+          }}
+        >
+          <img
+            src="/logos/INA_Branding_Negro.png"
+            alt="La Inaudita"
+            style={{
+              height: '36px',
+              maxWidth: '130px',
+              objectFit: 'contain',
+              opacity: 0.85,
+            }}
+          />
+        </a>
+      )}
+
       {/* Selector de idioma flotante — oculto en creditos */}
       {pantalla !== 'creditos' && (
         <LanguageSelector variant="floating" />
@@ -274,6 +300,7 @@ export default function App() {
           )}
           {tabActiva === 'catalogo' && (
             <PestañaCatalogo
+              sessionId={sessionId}
               onVerSala={(stop) => {
                 setParadaActiva(stop);
                 setMostrarCatalogo(true);
@@ -330,6 +357,7 @@ export default function App() {
       {mostrarCatalogo && paradaActiva && (
         <PantallaCatalogo
           stop={paradaActiva}
+          sessionId={sessionId}
           onVolver={() => setMostrarCatalogo(false)}
         />
       )}

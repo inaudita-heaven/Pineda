@@ -165,7 +165,7 @@ const styles = {
   wrap: { backgroundColor: '#fff', minHeight: '100dvh', fontFamily: SANS },
   pendienteHeader: { padding: '1.5rem 1.25rem 1rem', borderBottom: '2px solid #0F0E0D' },
   desbHeader: { padding: '1.5rem 1.25rem 1rem', borderBottom: '2px solid #0F0E0D', textAlign: 'center' },
-  logoInaudita: { height: '40px', objectFit: 'contain', marginBottom: '1rem', opacity: 0.8 },
+  logoInaudita: { height: '52px', objectFit: 'contain', marginBottom: '1rem', opacity: 0.85 },
   eyebrow: {
     fontFamily: SANS, fontSize: '0.62rem',
     letterSpacing: '0.16em', textTransform: 'uppercase',

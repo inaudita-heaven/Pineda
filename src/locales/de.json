@@ -1,5 +1,8 @@
 {
   "app": {
+    "tab_ruta": "Route",
+    "tab_catalogo": "Katalog",
+    "tab_cupon": "Gutschein",
     "titulo": "Rafael Pineda, Maler von Córdoba",
     "subtitulo": "Route Expo · April - Mai 2025"
   },

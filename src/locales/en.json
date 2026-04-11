@@ -1,6 +1,9 @@
 {
   "app": {
-    "titulo": "Rafael Pineda, Painter of Córdoba",
+    "tab_ruta": "Route",
+    "tab_catalogo": "Catalogue",
+    "tab_cupon": "Coupon",
+    "titulo":"Rafael Pineda, Painter of Córdoba",
     "subtitulo": "Route Expo · April - May 2025"
   },
   "pantalla_bienvenida": {

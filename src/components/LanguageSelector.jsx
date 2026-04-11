@@ -163,7 +163,7 @@ const s = {
   floatingWrap: {
     position: 'fixed',
     top: '12px',
-    right: '12px',
+    left: '12px',
     zIndex: 10000,
     display: 'flex',
     alignItems: 'center',

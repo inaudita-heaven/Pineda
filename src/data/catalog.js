@@ -9,11 +9,23 @@
  * ⚠️  price: solo obras 1 y 2 confirmadas (500€)
  */
 
+const toTitleCase = (str) => {
+  const minor = new Set(['a','al','con','de','del','el','en','la','las',
+    'les','lo','los','para','por','sin','un','una','y','o','e','u']);
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map((w, i) => i === 0 || !minor.has(w)
+      ? w.charAt(0).toUpperCase() + w.slice(1)
+      : w)
+    .join(' ');
+};
+
 export const catalog = [
   {
     id: 'obra-001',
     num: 1,
-    title: 'cartel cordoba gitana 1967',
+    title: toTitleCase('cartel cordoba gitana 1967'),
     year: 1967,
     technique: 'tempera papel',
     dimensions: '70x100',
@@ -28,7 +40,7 @@ export const catalog = [
   {
     id: 'obra-002',
     num: 2,
-    title: 'cartel cordoba  1967',
+    title: toTitleCase('cartel cordoba 1967'),
     year: 1967,
     technique: 'tempera papel',
     dimensions: '70x101',
@@ -43,7 +55,7 @@ export const catalog = [
   {
     id: 'obra-003',
     num: 3,
-    title: 'niña campiña',
+    title: toTitleCase('niña campiña'),
     year: 1986,
     technique: 'oleo lienzo',
     dimensions: '73x50',
@@ -58,7 +70,7 @@ export const catalog = [
   {
     id: 'obra-004',
     num: 4,
-    title: 'homenaje a costeau',
+    title: toTitleCase('homenaje a costeau'),
     year: 1997,
     technique: 'gouache',
     dimensions: '65x45',
@@ -73,7 +85,7 @@ export const catalog = [
   {
     id: 'obra-005',
     num: 5,
-    title: 'autorretrato',
+    title: toTitleCase('autorretrato'),
     year: 1994,
     technique: 'gouache',
     dimensions: '60x40',
@@ -88,7 +100,7 @@ export const catalog = [
   {
     id: 'obra-006',
     num: 6,
-    title: 'violinista',
+    title: toTitleCase('violinista'),
     year: 1975,
     technique: 'gouache',
     dimensions: '34x52',
@@ -103,7 +115,7 @@ export const catalog = [
   {
     id: 'obra-007',
     num: 7,
-    title: 'campiña',
+    title: toTitleCase('campiña'),
     year: 1993,
     technique: 'oleo lienzo',
     dimensions: '100x81',
@@ -118,7 +130,7 @@ export const catalog = [
   {
     id: 'obra-008',
     num: 8,
-    title: 'tejadillos de mi cordoba',
+    title: toTitleCase('tejadillos de mi cordoba'),
     year: 1993,
     technique: 'oleo lienzo',
     dimensions: '81x100',
@@ -133,7 +145,7 @@ export const catalog = [
   {
     id: 'obra-009',
     num: 9,
-    title: 'pay y vino',
+    title: toTitleCase('pay y vino'),
     year: null,
     technique: 'oleo lienzo',
     dimensions: '61x50',
@@ -148,7 +160,7 @@ export const catalog = [
   {
     id: 'obra-010',
     num: 10,
-    title: 'la torera',
+    title: toTitleCase('la torera'),
     year: 1988,
     technique: 'oleo lienzo',
     dimensions: '113x139',
@@ -163,7 +175,7 @@ export const catalog = [
   {
     id: 'obra-011',
     num: 11,
-    title: 'jamon salmón',
+    title: toTitleCase('jamon salmon'),
     year: 1998,
     technique: 'oleo lienzo',
     dimensions: '89x116',
@@ -178,7 +190,7 @@ export const catalog = [
   {
     id: 'obra-012',
     num: 12,
-    title: 'autorretrato',
+    title: toTitleCase('autorretrato'),
     year: 2004,
     technique: 'oleo lienzo',
     dimensions: '46x55',
@@ -193,7 +205,7 @@ export const catalog = [
   {
     id: 'obra-013',
     num: 13,
-    title: 'camino a 12 pb',
+    title: toTitleCase('camino a 12 pb'),
     year: 1990,
     technique: 'oleo lienzo',
     dimensions: '157x124',
@@ -208,7 +220,7 @@ export const catalog = [
   {
     id: 'obra-014',
     num: 14,
-    title: 'stella 1',
+    title: toTitleCase('stella 1'),
     year: 1981,
     technique: 'oleo lienzo',
     dimensions: '56x46',
@@ -223,7 +235,7 @@ export const catalog = [
   {
     id: 'obra-015',
     num: 15,
-    title: 'stella 2',
+    title: toTitleCase('stella 2'),
     year: 1981,
     technique: 'oleo lienzo',
     dimensions: '38x46',
@@ -238,7 +250,7 @@ export const catalog = [
   {
     id: 'obra-016',
     num: 16,
-    title: 'stella 3',
+    title: toTitleCase('stella 3'),
     year: 1981,
     technique: 'oleo lienzo',
     dimensions: '38x46',
@@ -253,7 +265,7 @@ export const catalog = [
   {
     id: 'obra-017',
     num: 17,
-    title: 'stella 4',
+    title: toTitleCase('stella 4'),
     year: 1981,
     technique: 'oleo lienzo',
     dimensions: '46x56',
@@ -268,7 +280,7 @@ export const catalog = [
   {
     id: 'obra-018',
     num: 18,
-    title: 'antonio gomez nucete',
+    title: toTitleCase('antonio gomez nucete'),
     year: 1988,
     technique: 'oleo lienzo',
     dimensions: '90x117',
@@ -283,7 +295,7 @@ export const catalog = [
   {
     id: 'obra-019',
     num: 19,
-    title: 'salvador morera',
+    title: toTitleCase('salvador morera'),
     year: 2001,
     technique: 'oleo lienzo',
     dimensions: '54x65',
@@ -298,7 +310,7 @@ export const catalog = [
   {
     id: 'obra-020',
     num: 20,
-    title: 'rafael gomez sanchez',
+    title: toTitleCase('rafael gomez sanchez'),
     year: null,
     technique: 'oleo lienzo',
     dimensions: '54x65',
@@ -313,7 +325,7 @@ export const catalog = [
   {
     id: 'obra-021',
     num: 21,
-    title: 'Aurelio Moreno',
+    title: toTitleCase('aurelio moreno'),
     year: 1987,
     technique: 'oleo lienzo',
     dimensions: '50x62',
@@ -328,9 +340,9 @@ export const catalog = [
   {
     id: 'obra-022',
     num: 22,
-    title: 'Juan bernier Luque',
+    title: toTitleCase('juan bernier luque'),
     year: 1989,
-    technique: 'Lapiz  sobre papel',
+    technique: 'lapiz sobre papel',
     dimensions: '44x52',
     paradaId: 1,
     owner: 'viana',
@@ -343,7 +355,7 @@ export const catalog = [
   {
     id: 'obra-023',
     num: 23,
-    title: 'ribera pueblo',
+    title: toTitleCase('ribera pueblo'),
     year: 1991,
     technique: 'oleo sobre lienzo',
     dimensions: '156x124',
@@ -358,7 +370,7 @@ export const catalog = [
   {
     id: 'obra-024',
     num: 24,
-    title: 'luis navas',
+    title: toTitleCase('luis navas'),
     year: 1998,
     technique: 'oleo sobre lienzo',
     dimensions: '54x73',
@@ -373,7 +385,7 @@ export const catalog = [
   {
     id: 'obra-025',
     num: 25,
-    title: 'Retrato Pepe Arenas',
+    title: toTitleCase('retrato pepe arenas'),
     year: null,
     technique: 'oleo sobre tabla',
     dimensions: '33x41',
@@ -388,7 +400,7 @@ export const catalog = [
   {
     id: 'obra-026',
     num: 26,
-    title: 'primer autorretrato',
+    title: toTitleCase('primer autorretrato'),
     year: 1947,
     technique: 'oleo sobre lienzo',
     dimensions: '57x43',
@@ -403,10 +415,10 @@ export const catalog = [
   {
     id: 'obra-027',
     num: 27,
-    title: 'barandilla ribera',
+    title: toTitleCase('barandilla ribera'),
     year: 1990,
     technique: 'oleo sobre lienzo',
-    dimensions: '147x 114',
+    dimensions: '147x114',
     paradaId: 1,
     owner: 'viana',
     forSale: true,
@@ -418,7 +430,7 @@ export const catalog = [
   {
     id: 'obra-028',
     num: 28,
-    title: 'puente romano',
+    title: toTitleCase('puente romano'),
     year: 1991,
     technique: 'oleo sobre lienzo',
     dimensions: '130x97',
@@ -433,7 +445,7 @@ export const catalog = [
   {
     id: 'obra-029',
     num: 29,
-    title: 'molino ribera',
+    title: toTitleCase('molino ribera'),
     year: 1990,
     technique: 'oleo sobre lienzo',
     dimensions: '146x114',
@@ -448,7 +460,7 @@ export const catalog = [
   {
     id: 'obra-030',
     num: 30,
-    title: 'ribera nueva cordoba',
+    title: toTitleCase('ribera nueva cordoba'),
     year: 1990,
     technique: 'oleo sobre lienzo',
     dimensions: '117x89',
@@ -463,7 +475,7 @@ export const catalog = [
   {
     id: 'obra-031',
     num: 31,
-    title: 'rafael ortiz',
+    title: toTitleCase('rafael ortiz'),
     year: 1987,
     technique: 'oleo sobre lienzo',
     dimensions: '50x65',
@@ -478,7 +490,7 @@ export const catalog = [
   {
     id: 'obra-032',
     num: 32,
-    title: 'adoquines puente romano',
+    title: toTitleCase('adoquines puente romano'),
     year: 1991,
     technique: 'oleo sobre lienzo',
     dimensions: '130x97',
@@ -493,7 +505,7 @@ export const catalog = [
   {
     id: 'obra-033',
     num: 33,
-    title: 'la capea',
+    title: toTitleCase('la capea'),
     year: 1964,
     technique: 'oleo lienzo',
     dimensions: '210x85',
@@ -508,7 +520,7 @@ export const catalog = [
   {
     id: 'obra-034',
     num: 34,
-    title: 'desnudo acefalo',
+    title: toTitleCase('desnudo acefalo'),
     year: 1995,
     technique: 'oleo sobre lienzo',
     dimensions: '120x120',
@@ -523,7 +535,7 @@ export const catalog = [
   {
     id: 'obra-035',
     num: 35,
-    title: 'indecente torera',
+    title: toTitleCase('indecente torera'),
     year: 1987,
     technique: 'oleo sobre lienzo',
     dimensions: '147x114',
@@ -538,7 +550,7 @@ export const catalog = [
   {
     id: 'obra-036',
     num: 36,
-    title: 'homenaje a manolete',
+    title: toTitleCase('homenaje a manolete'),
     year: 1965,
     technique: 'acrilico sobre tabla',
     dimensions: '61x61',
@@ -553,7 +565,7 @@ export const catalog = [
   {
     id: 'obra-037',
     num: 37,
-    title: 'cogida',
+    title: toTitleCase('cogida'),
     year: 1964,
     technique: 'por determinar',
     dimensions: '96x78',
@@ -568,7 +580,7 @@ export const catalog = [
   {
     id: 'obra-038',
     num: 38,
-    title: '3 toreros',
+    title: toTitleCase('3 toreros'),
     year: 1963,
     technique: 'tempera sobre papel',
     dimensions: '47x70',
@@ -583,10 +595,10 @@ export const catalog = [
   {
     id: 'obra-039',
     num: 39,
-    title: 'patio de caballos',
+    title: toTitleCase('patio de caballos'),
     year: 1965,
     technique: 'oleo sobre lienzo',
-    dimensions: "65'5x65'5",
+    dimensions: "65x65",
     paradaId: 12,
     owner: 'taberna_12',
     forSale: true,
@@ -598,7 +610,7 @@ export const catalog = [
   {
     id: 'obra-040',
     num: 40,
-    title: 'desnudo frontal 1',
+    title: toTitleCase('desnudo frontal 1'),
     year: null,
     technique: 'oleo sobre lienzo',
     dimensions: '100x81',
@@ -613,7 +625,7 @@ export const catalog = [
   {
     id: 'obra-041',
     num: 41,
-    title: 'desnudo frontal 2',
+    title: toTitleCase('desnudo frontal 2'),
     year: 1995,
     technique: 'oleo sobre lienzo',
     dimensions: '81x100',
@@ -628,7 +640,7 @@ export const catalog = [
   {
     id: 'obra-042',
     num: 42,
-    title: 'desnudo en la playa',
+    title: toTitleCase('desnudo en la playa'),
     year: 1970,
     technique: 'oleo sobre lienzo',
     dimensions: '92x65',
@@ -643,7 +655,7 @@ export const catalog = [
   {
     id: 'obra-043',
     num: 43,
-    title: 'bodegon gafas',
+    title: toTitleCase('bodegon gafas'),
     year: 1985,
     technique: 'oleo sobre lienzo',
     dimensions: '55x46',
@@ -658,7 +670,7 @@ export const catalog = [
   {
     id: 'obra-044',
     num: 44,
-    title: 'bodegon lupa',
+    title: toTitleCase('bodegon lupa'),
     year: 1980,
     technique: 'oleo sobre lienzo',
     dimensions: '55x46',
@@ -673,7 +685,7 @@ export const catalog = [
   {
     id: 'obra-045',
     num: 45,
-    title: 'bodegon cuenco azul',
+    title: toTitleCase('bodegon cuenco azul'),
     year: 1975,
     technique: 'oleo sobre lienzo',
     dimensions: '73x61',
@@ -688,7 +700,7 @@ export const catalog = [
   {
     id: 'obra-046',
     num: 46,
-    title: 'bodegon lechuga',
+    title: toTitleCase('bodegon lechuga'),
     year: 1976,
     technique: 'oleo sobre lienzo',
     dimensions: '67x55',
@@ -703,7 +715,7 @@ export const catalog = [
   {
     id: 'obra-047',
     num: 47,
-    title: 'girasoles',
+    title: toTitleCase('girasoles'),
     year: 1979,
     technique: 'oleo sobre lienzo',
     dimensions: '57x47',
@@ -718,7 +730,7 @@ export const catalog = [
   {
     id: 'obra-048',
     num: 48,
-    title: 'tabla novia verde',
+    title: toTitleCase('tabla novia verde'),
     year: 1981,
     technique: 'oleo sobre tabla',
     dimensions: '70x50',
@@ -733,7 +745,7 @@ export const catalog = [
   {
     id: 'obra-049',
     num: 49,
-    title: 'bodegon peros',
+    title: toTitleCase('bodegon peros'),
     year: 1982,
     technique: 'oleo sobre lienzo',
     dimensions: '100x81',

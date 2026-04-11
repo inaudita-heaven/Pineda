@@ -147,6 +147,14 @@ function TarjetaParada({ stop, sellada, abierta, proximaApertura, obraPreview, o
         <button onClick={onVerCatalogo} style={styles.btnCatalogo}>
           {t('catalogo.titulo')} →
         </button>
+        <a
+          href={stop.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={styles.btnMaps}
+        >
+          {t('parada.ir_aqui')}
+        </a>
       </div>
 
     </div>
@@ -234,11 +242,11 @@ const styles = {
     color: 'rgba(15,14,13,0.35)', margin: '0.3rem 0 0',
   },
   logoSala: {
-    height: '32px',
-    maxWidth: '80px',
+    height: '44px',
+    maxWidth: '110px',
     objectFit: 'contain',
     flexShrink: 0,
-    opacity: 0.7,
+    opacity: 0.8,
   },
   previewWrap: {
     position: 'relative',
@@ -306,5 +314,19 @@ const styles = {
     color: '#0F0E0D',
     border: '1px solid #0F0E0D',
     cursor: 'pointer',
+  },
+  btnMaps: {
+    fontFamily: SANS,
+    fontSize: '0.7rem',
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
+    padding: '0.5rem 0.9rem',
+    backgroundColor: 'transparent',
+    color: 'rgba(15,14,13,0.5)',
+    border: '1px solid #e8e6e3',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
   },
 };

@@ -7,9 +7,9 @@ export default function NavBar({ tabActiva, onTab, visitedStops, couponDesbloque
   const { t } = useTranslation();
 
   const tabs = [
-    { id: 'ruta',     label: 'Ruta',      icon: '◎' },
-    { id: 'catalogo', label: 'Catálogo',  icon: '◻' },
-    { id: 'cupon',    label: 'Cupón',     icon: '◈' },
+    { id: 'ruta',     label: t('app.tab_ruta'),     icon: '◎' },
+    { id: 'catalogo', label: t('app.tab_catalogo'), icon: '◻' },
+    { id: 'cupon',    label: t('app.tab_cupon'),    icon: '◈' },
   ];
 
   return (
