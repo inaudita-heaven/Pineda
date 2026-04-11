@@ -3,3 +3,11 @@ dist
 .DS_Store
 .env
 .env.local
+
+# Imágenes del catálogo — no pertenecen al repo
+catalogo/
+*.jpg
+*.jpeg
+*.png
+!public/logos/
+!public/images/
