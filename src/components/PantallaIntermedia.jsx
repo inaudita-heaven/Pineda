@@ -1,175 +1,194 @@
-/**
- * PantallaIntermedia.jsx
- * Pantalla de tránsito entre paradas.
- * Muestra el destino, el anzuelo literario, cuenta atrás, y abre Google Maps.
- *
- * ⚠️ NUNCA usar window.location.href — destruye la app React.
- * Maps se abre con window.open (nueva pestaña / app nativa vía OS intent).
- * Después de abrir Maps, la app vuelve a la lista automáticamente.
- */
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { stops } from '../data/stops';
 
-const SERIF = '"IM Fell English", "Cormorant Garamond", Georgia, serif';
-const SANS  = 'system-ui, -apple-system, sans-serif';
+/**
+ * PantallaIntermedia
+ * Se muestra entre paradas, antes de abrir Google Maps.
+ *
+ * Props:
+ *   fromStop   number  ID parada origen (1–13)
+ *   toStop     number  ID parada destino (1–13)
+ *   onAbrirMaps  callback cuando se dispara la apertura de Maps
+ *   onVolver     callback cuando el visitante cancela
+ */
+export default function PantallaIntermedia({
+  fromStop,
+  toStop,
+  onAbrirMaps = () => {},
+  onVolver   = () => {},
+}) {
+  const { t } = useTranslation();
+  const [countdown, setCountdown] = useState(3);
+  const [abriendo, setAbriendo]   = useState(false);
 
-export default function PantallaIntermedia({ fromStop, toStop, onAbrirMaps, onVolver }) {
-  const { t }      = useTranslation();
-  const [count, setCount] = useState(3);
-  const timerRef   = useRef(null);
+  // Clave del anzuelo: inicio_p1 para la primera parada, pN_pM para el resto
+  const anzueloKey =
+    fromStop === 0
+      ? 'anzuelos.inicio_p1'
+      : `anzuelos.p${fromStop}_p${toStop}`;
 
-  const stopDest   = stops.find(s => s.id === toStop);
-  const nombreDest = stopDest ? t(`paradas_nombres.p${stopDest.id}`) : '';
-
-  // Anzuelo literario: clave en locales basada en la transición fromStop→toStop
-  const anzueloKey = `intermedia.anzuelo_${fromStop}_${toStop}`;
-  const anzuelo    = t(anzueloKey, { defaultValue: '' });
-
+  // Countdown automático → abre Maps al llegar a 0
   useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setCount(prev => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current);
-          onAbrirMaps();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timerRef.current);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (countdown <= 0) {
+      dispararMaps();
+      return;
+    }
+    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
-  function handleIrAhora() {
-    clearInterval(timerRef.current);
-    onAbrirMaps();
-  }
+  const dispararMaps = () => {
+    if (abriendo) return;
+    setAbriendo(true);
+    setTimeout(() => onAbrirMaps(), 300);
+  };
 
   return (
-    <div style={s.root}>
-      <div style={s.inner}>
+    <div style={styles.overlay}>
+      <div style={{ ...styles.modal, opacity: abriendo ? 0 : 1 }}>
 
-        {/* Nombre destino */}
-        <p style={s.destino}>{nombreDest.toUpperCase()}</p>
-
-        {/* Instrucción principal */}
-        <p style={s.instruccion}>
-          {t('intermedia.instruccion')}
-        </p>
-
-        {/* Anzuelo literario */}
-        {anzuelo && (
-          <p style={s.anzuelo}>{anzuelo}</p>
-        )}
-
-        {/* Cuenta atrás + botón */}
-        <div style={s.mapsRow}>
-          <p style={s.countdown}>
-            {count > 0
-              ? t('intermedia.countdown', { count })
-              : t('intermedia.opening')}
+        {/* Countdown */}
+        <div style={styles.countdown}>
+          <div style={styles.numero}>{countdown}</div>
+          <p style={styles.countdownLabel}>
+            {t('pantalla_intermedia.abriendo', { segundos: countdown })}
           </p>
-          <button style={s.botonAhora} onClick={handleIrAhora}>
-            {t('intermedia.go_now')}
-          </button>
         </div>
 
-        {/* Enlace volver (discreto) */}
-        <button style={s.volver} onClick={onVolver}>
-          {t('intermedia.volver')}
-        </button>
+        {/* Anzuelo */}
+        <div style={styles.contenido}>
+          <p style={styles.anzuelo}>{t(anzueloKey)}</p>
+        </div>
+
+        {/* Instrucción de retorno */}
+        <div style={styles.instruccion}>
+          <p style={styles.instruccionTexto}>
+            {t('pantalla_intermedia.instruccion')}
+          </p>
+        </div>
+
+        {/* Botones */}
+        <div style={styles.botones}>
+          <button
+            onClick={dispararMaps}
+            disabled={abriendo}
+            style={{ ...styles.botonPrimario, opacity: abriendo ? 0.6 : 1 }}
+          >
+            {t('pantalla_intermedia.boton_ir_ahora')}
+          </button>
+          <button onClick={onVolver} style={styles.botonSecundario}>
+            {t('pantalla_intermedia.boton_volver')}
+          </button>
+        </div>
 
       </div>
     </div>
   );
 }
 
-const s = {
-  root: {
-    minHeight: '100vh',
-    backgroundColor: '#fff',
+// ── Estilos ───────────────────────────────────────────────────────────────────
+const styles = {
+  overlay: {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.85)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '2rem 1.5rem',
+    zIndex: 9997,
+    fontFamily: 'system-ui, sans-serif',
+    padding: '1rem',
   },
-  inner: {
+
+  modal: {
+    backgroundColor: '#fff',
+    padding: '2rem',
+    maxWidth: '500px',
     width: '100%',
-    maxWidth: '420px',
+    boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+    transition: 'opacity 0.3s ease',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    textAlign: 'center',
-    gap: '2rem',
+    gap: '1.5rem',
   },
-  destino: {
-    fontFamily: SANS,
-    fontSize: '0.72rem',
-    fontWeight: '700',
-    letterSpacing: '3px',
-    color: '#bbb',
-    margin: 0,
-  },
-  instruccion: {
-    fontFamily: SERIF,
-    fontSize: 'clamp(1.3rem, 5vw, 1.8rem)',
-    fontWeight: '400',
-    lineHeight: 1.6,
-    color: '#0F0E0D',
-    margin: 0,
-    whiteSpace: 'pre-line',
-  },
-  anzuelo: {
-    fontFamily: SERIF,
-    fontSize: '0.95rem',
-    fontStyle: 'italic',
-    lineHeight: 1.8,
-    color: '#666',
-    margin: 0,
-    borderLeft: '2px solid #e0e0e0',
-    paddingLeft: '1rem',
-    textAlign: 'left',
-  },
-  mapsRow: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '0.75rem',
-    paddingTop: '0.5rem',
-    borderTop: '1px solid #eee',
-    width: '100%',
-  },
+
   countdown: {
-    fontFamily: SANS,
-    fontSize: '0.82rem',
-    color: '#999',
-    margin: 0,
-    letterSpacing: '0.5px',
+    textAlign: 'center',
+    paddingBottom: '1.5rem',
+    borderBottom: '2px solid #f0f0f0',
   },
-  botonAhora: {
-    fontFamily: SANS,
+
+  numero: {
+    fontSize: '4rem',
+    fontWeight: 'bold',
+    color: '#000',
+    margin: 0,
+    lineHeight: '1',
+    fontFamily: '"IM Fell English", Georgia, serif',
+  },
+
+  countdownLabel: {
     fontSize: '0.85rem',
-    fontWeight: '600',
-    letterSpacing: '1.5px',
+    color: '#666',
+    margin: '0.5rem 0 0 0',
     textTransform: 'uppercase',
-    padding: '0.85rem 2rem',
+    letterSpacing: '1px',
+  },
+
+  contenido: {
+    padding: '0.5rem 0',
+  },
+
+  anzuelo: {
+    fontSize: '1.1rem',
+    lineHeight: '1.7',
+    color: '#333',
+    fontStyle: 'italic',
+    margin: 0,
+    textAlign: 'center',
+    fontFamily: '"IM Fell English", "Cormorant Garamond", Georgia, serif',
+  },
+
+  instruccion: {
+    backgroundColor: '#f8f8f8',
+    borderLeft: '3px solid #000',
+    padding: '1rem',
+  },
+
+  instruccionTexto: {
+    fontSize: '0.95rem',
+    color: '#555',
+    margin: 0,
+    lineHeight: '1.5',
+  },
+
+  botones: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+  },
+
+  botonPrimario: {
+    padding: '1rem',
     backgroundColor: '#000',
     color: '#fff',
     border: 'none',
+    fontSize: '1rem',
+    fontWeight: '600',
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
     cursor: 'pointer',
-    minHeight: '48px',
+    transition: 'background-color 0.2s',
   },
-  volver: {
-    fontFamily: SANS,
-    fontSize: '0.75rem',
-    color: '#bbb',
-    background: 'none',
-    border: 'none',
+
+  botonSecundario: {
+    padding: '1rem',
+    backgroundColor: '#fff',
+    color: '#333',
+    border: '2px solid #000',
+    fontSize: '0.95rem',
+    fontWeight: '600',
     cursor: 'pointer',
-    textDecoration: 'underline',
-    textUnderlineOffset: '2px',
-    padding: '0.5rem',
-    letterSpacing: '0.5px',
+    transition: 'all 0.2s',
   },
 };

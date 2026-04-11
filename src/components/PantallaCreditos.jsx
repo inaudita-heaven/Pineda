@@ -1,222 +1,256 @@
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 /**
- * PantallaCreditos.jsx
- * Pantalla de inicio — se muestra UNA sola vez (controlado por hasSeenCredits en session.js).
- * Función: presentar la exposición antes de comenzar la ruta.
+ * PantallaCreditos
+ * Splash de créditos al primer arranque de la app.
+ * Se muestra una sola vez — estado guardado en localStorage.
+ *
+ * Props:
+ *   onClose  callback cuando cierra (auto a los 5s o por click)
  */
+export default function PantallaCreditos({ onClose = () => {} }) {
+  const { t } = useTranslation();
+  const [saliendo, setSaliendo] = useState(false);
 
-import React from 'react';
+  // Auto-cierre a los 5 segundos
+  useEffect(() => {
+    const timer = setTimeout(() => cerrar(), 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
-const SERIF = '"IM Fell English", "Cormorant Garamond", Georgia, serif';
-const SANS  = 'system-ui, -apple-system, sans-serif';
+  const cerrar = () => {
+    if (saliendo) return;
+    setSaliendo(true);
+    setTimeout(() => {
+      localStorage.setItem('creditos_visto', 'true');
+      onClose();
+    }, 300);
+  };
 
-export default function PantallaCreditos({ onClose }) {
+  // Nombres de los 10 participantes — desde paradas_nombres
+  const participantes = [
+    t('paradas_nombres.p2'),   // Taberna Santa Marina
+    t('paradas_nombres.p3'),   // Taberna La Fuenseca
+    t('paradas_nombres.p5'),   // Taberna San Miguel
+    t('paradas_nombres.p6'),   // Taberna El Olmo
+    t('paradas_nombres.p7'),   // Casa Salinas
+    t('paradas_nombres.p8'),   // Posada del Caballo Blanco
+    t('paradas_nombres.p9'),   // Puerta de Sevilla
+    t('paradas_nombres.p10'),  // Taberna La Viuda
+    t('paradas_nombres.p11'),  // La Tasquería
+    t('paradas_nombres.p12'),  // La Cazuela de la Espartería
+  ];
+
   return (
-    <div style={s.root}>
-      <div style={s.inner}>
-
-        {/* Marca superior */}
-        <p style={s.eyebrow}>Córdoba · Abril–Mayo 2025</p>
-
-        {/* Retrato / monograma */}
-        <div style={s.monogram} aria-hidden="true">
-          <span style={s.monogramLetras}>R.P.</span>
+    <div style={{ ...styles.overlay, opacity: saliendo ? 0 : 1 }}>
+      <div
+        style={{
+          ...styles.modal,
+          transform: saliendo ? 'scale(0.97)' : 'scale(1)',
+        }}
+      >
+        {/* Header */}
+        <div style={styles.header}>
+          <h1 style={styles.titulo}>{t('pantalla_bienvenida.titulo')}</h1>
+          <p style={styles.subtitulo}>{t('app.subtitulo')}</p>
         </div>
 
-        {/* Título de la exposición */}
-        <h1 style={s.titulo}>
-          Rafael Pineda
-        </h1>
-        <p style={s.subtitulo}>Pintor de Córdoba</p>
+        {/* Cuerpo: créditos */}
+        <div style={styles.contenido}>
+          <h2 style={styles.h2}>{t('creditos.titulo')}</h2>
 
-        {/* Divisor */}
-        <div style={s.divisor} />
-
-        {/* Texto introductorio */}
-        <p style={s.texto}>
-          Treinta años pintando Córdoba desde dentro.
-          <br />
-          Sus cuadros no son postales: son memoria de barrio,
-          <br />
-          luz de patio y la sombra exacta que deja un capote al caer.
-        </p>
-
-        <p style={s.textoPeq}>
-          Una ruta por las tabernas y espacios del casco antiguo
-          donde viven sus obras.
-        </p>
-
-        {/* Tres salas */}
-        <div style={s.salas}>
-          {[
-            { num: 'I',    nombre: 'Palacio de Viana',  sub: 'Paisaje y paisanaje cordobés' },
-            { num: 'IV',   nombre: 'Casa 12PB',         sub: 'Los estilos de Pineda' },
-            { num: 'XIII', nombre: 'La Inaudita',        sub: 'Los peligros del toreo' },
-          ].map(({ num, nombre, sub }) => (
-            <div key={num} style={s.sala}>
-              <span style={s.salaNum}>{num}</span>
-              <div>
-                <p style={s.salaNombre}>{nombre}</p>
-                <p style={s.salaSub}>{sub}</p>
+          {/* Produce */}
+          <div style={styles.seccion}>
+            <h3 style={styles.h3}>{t('creditos.produce')}</h3>
+            <div style={styles.logos}>
+              <div style={styles.logoBox}>
+                <span style={styles.logoTexto}>La Inaudita</span>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Colaboran */}
+          <div style={styles.seccion}>
+            <h3 style={styles.h3}>{t('creditos.colaboran')}</h3>
+            <div style={styles.logos}>
+              <div style={styles.logoBox}>
+                <span style={styles.logoTexto}>{t('paradas_nombres.p1')}</span>
+              </div>
+              <div style={styles.logoBox}>
+                <span style={styles.logoTexto}>{t('paradas_nombres.p4')}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Participan */}
+          <div style={styles.seccion}>
+            <h3 style={styles.h3}>{t('creditos.participan')}</h3>
+            <div style={styles.listaParticipantes}>
+              {participantes.map((nombre, i) => (
+                <p key={i} style={styles.participa}>{nombre}</p>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* CTA */}
-        <button style={s.boton} onClick={onClose}>
-          Entrar
-        </button>
-
-        {/* Créditos pequeños */}
-        <p style={s.creditos}>
-          Una producción de La Inaudita · Córdoba 2025
-        </p>
-
+        {/* Footer */}
+        <div style={styles.footer}>
+          <p style={styles.periodo}>{t('app.subtitulo')}</p>
+          <button onClick={cerrar} style={styles.boton}>
+            {t('pantalla_bienvenida.boton_comenzar')}
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-const s = {
-  root: {
+// ── Estilos — estética Ansorena ───────────────────────────────────────────────
+const styles = {
+  overlay: {
     position: 'fixed',
-    inset: 0,
-    backgroundColor: '#0F0E0D',
-    color: '#f5f3ef',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.9)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
     overflowY: 'auto',
-    zIndex: 20000,
+    zIndex: 9998,
+    fontFamily: '"IM Fell English", "Cormorant Garamond", serif',
+    transition: 'opacity 0.3s ease',
+    padding: '2rem 1rem',
   },
-  inner: {
+
+  modal: {
+    backgroundColor: '#fff',
+    padding: '3rem',
+    maxWidth: '600px',
     width: '100%',
-    maxWidth: '480px',
-    padding: '3rem 2rem 4rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+    transition: 'transform 0.3s ease',
+    marginBottom: '2rem',
+  },
+
+  header: {
     textAlign: 'center',
-    gap: '1.25rem',
+    marginBottom: '3rem',
+    borderBottom: '2px solid #000',
+    paddingBottom: '2rem',
   },
-  eyebrow: {
-    fontFamily: SANS,
-    fontSize: '0.7rem',
-    fontWeight: '600',
-    letterSpacing: '2px',
-    textTransform: 'uppercase',
-    color: '#888',
-    margin: 0,
-  },
-  monogram: {
-    width: '80px',
-    height: '80px',
-    border: '1px solid #444',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  monogramLetras: {
-    fontFamily: SERIF,
-    fontSize: '1.6rem',
-    fontWeight: '400',
-    color: '#ccc',
-    letterSpacing: '4px',
-  },
+
   titulo: {
-    fontFamily: SERIF,
-    fontSize: 'clamp(2rem, 8vw, 3rem)',
+    fontSize: 'clamp(1.8rem, 6vw, 2.8rem)',
     fontWeight: '400',
     margin: 0,
     letterSpacing: '2px',
-    lineHeight: 1.1,
-    color: '#f5f3ef',
+    color: '#000',
   },
+
   subtitulo: {
-    fontFamily: SERIF,
     fontSize: '1rem',
     fontStyle: 'italic',
-    color: '#aaa',
-    margin: 0,
+    color: '#666',
+    margin: '0.5rem 0 0 0',
+    letterSpacing: '1px',
   },
-  divisor: {
-    width: '40px',
-    height: '1px',
-    backgroundColor: '#444',
-    margin: '0.5rem 0',
+
+  contenido: {
+    marginBottom: '2rem',
   },
-  texto: {
-    fontFamily: SERIF,
-    fontSize: '1rem',
-    fontStyle: 'italic',
-    lineHeight: 1.8,
-    color: '#ccc',
-    margin: 0,
+
+  h2: {
+    fontSize: '1.2rem',
+    fontWeight: '400',
+    textAlign: 'center',
+    marginBottom: '2.5rem',
+    color: '#333',
+    textTransform: 'uppercase',
+    letterSpacing: '2px',
+    fontFamily: 'system-ui, sans-serif',
   },
-  textoPeq: {
-    fontFamily: SANS,
-    fontSize: '0.82rem',
-    color: '#777',
-    lineHeight: 1.6,
-    margin: 0,
+
+  seccion: {
+    marginBottom: '2.5rem',
   },
-  salas: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.6rem',
-    borderTop: '1px solid #2a2a2a',
-    borderBottom: '1px solid #2a2a2a',
-    padding: '1.25rem 0',
-    margin: '0.5rem 0',
+
+  h3: {
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: '2px',
+    color: '#888',
+    margin: '0 0 1rem 0',
+    fontFamily: 'system-ui, sans-serif',
   },
-  sala: {
+
+  logos: {
     display: 'flex',
     gap: '1rem',
-    alignItems: 'flex-start',
-    textAlign: 'left',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
-  salaNum: {
-    fontFamily: SERIF,
-    fontSize: '1rem',
-    color: '#666',
-    minWidth: '3rem',
-    textAlign: 'right',
-    paddingTop: '2px',
+
+  logoBox: {
+    flex: '1',
+    minWidth: '140px',
+    padding: '1.25rem',
+    border: '2px solid #000',
+    textAlign: 'center',
   },
-  salaNombre: {
-    fontFamily: SERIF,
+
+  logoTexto: {
     fontSize: '0.95rem',
-    color: '#ddd',
-    margin: '0 0 2px',
-    lineHeight: 1.3,
-  },
-  salaSub: {
-    fontFamily: SANS,
-    fontSize: '0.72rem',
-    color: '#666',
-    margin: 0,
-    fontStyle: 'italic',
-  },
-  boton: {
-    marginTop: '0.5rem',
-    fontFamily: SANS,
-    fontSize: '0.85rem',
     fontWeight: '600',
-    letterSpacing: '2px',
-    textTransform: 'uppercase',
-    padding: '1rem 3rem',
-    backgroundColor: '#f5f3ef',
-    color: '#0F0E0D',
-    border: 'none',
-    cursor: 'pointer',
-    minHeight: '48px',
+    color: '#000',
+    display: 'block',
+    fontFamily: 'system-ui, sans-serif',
   },
-  creditos: {
-    fontFamily: SANS,
-    fontSize: '0.68rem',
-    color: '#444',
-    letterSpacing: '0.5px',
+
+  listaParticipantes: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '0.5rem 1.5rem',
+  },
+
+  participa: {
+    fontSize: '0.85rem',
     margin: 0,
+    color: '#555',
+    lineHeight: '1.4',
+    fontFamily: 'system-ui, sans-serif',
+  },
+
+  footer: {
+    textAlign: 'center',
+    borderTop: '2px solid #000',
+    paddingTop: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.25rem',
+    alignItems: 'center',
+  },
+
+  periodo: {
+    fontSize: '0.75rem',
+    color: '#999',
+    letterSpacing: '1.5px',
+    textTransform: 'uppercase',
+    margin: 0,
+    fontFamily: 'system-ui, sans-serif',
+  },
+
+  boton: {
+    padding: '1rem 2.5rem',
+    backgroundColor: '#000',
+    color: '#fff',
+    border: 'none',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    letterSpacing: '1.5px',
+    textTransform: 'uppercase',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    fontFamily: 'system-ui, sans-serif',
   },
 };
