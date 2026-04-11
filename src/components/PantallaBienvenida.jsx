@@ -57,6 +57,14 @@ export default function PantallaBienvenida({ onComenzar = () => {} }) {
 
         {/* Footer */}
         <div style={styles.footer}>
+          {/* Logos */}
+          <div style={styles.logos}>
+            <img src="/logos/INA_Branding_Negro.png" alt="La Inaudita" style={styles.logoGrande} />
+            <div style={styles.logosColaboran}>
+              <img src="/logos/logoviana.png" alt="Palacio de Viana" style={styles.logoSmall} />
+              <img src="/logos/logo-casa12pb.png.png" alt="Casa 12PB" style={styles.logoSmall} />
+            </div>
+          </div>
           <button className="bienvenida-boton" onClick={comenzar} style={styles.boton}>
             {t('pantalla_bienvenida.boton_comenzar')}
           </button>
@@ -140,6 +148,31 @@ const styles = {
     textAlign: 'center',
     borderTop: '2px solid #0F0E0D',
     paddingTop: '2rem',
+  },
+  logos: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '1rem',
+    paddingBottom: '1.5rem',
+    borderBottom: '1px solid #e8e6e3',
+    marginBottom: '1.5rem',
+  },
+  logoGrande: {
+    height: '40px',
+    objectFit: 'contain',
+    opacity: 0.75,
+  },
+  logosColaboran: {
+    display: 'flex',
+    gap: '2rem',
+    alignItems: 'center',
+  },
+  logoSmall: {
+    height: '28px',
+    maxWidth: '100px',
+    objectFit: 'contain',
+    opacity: 0.6,
   },
   boton: {
     padding: '1.1rem 3rem',

@@ -30,6 +30,10 @@ import ProgresoCupon         from './components/ProgresoCupon';
 import LanguageSelector      from './components/LanguageSelector';
 import CajaPanelComponent    from './components/CajaPanelComponent';
 import PantallaCatalogo      from './components/PantallaCatalogo';
+import NavBar               from './components/NavBar';
+import PestañaRuta          from './components/PestañaRuta';
+import PestañaCatalogo      from './components/PestañaCatalogo';
+import PestañaCupon         from './components/PestañaCupon';
 
 // ── Lógica de dominio ──────────────────────────────────────────────────────────
 import { stops, getStopByToken, isStopOpen, getNextOpenTime } from './data/stops';
@@ -90,6 +94,7 @@ export default function App() {
   const [mostrarModalCupon, setMostrarModalCupon] = useState(false);
   const [couponYaMostrado, setCouponYaMostrado]   = useState(() => hasCoupon());
   const [mostrarCatalogo, setMostrarCatalogo]     = useState(false);
+  const [tabActiva, setTabActiva]                 = useState('ruta');
 
   // ── Procesar QR pendiente cuando llegamos a 'escaner_pendiente' ────────────
   // FIX [2]: Solo se ejecuta desde onComenzar, no en el arranque.
@@ -126,7 +131,7 @@ export default function App() {
       setTimeout(() => {
         setScanLock(false);
         setScanError(null);
-        setPantalla('lista');
+        setPantalla('app');
       }, 2000);
       return;
     }
@@ -137,7 +142,7 @@ export default function App() {
       setTimeout(() => {
         setScanLock(false);
         setScanError(null);
-        setPantalla('lista');
+        setPantalla('app');
       }, 2000);
       return;
     }
@@ -194,7 +199,7 @@ export default function App() {
   const irASiguienteParada = useCallback((fromStopId) => {
     const siguiente = stops.find(s => s.id === fromStopId + 1);
     if (!siguiente) {
-      setPantalla('lista');
+      setPantalla('app');
       return;
     }
     setIntermediaData({
@@ -210,7 +215,7 @@ export default function App() {
   const abrirMaps = useCallback(() => {
     if (!intermediaData?.mapsUrl) return;
     window.open(intermediaData.mapsUrl, '_blank', 'noopener,noreferrer');
-    setTimeout(() => setPantalla('lista'), 300);
+    setTimeout(() => setPantalla('app'), 300);
   }, [intermediaData]);
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -244,25 +249,50 @@ export default function App() {
             if (qrPendiente) {
               setPantalla('escaner_pendiente');
             } else {
-              setPantalla('lista');
+              setPantalla('app');
             }
           }}
         />
       )}
 
-      {/* ── Lista de paradas ─────────────────────────────────────────────── */}
-      {pantalla === 'lista' && (
-        <ListaParadas
-          stops={stops}
-          visitedStops={visitedStops}
-          sessionId={sessionId}
-          onEscanear={(stopId) => {
-            setScannerStopId(stopId);
-            setPantalla('escaner');
-          }}
-          onVerCupon={() => setMostrarModalCupon(true)}
-          t={t}
-        />
+      {/* ── App principal con tabs ───────────────────────────────────────── */}
+      {pantalla === 'app' && (
+        <>
+          {tabActiva === 'ruta' && (
+            <PestañaRuta
+              visitedStops={visitedStops}
+              onEscanear={(stopId) => {
+                setScannerStopId(stopId);
+                setPantalla('escaner');
+              }}
+              onVerCupon={() => setTabActiva('cupon')}
+              onVerCatalogoSala={(stop) => {
+                setParadaActiva(stop);
+                setMostrarCatalogo(true);
+              }}
+            />
+          )}
+          {tabActiva === 'catalogo' && (
+            <PestañaCatalogo
+              onVerSala={(stop) => {
+                setParadaActiva(stop);
+                setMostrarCatalogo(true);
+              }}
+            />
+          )}
+          {tabActiva === 'cupon' && (
+            <PestañaCupon
+              visitedStops={visitedStops}
+              sessionId={sessionId}
+            />
+          )}
+          <NavBar
+            tabActiva={tabActiva}
+            onTab={setTabActiva}
+            visitedStops={visitedStops}
+            couponDesbloqueado={couponYaMostrado}
+          />
+        </>
       )}
 
       {/* ── Escáner QR (manual) ──────────────────────────────────────────── */}
@@ -272,7 +302,7 @@ export default function App() {
           error={scanError}
           locked={scanLock}
           onScan={procesarEscaneo}
-          onCancelar={() => setPantalla('lista')}
+          onCancelar={() => setPantalla('app')}
           t={t}
         />
       )}
@@ -291,13 +321,13 @@ export default function App() {
           stop={paradaActiva}
           visitedStops={visitedStops}
           onSiguiente={() => irASiguienteParada(paradaActiva.id)}
-          onVolverLista={() => setPantalla('lista')}
+          onVolverLista={() => setPantalla('app')}
           onVerCatalogo={() => setMostrarCatalogo(true)}
           t={t}
         />
       )}
 
-      {pantalla === 'parada_sellada' && paradaActiva && mostrarCatalogo && (
+      {mostrarCatalogo && paradaActiva && (
         <PantallaCatalogo
           stop={paradaActiva}
           onVolver={() => setMostrarCatalogo(false)}
@@ -310,7 +340,7 @@ export default function App() {
           fromStop={intermediaData.fromStop}
           toStop={intermediaData.toStop}
           onAbrirMaps={abrirMaps}
-          onVolver={() => setPantalla('lista')}
+          onVolver={() => setPantalla('app')}
         />
       )}
 
@@ -329,110 +359,6 @@ export default function App() {
 // ══════════════════════════════════════════════════════════════════════════════
 // Sub-componentes inline
 // ══════════════════════════════════════════════════════════════════════════════
-
-// ── Lista de paradas ──────────────────────────────────────────────────────────
-function ListaParadas({ stops, visitedStops, sessionId, onEscanear, onVerCupon, t }) {
-  const ahora  = new Date();
-
-  return (
-    <div style={styles.lista}>
-
-      {/* Header */}
-      <div style={styles.listaHeader}>
-        <h1 style={styles.listaTitulo}>{t('app.titulo')}</h1>
-        <p style={styles.listaSubtitulo}>{t('app.subtitulo')}</p>
-      </div>
-
-      {/* Widget progreso cupón */}
-      <div style={styles.progresoPad}>
-        <ProgresoCupon
-          visitedStopIds={visitedStops}
-          onVerCupon={onVerCupon}
-        />
-      </div>
-
-      {/* Tarjetas de paradas */}
-      <div style={styles.tarjetasWrap}>
-        {stops.map(stop => {
-          const sellada = visitedStops.includes(stop.id);
-          const abierta = isStopOpen(stop, ahora);
-          const proxima = abierta === false ? getNextOpenTime(stop, ahora) : null;
-
-          return (
-            <TarjetaParada
-              key={stop.id}
-              stop={stop}
-              sellada={sellada}
-              abierta={abierta}
-              proximaApertura={proxima}
-              onEscanear={() => onEscanear(stop.id)}
-              t={t}
-            />
-          );
-        })}
-      </div>
-
-      {/* Pie */}
-      <div style={styles.listaPie}>
-        <p style={styles.listaPieTexto}>
-          {visitedStops.length}/13 {t('cupon.paradas')}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ── Tarjeta de parada ─────────────────────────────────────────────────────────
-function TarjetaParada({ stop, sellada, abierta, proximaApertura, onEscanear, t }) {
-  return (
-    <div style={{
-      ...styles.tarjeta,
-      borderLeft: stop.required ? '4px solid #000' : '4px solid #e0e0e0',
-      opacity: sellada ? 0.7 : 1,
-    }}>
-
-      {/* Número + nombre */}
-      <div style={styles.tarjetaTop}>
-        <span style={styles.tarjetaNum}>{stop.id}</span>
-        <div style={styles.tarjetaInfo}>
-          <p style={styles.tarjetaNombre}>{t(`paradas_nombres.p${stop.id}`)}</p>
-          <p style={styles.tarjetaDireccion}>{stop.address}</p>
-        </div>
-      </div>
-
-      {/* Badges */}
-      <div style={styles.tarjetaBadges}>
-        {stop.required && (
-          <span style={styles.badgeSala}>{t('parada.sala_obligatoria')} ⭐</span>
-        )}
-        {stop.hoursUnconfirmed ? (
-          <span style={styles.badgeInfo}>{t('parada.horario_sin_confirmar')}</span>
-        ) : abierta === true ? (
-          <span style={styles.badgeAbierta}>{t('parada.horario_abierto')}</span>
-        ) : abierta === false ? (
-          <span style={styles.badgeCerrada}>
-            {t('parada.horario_cerrado')}
-            {proximaApertura ? ` · ${t('parada.abre_a')} ${proximaApertura}` : ''}
-          </span>
-        ) : null}
-      </div>
-
-      {/* Botón */}
-      <div style={styles.tarjetaAccion}>
-        {sellada ? (
-          <span style={styles.sellada}>{t('parada.sellada')}</span>
-        ) : (
-          <button style={styles.botonEscanear} onClick={onEscanear}>
-            {t('parada.boton_escanear')}
-          </button>
-        )}
-        <a href={stop.mapsUrl} style={styles.botonMaps} target="_blank" rel="noreferrer">
-          {t('parada.ir_aqui')}
-        </a>
-      </div>
-    </div>
-  );
-}
 
 // ── Escáner QR ────────────────────────────────────────────────────────────────
 function PantallaEscaner({ stopId, error, locked, onScan, onCancelar, t }) {
