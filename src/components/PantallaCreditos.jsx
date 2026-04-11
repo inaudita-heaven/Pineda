@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-/**
- * PantallaCreditos
- * Splash de créditos al primer arranque de la app.
- * Se muestra una sola vez — estado guardado en localStorage.
- *
- * Props:
- *   onClose  callback cuando cierra (auto a los 5s o por click)
- */
 export default function PantallaCreditos({ onClose = () => {} }) {
   const { t } = useTranslation();
   const [saliendo, setSaliendo] = useState(false);
 
-  // Auto-cierre a los 5 segundos
   useEffect(() => {
-    const timer = setTimeout(() => cerrar(), 5000);
+    const timer = setTimeout(() => cerrar(), 7000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -28,90 +19,98 @@ export default function PantallaCreditos({ onClose = () => {} }) {
     }, 300);
   };
 
-  // Nombres de los 10 participantes — desde paradas_nombres
   const participantes = [
-    t('paradas_nombres.p2'),   // Taberna Santa Marina
-    t('paradas_nombres.p3'),   // Taberna La Fuenseca
-    t('paradas_nombres.p5'),   // Taberna San Miguel
-    t('paradas_nombres.p6'),   // Taberna El Olmo
-    t('paradas_nombres.p7'),   // Casa Salinas
-    t('paradas_nombres.p8'),   // Posada del Caballo Blanco
-    t('paradas_nombres.p9'),   // Puerta de Sevilla
-    t('paradas_nombres.p10'),  // Taberna La Viuda
-    t('paradas_nombres.p11'),  // La Tasquería
-    t('paradas_nombres.p12'),  // La Cazuela de la Espartería
+    t('paradas_nombres.p2'),
+    t('paradas_nombres.p3'),
+    t('paradas_nombres.p5'),
+    t('paradas_nombres.p6'),
+    t('paradas_nombres.p7'),
+    t('paradas_nombres.p8'),
+    t('paradas_nombres.p9'),
+    t('paradas_nombres.p10'),
+    t('paradas_nombres.p11'),
+    t('paradas_nombres.p12'),
   ];
 
   return (
-    <div style={{ ...styles.overlay, opacity: saliendo ? 0 : 1 }}>
+    <div style={{ ...styles.overlay, opacity: saliendo ? 0 : 1 }} onClick={cerrar}>
       <div
         style={{
           ...styles.modal,
           transform: saliendo ? 'scale(0.97)' : 'scale(1)',
         }}
+        onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
-        <div style={styles.header}>
-          <h1 style={styles.titulo}>{t('pantalla_bienvenida.titulo')}</h1>
-          <p style={styles.subtitulo}>{t('app.subtitulo')}</p>
+
+        {/* Retrato Pineda */}
+        <div style={styles.retratoWrap}>
+          <img
+            src="/images/autopineda.png"
+            alt="Rafael Pineda"
+            style={styles.retrato}
+          />
         </div>
 
-        {/* Cuerpo: créditos */}
-        <div style={styles.contenido}>
-          <h2 style={styles.h2}>{t('creditos.titulo')}</h2>
-
-          {/* Produce */}
-          <div style={styles.seccion}>
-            <h3 style={styles.h3}>{t('creditos.produce')}</h3>
-            <div style={styles.logos}>
-              <div style={styles.logoBox}>
-                <span style={styles.logoTexto}>La Inaudita</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Colaboran */}
-          <div style={styles.seccion}>
-            <h3 style={styles.h3}>{t('creditos.colaboran')}</h3>
-            <div style={styles.logos}>
-              <div style={styles.logoBox}>
-                <span style={styles.logoTexto}>{t('paradas_nombres.p1')}</span>
-              </div>
-              <div style={styles.logoBox}>
-                <span style={styles.logoTexto}>{t('paradas_nombres.p4')}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Participan */}
-          <div style={styles.seccion}>
-            <h3 style={styles.h3}>{t('creditos.participan')}</h3>
-            <div style={styles.listaParticipantes}>
-              {participantes.map((nombre, i) => (
-                <p key={i} style={styles.participa}>{nombre}</p>
-              ))}
-            </div>
+        {/* Produce */}
+        <div style={styles.seccion}>
+          <p style={styles.label}>{t('creditos.produce')}</p>
+          <div style={styles.logoWrap}>
+            <img
+              src="/logos/INA_Branding_Negro.png"
+              alt="La Inaudita"
+              style={styles.logo}
+            />
           </div>
         </div>
 
-        {/* Footer */}
+        <div style={styles.divisor} />
+
+        {/* Colaboran */}
+        <div style={styles.seccion}>
+          <p style={styles.label}>{t('creditos.colaboran')}</p>
+          <div style={styles.logoFila}>
+            <img
+              src="/logos/logoviana.png"
+              alt="Palacio de Viana"
+              style={styles.logoSmall}
+            />
+            <img
+              src="/logos/logo-casa12pb.png.png"
+              alt="Casa 12PB"
+              style={styles.logoSmall}
+            />
+          </div>
+        </div>
+
+        <div style={styles.divisor} />
+
+        {/* Participan */}
+        <div style={styles.seccion}>
+          <p style={styles.label}>{t('creditos.participan')}</p>
+          <div style={styles.listaParticipantes}>
+            {participantes.map((nombre, i) => (
+              <p key={i} style={styles.participa}>{nombre}</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Botón */}
         <div style={styles.footer}>
-          <p style={styles.periodo}>{t('app.subtitulo')}</p>
           <button onClick={cerrar} style={styles.boton}>
             {t('pantalla_bienvenida.boton_comenzar')}
           </button>
         </div>
+
       </div>
     </div>
   );
 }
 
-// ── Estilos — estética Ansorena ───────────────────────────────────────────────
 const styles = {
   overlay: {
     position: 'fixed',
     top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.9)',
+    backgroundColor: 'rgba(0,0,0,0.92)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
@@ -121,136 +120,102 @@ const styles = {
     transition: 'opacity 0.3s ease',
     padding: '2rem 1rem',
   },
-
   modal: {
     backgroundColor: '#fff',
-    padding: '3rem',
-    maxWidth: '600px',
+    padding: '2.5rem 2rem',
+    maxWidth: '540px',
     width: '100%',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
     transition: 'transform 0.3s ease',
     marginBottom: '2rem',
-  },
-
-  header: {
-    textAlign: 'center',
-    marginBottom: '3rem',
-    borderBottom: '2px solid #000',
-    paddingBottom: '2rem',
-  },
-
-  titulo: {
-    fontSize: 'clamp(1.8rem, 6vw, 2.8rem)',
-    fontWeight: '400',
-    margin: 0,
-    letterSpacing: '2px',
-    color: '#000',
-  },
-
-  subtitulo: {
-    fontSize: '1rem',
-    fontStyle: 'italic',
-    color: '#666',
-    margin: '0.5rem 0 0 0',
-    letterSpacing: '1px',
-  },
-
-  contenido: {
-    marginBottom: '2rem',
-  },
-
-  h2: {
-    fontSize: '1.2rem',
-    fontWeight: '400',
-    textAlign: 'center',
-    marginBottom: '2.5rem',
-    color: '#333',
-    textTransform: 'uppercase',
-    letterSpacing: '2px',
-    fontFamily: 'system-ui, sans-serif',
-  },
-
-  seccion: {
-    marginBottom: '2.5rem',
-  },
-
-  h3: {
-    fontSize: '0.8rem',
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: '2px',
-    color: '#888',
-    margin: '0 0 1rem 0',
-    fontFamily: 'system-ui, sans-serif',
-  },
-
-  logos: {
     display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+  },
+  retratoWrap: {
+    textAlign: 'center',
+    paddingBottom: '1.5rem',
+    borderBottom: '2px solid #000',
+  },
+  retrato: {
+    width: '140px',
+    height: '140px',
+    objectFit: 'cover',
+    objectPosition: 'center top',
+    borderRadius: '50%',
+    border: '2px solid #000',
+    margin: '0 auto',
+    display: 'block',
+  },
+  seccion: {
+    display: 'flex',
+    flexDirection: 'column',
     gap: '1rem',
-    flexWrap: 'wrap',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  label: {
+    fontFamily: 'system-ui, sans-serif',
+    fontSize: '0.68rem',
+    fontWeight: '700',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+    color: 'rgba(15,14,13,0.4)',
+    margin: 0,
+  },
+  logoWrap: {
+    display: 'flex',
     justifyContent: 'center',
   },
-
-  logoBox: {
-    flex: '1',
-    minWidth: '140px',
-    padding: '1.25rem',
-    border: '2px solid #000',
-    textAlign: 'center',
+  logo: {
+    maxHeight: '60px',
+    maxWidth: '200px',
+    objectFit: 'contain',
   },
-
-  logoTexto: {
-    fontSize: '0.95rem',
-    fontWeight: '600',
-    color: '#000',
-    display: 'block',
-    fontFamily: 'system-ui, sans-serif',
+  logoFila: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '2rem',
+    flexWrap: 'wrap',
   },
-
+  logoSmall: {
+    maxHeight: '48px',
+    maxWidth: '140px',
+    objectFit: 'contain',
+  },
+  divisor: {
+    height: '1px',
+    background: '#e8e6e3',
+  },
   listaParticipantes: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: '0.5rem 1.5rem',
+    gap: '0.4rem 1.5rem',
+    width: '100%',
   },
-
   participa: {
-    fontSize: '0.85rem',
-    margin: 0,
-    color: '#555',
-    lineHeight: '1.4',
     fontFamily: 'system-ui, sans-serif',
+    fontSize: '0.82rem',
+    margin: 0,
+    color: 'rgba(15,14,13,0.6)',
+    lineHeight: '1.4',
+    textAlign: 'left',
   },
-
   footer: {
     textAlign: 'center',
-    borderTop: '2px solid #000',
-    paddingTop: '2rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.25rem',
-    alignItems: 'center',
+    paddingTop: '0.5rem',
+    borderTop: '1px solid #e8e6e3',
   },
-
-  periodo: {
-    fontSize: '0.75rem',
-    color: '#999',
-    letterSpacing: '1.5px',
-    textTransform: 'uppercase',
-    margin: 0,
-    fontFamily: 'system-ui, sans-serif',
-  },
-
   boton: {
-    padding: '1rem 2.5rem',
-    backgroundColor: '#000',
+    padding: '0.85rem 2.5rem',
+    backgroundColor: '#0F0E0D',
     color: '#fff',
     border: 'none',
-    fontSize: '0.9rem',
-    fontWeight: '600',
-    letterSpacing: '1.5px',
+    fontSize: '0.75rem',
+    fontWeight: '400',
+    letterSpacing: '0.14em',
     textTransform: 'uppercase',
     cursor: 'pointer',
-    transition: 'all 0.2s',
     fontFamily: 'system-ui, sans-serif',
   },
 };
