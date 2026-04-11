@@ -29,6 +29,7 @@ import CouponUnlockedModal   from './components/CouponUnlockedModal';
 import ProgresoCupon         from './components/ProgresoCupon';
 import LanguageSelector      from './components/LanguageSelector';
 import CajaPanelComponent    from './components/CajaPanelComponent';
+import PantallaCatalogo      from './components/PantallaCatalogo';
 
 // ── Lógica de dominio ──────────────────────────────────────────────────────────
 import { stops, getStopByToken, isStopOpen, getNextOpenTime } from './data/stops';
@@ -88,6 +89,7 @@ export default function App() {
   // ── Cupón ──────────────────────────────────────────────────────────────────
   const [mostrarModalCupon, setMostrarModalCupon] = useState(false);
   const [couponYaMostrado, setCouponYaMostrado]   = useState(() => hasCoupon());
+  const [mostrarCatalogo, setMostrarCatalogo]     = useState(false);
 
   // ── Procesar QR pendiente cuando llegamos a 'escaner_pendiente' ────────────
   // FIX [2]: Solo se ejecuta desde onComenzar, no en el arranque.
@@ -176,6 +178,7 @@ export default function App() {
     // 7. Limpiar qrPendiente
     setQrPendiente(null);
 
+    setMostrarCatalogo(false);
     setPantalla('parada_sellada');
   }, [scanLock, sessionId, visitedStops, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -283,13 +286,21 @@ export default function App() {
       )}
 
       {/* ── Parada sellada ───────────────────────────────────────────────── */}
-      {pantalla === 'parada_sellada' && paradaActiva && (
+      {pantalla === 'parada_sellada' && paradaActiva && !mostrarCatalogo && (
         <PantallaParadaSellada
           stop={paradaActiva}
           visitedStops={visitedStops}
           onSiguiente={() => irASiguienteParada(paradaActiva.id)}
           onVolverLista={() => setPantalla('lista')}
+          onVerCatalogo={() => setMostrarCatalogo(true)}
           t={t}
+        />
+      )}
+
+      {pantalla === 'parada_sellada' && paradaActiva && mostrarCatalogo && (
+        <PantallaCatalogo
+          stop={paradaActiva}
+          onVolver={() => setMostrarCatalogo(false)}
         />
       )}
 
@@ -481,7 +492,7 @@ function PantallaEscaner({ stopId, error, locked, onScan, onCancelar, t }) {
 }
 
 // ── Parada sellada ────────────────────────────────────────────────────────────
-function PantallaParadaSellada({ stop, visitedStops, onSiguiente, onVolverLista, t }) {
+function PantallaParadaSellada({ stop, visitedStops, onSiguiente, onVolverLista, onVerCatalogo, t }) {
   const esSala = stop.required;
 
   return (
@@ -522,7 +533,10 @@ function PantallaParadaSellada({ stop, visitedStops, onSiguiente, onVolverLista,
               {t('parada_sellada.siguiente')}
             </button>
           )}
-          <button onClick={onVolverLista} style={styles.botonSecundario}>
+          <button onClick={onVerCatalogo} style={styles.botonSecundario}>
+            {t('catalogo.titulo')} →
+          </button>
+          <button onClick={onVolverLista} style={{ ...styles.botonSecundario, borderColor: '#e8e6e3', color: 'rgba(15,14,13,0.5)' }}>
             {t('parada_sellada.volver_ruta')}
           </button>
         </div>
