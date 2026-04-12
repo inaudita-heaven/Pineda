@@ -112,6 +112,7 @@ function GrupoSala({ stop, obras, t }) {
               <p style={styles.fichaTitulo}>{obra.title}</p>
               {obra.year && <p style={styles.fichaMeta}>{obra.year}</p>}
               {obra.technique && <p style={styles.fichaMeta}>{obra.technique}</p>}
+              {obra.dimensions && <p style={styles.fichaMeta}>{obra.dimensions} cm</p>}
               <p style={styles.fichaConsultar}>{t('catalogo.consulta_inaudita')}</p>
             </div>
           </div>
