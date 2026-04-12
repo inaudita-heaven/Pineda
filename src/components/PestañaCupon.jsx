@@ -45,8 +45,8 @@ function EstadoPendiente({ eligib, visitedStops, t }) {
   return (
     <div style={styles.wrap}>
       <div style={styles.pendienteHeader}>
-        <p style={styles.eyebrow}>Tu cupón</p>
-        <h1 style={styles.titulo}>Completa la ruta</h1>
+        <p style={styles.eyebrow}>{t('cupon.titulo_progreso')}</p>
+        <h1 style={styles.titulo}>{t('app.tab_cupon')}</h1>
         <p style={styles.narrativa}>{t('cupon.narrativa')}</p>
       </div>
 
@@ -161,7 +161,7 @@ const styles = {
   wrap: { backgroundColor: '#fff', minHeight: '100dvh', fontFamily: SANS },
   pendienteHeader: { padding: '1.5rem 1.25rem 1rem', borderBottom: '2px solid #0F0E0D' },
   desbHeader: { padding: '1.5rem 1.25rem 1rem', borderBottom: '2px solid #0F0E0D', textAlign: 'center' },
-  logoInaudita: { height: '68px', objectFit: 'contain', marginBottom: '1rem', opacity: 0.9 },
+  logoInaudita: { height: '40px', objectFit: 'contain', marginBottom: '1rem', opacity: 0.8 },
   eyebrow: {
     fontFamily: SANS, fontSize: '0.62rem',
     letterSpacing: '0.16em', textTransform: 'uppercase',

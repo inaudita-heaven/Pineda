@@ -56,6 +56,7 @@
   },
   "cupon": {
     "titulo_progreso": "优惠券进度",
+    "narrativa": "参观三个展厅和路线上的两家酒馆。完成后，您将解锁一杯免费品酒和所选作品30%折扣。",
     "salas_obligatorias": "必选展厅",
     "tabernas": "酒馆（最少2家）",
     "completadas": "已完成",

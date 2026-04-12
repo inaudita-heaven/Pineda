@@ -58,6 +58,7 @@
   },
   "cupon": {
     "titulo_progreso": "Coupon progress",
+    "narrativa": "Visit the three exhibition halls and two bars on the route. Once done, you unlock a free tasting glass and a 30% discount on selected works.",
     "salas_obligatorias": "Mandatory Galleries",
     "tabernas": "Taverns (min. 2)",
     "completadas": "completed",

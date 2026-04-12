@@ -58,6 +58,7 @@
   },
   "cupon": {
     "titulo_progreso": "Progreso del cupón",
+    "narrativa": "Visita las tres salas de la exposición y dos tabernas de la ruta. Al completarlas, desbloqueas una copa de cata gratis y un 30% de descuento en obra seleccionada.",
     "salas_obligatorias": "Salas Obligatorias",
     "tabernas": "Tabernas (mín. 2)",
     "completadas": "completadas",
