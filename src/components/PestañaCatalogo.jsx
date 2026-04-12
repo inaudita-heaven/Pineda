@@ -207,8 +207,8 @@ const styles = {
     color: 'rgba(15,14,13,0.35)', margin: 0,
   },
   grupoLogo: {
-    height: '48px', maxWidth: '120px',
-    objectFit: 'contain', opacity: 0.75, flexShrink: 0,
+    height: '64px', maxWidth: '150px',
+    objectFit: 'contain', opacity: 0.85, flexShrink: 0,
   },
   grid: {
     display: 'grid',

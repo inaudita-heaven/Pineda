@@ -159,9 +159,9 @@ const styles = {
     marginBottom: '1.5rem',
   },
   logoGrande: {
-    height: '56px',
+    height: '72px',
     objectFit: 'contain',
-    opacity: 0.85,
+    opacity: 0.9,
   },
   logosColaboran: {
     display: 'flex',
@@ -170,10 +170,10 @@ const styles = {
     marginTop: '0.5rem',
   },
   logoSmall: {
-    height: '44px',
-    maxWidth: '140px',
+    height: '56px',
+    maxWidth: '160px',
     objectFit: 'contain',
-    opacity: 0.75,
+    opacity: 0.8,
   },
   boton: {
     padding: '1.1rem 3rem',

@@ -54,8 +54,7 @@ export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onV
               proximaApertura={proxima}
               obraPreview={obraPreview}
               onEscanear={() => onEscanear(stop.id)}
-              onVerCatalogo={() => onVerCatalogoSala(stop)}
-              t={t}
+                t={t}
             />
           );
         })}
@@ -67,7 +66,7 @@ export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onV
   );
 }
 
-function TarjetaParada({ stop, sellada, abierta, proximaApertura, obraPreview, onEscanear, onVerCatalogo, t }) {
+function TarjetaParada({ stop, sellada, abierta, proximaApertura, obraPreview, onEscanear, t }) {
   const [imgErr, setImgErr] = React.useState(false);
   const esExposicion = stop.required;
   const logo = LOGOS[stop.id];
@@ -144,9 +143,6 @@ function TarjetaParada({ stop, sellada, abierta, proximaApertura, obraPreview, o
             {t('parada.boton_escanear')}
           </button>
         )}
-        <button onClick={onVerCatalogo} style={styles.btnCatalogo}>
-          {t('catalogo.titulo')} →
-        </button>
         <a
           href={stop.mapsUrl}
           target="_blank"
@@ -242,11 +238,11 @@ const styles = {
     color: 'rgba(15,14,13,0.35)', margin: '0.3rem 0 0',
   },
   logoSala: {
-    height: '44px',
-    maxWidth: '110px',
+    height: '64px',
+    maxWidth: '160px',
     objectFit: 'contain',
     flexShrink: 0,
-    opacity: 0.8,
+    opacity: 0.9,
   },
   previewWrap: {
     position: 'relative',
@@ -302,17 +298,6 @@ const styles = {
     backgroundColor: '#0F0E0D',
     color: '#fff',
     border: 'none',
-    cursor: 'pointer',
-  },
-  btnCatalogo: {
-    fontFamily: SANS,
-    fontSize: '0.7rem',
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    padding: '0.5rem 0.9rem',
-    backgroundColor: 'transparent',
-    color: '#0F0E0D',
-    border: '1px solid #0F0E0D',
     cursor: 'pointer',
   },
   btnMaps: {
