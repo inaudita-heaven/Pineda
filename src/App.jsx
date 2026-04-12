@@ -22,7 +22,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // ── Componentes de pantalla ────────────────────────────────────────────────────
-import PantallaCreditos      from './components/PantallaCreditos';
 import PantallaBienvenida    from './components/PantallaBienvenida';
 import PantallaIntermedia    from './components/PantallaIntermedia';
 import CouponUnlockedModal   from './components/CouponUnlockedModal';
@@ -39,7 +38,7 @@ import PestañaCupon         from './components/PestañaCupon';
 import { stops, getStopByToken, isStopOpen, getNextOpenTime } from './data/stops';
 import {
   getSessionId, getVisitedStops, addVisitedStop,
-  isStopVisited, hasSeenCredits, markCreditsSeen,
+  isStopVisited,
   saveCoupon, getSavedCoupon, hasCoupon,
 } from './lib/session';
 import { checkCouponEligibility } from './lib/coupon';
@@ -74,12 +73,7 @@ export default function App() {
   );
 
   // ── Pantalla activa ────────────────────────────────────────────────────────
-  // FIX [2]: El estado inicial SIEMPRE muestra creditos o bienvenida.
-  // Nunca salta a 'escaner' aunque haya QR en la URL.
-  const [pantalla, setPantalla] = useState(() => {
-    if (!hasSeenCredits()) return 'creditos';
-    return 'bienvenida'; // QR pendiente se procesa en onComenzar
-  });
+  const [pantalla, setPantalla] = useState('bienvenida');
 
   // ── Estado del escáner ─────────────────────────────────────────────────────
   const [scanLock, setScanLock]           = useState(false);
@@ -225,21 +219,8 @@ export default function App() {
   return (
     <div style={styles.root}>
 
-      {/* Selector de idioma flotante — oculto en creditos */}
-      {pantalla !== 'creditos' && (
-        <LanguageSelector variant="floating" />
-      )}
-
-      {/* ── PantallaCreditos — solo una vez ─────────────────────────────── */}
-      {pantalla === 'creditos' && (
-        // FIX [4]: onClose siempre va a 'bienvenida' (correcto)
-        <PantallaCreditos
-          onClose={() => {
-            markCreditsSeen();
-            setPantalla('bienvenida');
-          }}
-        />
-      )}
+      {/* Selector de idioma flotante */}
+      <LanguageSelector variant="floating" />
 
       {/* ── PantallaBienvenida ───────────────────────────────────────────── */}
       {pantalla === 'bienvenida' && (
