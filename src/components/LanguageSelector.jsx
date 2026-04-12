@@ -26,6 +26,8 @@ const LANGS = [
   { code: 'en', label: 'EN', nombre: 'English' },
   { code: 'fr', label: 'FR', nombre: 'Français' },
   { code: 'de', label: 'DE', nombre: 'Deutsch' },
+  { code: 'zh', label: '中文', nombre: '中文' },
+  { code: 'ja', label: '日本語', nombre: '日本語' },
 ];
 
 // ── Componente principal ───────────────────────────────────────────────────────
