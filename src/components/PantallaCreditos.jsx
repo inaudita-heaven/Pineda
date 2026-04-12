@@ -38,25 +38,41 @@ export default function PantallaCreditos({ onClose = () => {} }) {
         style={{ ...styles.modal, transform: saliendo ? 'scale(0.97)' : 'scale(1)' }}
         onClick={e => e.stopPropagation()}
       >
+        {/* Produce — encima del retrato */}
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.75rem',
+          marginBottom: '1rem',
+        }}>
+          <img
+            src="/logos/INA_Branding_Negro.png"
+            alt="La Inaudita"
+            style={{ height: '48px', objectFit: 'contain', opacity: 0.9 }}
+          />
+          <p style={{
+            fontFamily: '"Rubik", system-ui, sans-serif',
+            fontSize: '0.6rem',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'rgba(15,14,13,0.45)',
+            margin: 0,
+          }}>
+            produce
+          </p>
+        </div>
+
         {/* Retrato — sin marco */}
         <div style={styles.retratoWrap}>
           <img src="/images/autopineda.png" alt="Rafael Pineda" style={styles.retrato} />
         </div>
 
-        {/* Produce */}
-        <div style={styles.seccion}>
-          <p style={styles.label}>{t('creditos.produce')}</p>
-          <div style={styles.logoWrap}>
-            <img src="/logos/INA_Branding_Negro.png" alt="La Inaudita" style={styles.logo} />
-          </div>
-        </div>
-
-        <div style={styles.divisor} />
-
         {/* Colaboran */}
         <div style={styles.seccion}>
           <p style={styles.label}>{t('creditos.colaboran')}</p>
-          <div style={styles.logoFila}>
+          <div style={{ ...styles.logoFila, gap: '2.5rem' }}>
             <img src="/logos/logoviana.png" alt="Palacio de Viana" style={styles.logoSmall} />
             <img src="/logos/logo-casa12pb.png.png" alt="Casa 12PB" style={styles.logoSmall} />
           </div>
@@ -157,9 +173,10 @@ const styles = {
     flexWrap: 'wrap',
   },
   logoSmall: {
-    maxHeight: '48px',
-    maxWidth: '140px',
+    height: '52px',
+    maxWidth: '150px',
     objectFit: 'contain',
+    opacity: 0.85,
   },
   divisor: {
     height: '1px',

@@ -15,7 +15,7 @@ const LOGOS = {
   13: '/logos/INA_Branding_Negro.png',
 };
 
-export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onVerCatalogoSala }) {
+export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onVerCatalogoSala = () => {} }) {
   const { t } = useTranslation();
   const ahora = new Date();
 
@@ -54,7 +54,8 @@ export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onV
               proximaApertura={proxima}
               obraPreview={obraPreview}
               onEscanear={() => onEscanear(stop.id)}
-                t={t}
+              onVerCatalogo={() => onVerCatalogoSala(stop)}
+              t={t}
             />
           );
         })}
@@ -66,7 +67,7 @@ export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onV
   );
 }
 
-function TarjetaParada({ stop, sellada, abierta, proximaApertura, obraPreview, onEscanear, t }) {
+function TarjetaParada({ stop, sellada, abierta, proximaApertura, obraPreview, onEscanear, onVerCatalogo, t }) {
   const [imgErr, setImgErr] = React.useState(false);
   const esExposicion = stop.required;
   const logo = LOGOS[stop.id];
