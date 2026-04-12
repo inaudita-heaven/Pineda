@@ -239,6 +239,8 @@
     "medidas_label": "Medidas",
     "año_label": "Año",
     "precio_label": "Precio",
-    "precio_pendiente": "Consultar en caja"
+    "precio_pendiente": "Consultar en caja",
+    "me_interesa": "Me interesa",
+    "consulta_inaudita": "Consulta disponibilidad en La Inaudita"
   }
 }

@@ -112,11 +112,7 @@ function GrupoSala({ stop, obras, t }) {
               <p style={styles.fichaTitulo}>{obra.title}</p>
               {obra.year && <p style={styles.fichaMeta}>{obra.year}</p>}
               {obra.technique && <p style={styles.fichaMeta}>{obra.technique}</p>}
-              {obra.price ? (
-                <p style={styles.fichaPrecio}>{obra.price} €</p>
-              ) : (
-                <p style={styles.fichaConsultar}>{t('catalogo.precio_pendiente')}</p>
-              )}
+              <p style={styles.fichaConsultar}>{t('catalogo.consulta_inaudita')}</p>
             </div>
           </div>
         ))}

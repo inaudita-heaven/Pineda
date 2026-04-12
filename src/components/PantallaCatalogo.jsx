@@ -81,22 +81,7 @@ function TarjetaObra({ obra, t }) {
         {obra.dimensions && (
           <p style={styles.fichaMeta}>{obra.dimensions} cm</p>
         )}
-        {obra.price ? (
-          <p style={styles.fichaPrecio}>
-            {obra.discountEligible
-              ? <><span style={styles.precioTachado}>{obra.price} €</span>
-                  {' '}<span style={styles.precioDescuento}>{Math.round(obra.price * 0.7)} €</span></>
-              : <span>{obra.price} €</span>
-            }
-          </p>
-        ) : (
-          <p style={styles.fichaPrecioNull}>
-            {t('catalogo.precio_pendiente')}
-          </p>
-        )}
-        {!obra.forSale && (
-          <p style={styles.fichaPrivada}>{t('catalogo.coleccion_privada')}</p>
-        )}
+        <p style={styles.fichaPrecioNull}>{t('catalogo.consulta_inaudita')}</p>
       </div>
 
     </div>

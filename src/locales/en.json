@@ -239,6 +239,8 @@
     "medidas_label": "Dimensions",
     "año_label": "Year",
     "precio_label": "Price",
-    "precio_pendiente": "Ask at the till"
+    "precio_pendiente": "Ask at the till",
+    "me_interesa": "I'm interested",
+    "consulta_inaudita": "Ask about availability at La Inaudita"
   }
 }

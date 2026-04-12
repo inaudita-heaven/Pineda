@@ -239,6 +239,8 @@
     "medidas_label": "Dimensions",
     "año_label": "Année",
     "precio_label": "Prix",
-    "precio_pendiente": "Renseignez-vous à la caisse"
+    "precio_pendiente": "Renseignez-vous à la caisse",
+    "me_interesa": "Ça m'intéresse",
+    "consulta_inaudita": "Renseignez-vous sur la disponibilité à La Inaudita"
   }
 }

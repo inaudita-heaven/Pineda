@@ -57,9 +57,9 @@ export default function CouponUnlockedModal({ sessionId, onClose }) {
           <p style={{
             fontFamily: SANS, fontSize: '0.75rem',
             color: 'rgba(15,14,13,0.6)', textAlign: 'center',
-            margin: '0 0 0.5rem', fontWeight: '300',
+            margin: '0.75rem 0 0.5rem', fontWeight: '300', lineHeight: 1.5,
           }}>
-            ⚠️ Haz una captura de pantalla antes de ir a WhatsApp
+            ⚠️ Haz una captura de pantalla a este código antes de continuar
           </p>
           <a
             href={`https://wa.me/34636291910?text=Hola%2C%20he%20completado%20la%20Ruta%20Pineda.%20Mi%20c%C3%B3digo%20es%20${encodeURIComponent(code)}.%20Quiero%20reclamar%20mi%20copa%20gratis.`}
@@ -217,13 +217,12 @@ const s = {
   botonCerrar: {
     fontFamily: SANS,
     fontSize: '0.85rem',
-    fontWeight: '600',
     letterSpacing: '1px',
     textTransform: 'uppercase',
     padding: '0.9rem',
-    backgroundColor: '#fff',
-    color: '#000',
-    border: '2px solid #000',
+    backgroundColor: 'transparent',
+    color: 'rgba(15,14,13,0.5)',
+    border: '1px solid #e8e6e3',
     cursor: 'pointer',
     minHeight: '48px',
     width: '100%',
