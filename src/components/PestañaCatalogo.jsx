@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { catalog } from '../data/catalog';
 import { stops } from '../data/stops';
+import FormInteresado from './FormInteresado';
 
 const PLAYFAIR = '"Playfair Display","IM Fell English",Georgia,serif';
 const SANS = '"Rubik",system-ui,sans-serif';
@@ -13,9 +14,10 @@ const LOGOS = {
   13: '/logos/INA_Branding_Negro.png',
 };
 
-export default function PestañaCatalogo({ onVerSala }) {
+export default function PestañaCatalogo({ onVerSala, sessionId }) {
   const { t } = useTranslation();
   const [filtro, setFiltro] = useState('todas');
+  const [formObra, setFormObra] = React.useState(null);
 
   // Agrupar obras por paradaId
   const grupos = stops
@@ -57,16 +59,24 @@ export default function PestañaCatalogo({ onVerSala }) {
       {/* Grupos por sala */}
       <div style={styles.contenido}>
         {grupos.map(({ stop, obras }) => (
-          <GrupoSala key={stop.id} stop={stop} obras={obras} t={t} />
+          <GrupoSala key={stop.id} stop={stop} obras={obras} t={t} setFormObra={setFormObra} />
         ))}
         <div style={{ height: '72px' }} />
       </div>
+
+      {formObra && (
+        <FormInteresado
+          obra={formObra}
+          sessionId={sessionId ?? ''}
+          onClose={() => setFormObra(null)}
+        />
+      )}
 
     </div>
   );
 }
 
-function GrupoSala({ stop, obras, t }) {
+function GrupoSala({ stop, obras, t, setFormObra }) {
   const [imgErrors, setImgErrors] = React.useState({});
   const logo = LOGOS[stop.id];
 
@@ -114,6 +124,20 @@ function GrupoSala({ stop, obras, t }) {
               {obra.technique && <p style={styles.fichaMeta}>{obra.technique}</p>}
               {obra.dimensions && <p style={styles.fichaMeta}>{obra.dimensions} cm</p>}
               <p style={styles.fichaConsultar}>{t('catalogo.consulta_inaudita')}</p>
+              <button
+                onClick={() => setFormObra(obra)}
+                style={{
+                  marginTop: '0.5rem', padding: '0.35rem 0',
+                  background: 'transparent', border: 'none',
+                  borderBottom: '1px solid rgba(15,14,13,0.3)',
+                  fontFamily: SANS,
+                  fontSize: '0.65rem', letterSpacing: '0.08em',
+                  textTransform: 'uppercase', color: 'rgba(15,14,13,0.6)',
+                  cursor: 'pointer', textAlign: 'left',
+                }}
+              >
+                {t('catalogo.me_interesa')}
+              </button>
             </div>
           </div>
         ))}

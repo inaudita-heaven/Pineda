@@ -1,7 +1,10 @@
 {
   "app": {
     "titulo": "Rafael Pineda, Pintor de Córdoba",
-    "subtitulo": "Ruta Expo · Abril - Mayo 2025"
+    "subtitulo": "Ruta Expo · Abril - Mayo 2025",
+    "tab_ruta": "Ruta",
+    "tab_catalogo": "Catálogo",
+    "tab_cupon": "Cupón"
   },
   "pantalla_bienvenida": {
     "titulo": "Rafael Pineda, Pintor de Córdoba",
