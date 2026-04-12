@@ -4,11 +4,17 @@ import { useTranslation } from 'react-i18next';
 export default function PantallaCreditos({ onClose = () => {} }) {
   const { t } = useTranslation();
   const [saliendo, setSaliendo] = useState(false);
+  const [segundos, setSegundos] = useState(6);
 
   useEffect(() => {
-    const timer = setTimeout(() => cerrar(), 7000);
-    return () => clearTimeout(timer);
-  }, []);
+    const intervalo = setInterval(() => {
+      setSegundos(s => {
+        if (s <= 1) { clearInterval(intervalo); cerrar(); return 0; }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(intervalo);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const cerrar = () => {
     if (saliendo) return;
@@ -38,41 +44,41 @@ export default function PantallaCreditos({ onClose = () => {} }) {
         style={{ ...styles.modal, transform: saliendo ? 'scale(0.97)' : 'scale(1)' }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Produce — encima del retrato */}
-        <div style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '0.75rem',
-          marginBottom: '1rem',
-        }}>
+
+        {/* 1. Logo La Inaudita — mismo ancho que el retrato */}
+        <div style={{ width: '100%', maxWidth: '320px', margin: '0 auto 1rem' }}>
           <img
             src="/logos/INA_Branding_Negro.png"
             alt="La Inaudita"
-            style={{ height: '48px', objectFit: 'contain', opacity: 0.9 }}
+            style={{ width: '100%', objectFit: 'contain', opacity: 0.9 }}
           />
-          <p style={{
-            fontFamily: '"Rubik", system-ui, sans-serif',
-            fontSize: '0.6rem',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: 'rgba(15,14,13,0.45)',
-            margin: 0,
-          }}>
-            produce
-          </p>
         </div>
 
-        {/* Retrato — sin marco */}
+        {/* 2. Retrato */}
         <div style={styles.retratoWrap}>
           <img src="/images/autopineda.png" alt="Rafael Pineda" style={styles.retrato} />
         </div>
 
-        {/* Colaboran */}
+        {/* 3. Título */}
+        <p style={styles.titulo}>
+          Rafael Pineda,<br />pintor de Córdoba
+        </p>
+
+        {/* 4. Fecha */}
+        <p style={styles.fecha}>15 abril · 30 mayo</p>
+
+        {/* 5. Produce — solo texto */}
+        <div style={styles.seccion}>
+          <p style={styles.label}>{t('creditos.produce')}</p>
+          <p style={styles.produceName}>La Inaudita</p>
+        </div>
+
+        <div style={styles.divisor} />
+
+        {/* 6. Colaboran */}
         <div style={styles.seccion}>
           <p style={styles.label}>{t('creditos.colaboran')}</p>
-          <div style={{ ...styles.logoFila, gap: '2.5rem' }}>
+          <div style={styles.logoFila}>
             <img src="/logos/logoviana.png" alt="Palacio de Viana" style={styles.logoSmall} />
             <img src="/logos/logo-casa12pb.png.png" alt="Casa 12PB" style={styles.logoSmall} />
           </div>
@@ -80,7 +86,7 @@ export default function PantallaCreditos({ onClose = () => {} }) {
 
         <div style={styles.divisor} />
 
-        {/* Participan */}
+        {/* 7. Participan */}
         <div style={styles.seccion}>
           <p style={styles.label}>{t('creditos.participan')}</p>
           <div style={styles.listaParticipantes}>
@@ -90,18 +96,20 @@ export default function PantallaCreditos({ onClose = () => {} }) {
           </div>
         </div>
 
+        {/* 8. Botón con cuenta atrás */}
         <div style={styles.footer}>
           <button onClick={cerrar} style={styles.boton}>
-            {t('pantalla_bienvenida.boton_comenzar')}
+            {t('pantalla_bienvenida.boton_comenzar')} · {segundos}s
           </button>
         </div>
+
       </div>
     </div>
   );
 }
 
 const PLAYFAIR = '"Playfair Display", "IM Fell English", Georgia, serif';
-const SANS = 'system-ui, sans-serif';
+const SANS = '"Rubik", system-ui, sans-serif';
 
 const styles = {
   overlay: {
@@ -130,15 +138,33 @@ const styles = {
   },
   retratoWrap: {
     textAlign: 'center',
-    paddingBottom: '1.5rem',
-    borderBottom: '2px solid #0F0E0D',
   },
   retrato: {
-    width: '160px',
+    width: '100%',
+    maxWidth: '320px',
     height: 'auto',
     objectFit: 'contain',
     display: 'block',
     margin: '0 auto',
+  },
+  titulo: {
+    fontFamily: PLAYFAIR,
+    fontSize: 'clamp(1.1rem, 4vw, 1.4rem)',
+    fontWeight: '400',
+    color: '#0F0E0D',
+    textAlign: 'center',
+    margin: '1rem 0 0.25rem',
+    lineHeight: 1.3,
+    textTransform: 'none',
+  },
+  fecha: {
+    fontFamily: SANS,
+    fontSize: '0.72rem',
+    letterSpacing: '0.12em',
+    color: 'rgba(15,14,13,0.45)',
+    textAlign: 'center',
+    margin: '0 0 1.5rem',
+    textTransform: 'uppercase',
   },
   seccion: {
     display: 'flex',
@@ -156,25 +182,23 @@ const styles = {
     color: 'rgba(15,14,13,0.4)',
     margin: 0,
   },
-  logoWrap: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  logo: {
-    maxHeight: '60px',
-    maxWidth: '200px',
-    objectFit: 'contain',
+  produceName: {
+    fontFamily: PLAYFAIR,
+    fontSize: '1rem',
+    fontWeight: '400',
+    color: '#0F0E0D',
+    margin: 0,
+    letterSpacing: '0.05em',
   },
   logoFila: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: '2rem',
-    flexWrap: 'wrap',
+    gap: '3rem',
   },
   logoSmall: {
-    height: '52px',
-    maxWidth: '150px',
+    height: '60px',
+    maxWidth: '160px',
     objectFit: 'contain',
     opacity: 0.85,
   },
