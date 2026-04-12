@@ -45,13 +45,9 @@ function EstadoPendiente({ eligib, visitedStops, t }) {
   return (
     <div style={styles.wrap}>
       <div style={styles.pendienteHeader}>
-        <p style={styles.eyebrow}>Tu cupón</p>
-        <h1 style={styles.titulo}>Completa la ruta</h1>
-        <p style={styles.narrativa}>
-          Visita las tres salas de la exposición y dos tabernas de la ruta.
-          Al completarlas, desbloqueas una <strong>copa de cata gratis</strong> y
-          un <strong>30% de descuento</strong> en obra seleccionada.
-        </p>
+        <p style={styles.eyebrow}>{t('cupon.titulo_progreso')}</p>
+        <h1 style={styles.titulo}>{t('app.tab_cupon')}</h1>
+        <p style={styles.narrativa}>{t('cupon.narrativa')}</p>
       </div>
 
       {/* Salas de exposición */}

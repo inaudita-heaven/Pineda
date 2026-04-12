@@ -58,6 +58,7 @@
   },
   "cupon": {
     "titulo_progreso": "Gutscheinfortschritt",
+    "narrativa": "Besuchen Sie die drei Ausstellungsräume und zwei Bars der Route. Danach erhalten Sie ein kostenloses Probeglas und 30% Rabatt auf ausgewählte Werke.",
     "salas_obligatorias": "Obligatorische Galerien",
     "tabernas": "Tavernen (min. 2)",
     "completadas": "abgeschlossen",

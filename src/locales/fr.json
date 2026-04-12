@@ -58,6 +58,7 @@
   },
   "cupon": {
     "titulo_progreso": "Progression du coupon",
+    "narrativa": "Visitez les trois salles d'exposition et deux bars du parcours. Une fois complété, vous débloquez un verre de dégustation offert et 30% de réduction sur une œuvre sélectionnée.",
     "salas_obligatorias": "Galeries obligatoires",
     "tabernas": "Tavernes (min. 2)",
     "completadas": "complétées",

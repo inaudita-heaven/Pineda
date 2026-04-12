@@ -56,6 +56,7 @@
   },
   "cupon": {
     "titulo_progreso": "クーポン進捗",
+    "narrativa": "3つの展示室とルート上の2軒の酒場を訪問してください。完了すると、無料テイスティングと選択作品の30%割引が解除されます。",
     "salas_obligatorias": "必須展示室",
     "tabernas": "酒場（最低2軒）",
     "completadas": "完了",
