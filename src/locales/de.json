@@ -66,7 +66,9 @@
     "cupón_desbloqueado": "GUTSCHEIN FREIGESCHALTET!",
     "dirígete_inaudita": "Gehe zu La Inaudita, um deine kostenlose Weinverkostung einzulösen.",
     "sigue_explorando": "Weiter erkundigen...",
-    "completa_salas": "Vervollständige die obligatorischen Galerien und besuche 2+ Tavernen."
+    "completa_salas": "Vervollständige die obligatorischen Galerien und besuche 2+ Tavernen.",
+    "falta_salas": "Ausstellungsräume fehlen noch",
+    "falta_tabernas": "Tavernen noch zu besuchen"
   },
   "modal_cupon": {
     "titulo": "GLÜCKWUNSCH!",

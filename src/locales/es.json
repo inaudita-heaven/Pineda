@@ -66,7 +66,9 @@
     "cupón_desbloqueado": "¡CUPÓN DESBLOQUEADO!",
     "dirígete_inaudita": "Dirígete a La Inaudita para canjear tu copa gratis.",
     "sigue_explorando": "Sigue explorando...",
-    "completa_salas": "Completa las salas obligatorias y visita 2+ tabernas."
+    "completa_salas": "Completa las salas obligatorias y visita 2+ tabernas.",
+    "falta_salas": "Faltan salas de exposición",
+    "falta_tabernas": "Faltan tabernas por visitar"
   },
   "modal_cupon": {
     "titulo": "¡FELICIDADES!",
