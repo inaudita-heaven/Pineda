@@ -11,3 +11,5 @@ catalogo/
 *.png
 !public/logos/
 !public/images/
+.claude/settings.local.json
+.claude/launch.json

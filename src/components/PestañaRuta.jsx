@@ -36,6 +36,24 @@ export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onV
         />
       </div>
 
+      {/* Banner domingo */}
+      {new Date().getDay() === 0 && (
+        <div style={{
+          backgroundColor: '#f9f8f7',
+          border: '1px solid #e8e6e3',
+          borderLeft: '3px solid #0F0E0D',
+          padding: '0.85rem 1.25rem',
+          margin: '0',
+          fontFamily: SANS,
+          fontSize: '0.78rem',
+          color: 'rgba(15,14,13,0.7)',
+          lineHeight: 1.5,
+        }}>
+          🗓️ Hoy es domingo. Puedes hacer la ruta y guardar tu cupón,
+          pero el premio se canjea de <strong>lunes a sábado</strong> en La Inaudita.
+        </div>
+      )}
+
       {/* Lista de paradas */}
       <div style={styles.lista}>
         {stops.map(stop => {

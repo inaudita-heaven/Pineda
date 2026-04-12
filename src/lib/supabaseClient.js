@@ -21,21 +21,24 @@ const supabaseUrl  = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnon = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnon) {
-  // Error claro en desarrollo — en producción Vite lanzará error en build si faltan.
-  console.error(
+  console.warn(
     '[supabaseClient] Faltan variables de entorno.\n' +
-    'Crea .env.local con VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.'
+    'Crea .env.local con VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.\n' +
+    'La app funcionará en modo offline (sin BD).'
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnon, {
-  auth: {
-    // Sin sesión de usuario: toda la app es anónima por diseño
-    persistSession: false,
-    autoRefreshToken: false,
-    detectSessionInUrl: false,
-  },
-});
+export const supabase = createClient(
+  supabaseUrl  || 'https://placeholder.supabase.co',
+  supabaseAnon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.stub',
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
+  }
+);
 
 // ── Helpers de RPC ─────────────────────────────────────────────────────────────
 // Wrappers tipados para las tres funciones RPC del schema.
