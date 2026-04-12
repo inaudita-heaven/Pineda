@@ -68,16 +68,44 @@ export default function FormInteresado({ obra, sessionId, onClose }) {
 
         {estado === 'ok' ? (
           <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-            <p style={{ fontFamily: PLAYFAIR, fontSize: '1.1rem',
-              color: '#0F0E0D', margin: '0 0 0.5rem' }}>
+            <p style={{
+              fontFamily: PLAYFAIR, fontSize: '1.1rem',
+              color: '#0F0E0D', margin: '0 0 0.25rem'
+            }}>
               Gracias, {form.nombre.split(' ')[0]}.
             </p>
-            <p style={{ fontFamily: SANS, fontSize: '0.85rem',
-              color: 'rgba(15,14,13,0.6)', margin: '0 0 1.5rem',
-              fontWeight: '300', lineHeight: 1.6 }}>
-              Nos pondremos en contacto contigo sobre esta obra.
+            <p style={{
+              fontFamily: SANS, fontSize: '0.82rem',
+              color: 'rgba(15,14,13,0.55)', margin: '0 0 1.5rem',
+              fontWeight: '300', lineHeight: 1.6
+            }}>
+              Hemos registrado tu interés. Si quieres información
+              de compra ahora mismo, escríbenos por WhatsApp.
             </p>
-            <button onClick={onClose} style={st.btnPrimario}>Cerrar</button>
+            <a
+              href={`https://wa.me/34636291910?text=Hola%2C%20acabo%20de%20registrar%20mi%20inter%C3%A9s%20por%20la%20obra%20%E2%80%9C${encodeURIComponent(obra.title)}%E2%80%9D%20(Ref%3A%20${obra.id}).%20Me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n.`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'block',
+                padding: '0.85rem',
+                backgroundColor: '#0F0E0D',
+                color: '#fff',
+                fontFamily: SANS,
+                fontSize: '0.72rem',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                marginBottom: '0.75rem',
+              }}
+            >
+              Contactar por WhatsApp →
+            </a>
+            <button onClick={onClose} style={{
+              ...st.btnSecundario, width: '100%'
+            }}>
+              Cerrar
+            </button>
           </div>
         ) : (
           <>

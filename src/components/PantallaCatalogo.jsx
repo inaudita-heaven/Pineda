@@ -1,18 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { getObrasByParada } from '../data/catalog';
-import Lightbox from './Lightbox';
-import FormInteresado from './FormInteresado';
 
 const PLAYFAIR = '"Playfair Display", "IM Fell English", Georgia, serif';
 const SANS = '"Rubik", system-ui, sans-serif';
 
-export default function PantallaCatalogo({ stop, onVolver, sessionId }) {
+export default function PantallaCatalogo({ stop, onVolver }) {
   const { t } = useTranslation();
   const obras = getObrasByParada(stop.paradaId ?? stop.id);
   const nombreSala = t(`paradas_nombres.p${stop.id}`);
-  const [lightbox, setLightbox] = React.useState(null);
-  const [formObra, setFormObra] = React.useState(null);
 
   return (
     <div style={styles.pantalla}>
@@ -40,45 +36,22 @@ export default function PantallaCatalogo({ stop, onVolver, sessionId }) {
           <p style={styles.sinObras}>Sin obras registradas para esta sala.</p>
         )}
         {obras.map(obra => (
-          <TarjetaObra
-            key={obra.id}
-            obra={obra}
-            t={t}
-            onLightbox={(item) => setLightbox(item)}
-            onFormObra={(o) => setFormObra(o)}
-          />
+          <TarjetaObra key={obra.id} obra={obra} t={t} />
         ))}
       </div>
-
-      {lightbox && (
-        <Lightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />
-      )}
-      {formObra && (
-        <FormInteresado
-          obra={formObra}
-          sessionId={sessionId ?? ''}
-          onClose={() => setFormObra(null)}
-        />
-      )}
 
     </div>
   );
 }
 
-function TarjetaObra({ obra, t, onLightbox, onFormObra }) {
+function TarjetaObra({ obra, t }) {
   const [imgError, setImgError] = React.useState(false);
 
   return (
     <div style={styles.tarjeta}>
 
       {/* Imagen */}
-      <div
-        style={{
-          ...styles.imgWrap,
-          cursor: obra.imageUrl && !imgError ? 'zoom-in' : 'default',
-        }}
-        onClick={() => obra.imageUrl && !imgError && onLightbox({ src: obra.imageUrl, alt: obra.title })}
-      >
+      <div style={styles.imgWrap}>
         {obra.imageUrl && !imgError ? (
           <img
             src={obra.imageUrl}
@@ -108,26 +81,7 @@ function TarjetaObra({ obra, t, onLightbox, onFormObra }) {
         {obra.dimensions && (
           <p style={styles.fichaMeta}>{obra.dimensions} cm</p>
         )}
-        {obra.price ? (
-          <p style={styles.fichaPrecio}>
-            {obra.discountEligible
-              ? <><span style={styles.precioTachado}>{obra.price} €</span>
-                  {' '}<span style={styles.precioDescuento}>{Math.round(obra.price * 0.7)} €</span></>
-              : <span>{obra.price} €</span>
-            }
-          </p>
-        ) : (
-          <p style={styles.fichaPrecioNull}>
-            {t('catalogo.precio_pendiente')}
-          </p>
-        )}
-        {!obra.forSale && (
-          <p style={styles.fichaPrivada}>{t('catalogo.coleccion_privada')}</p>
-        )}
-        <button
-          onClick={() => onFormObra(obra)}
-          style={styles.btnMeInteresa}
-        >Me interesa →</button>
+        <p style={styles.fichaPrecioNull}>{t('catalogo.consulta_inaudita')}</p>
       </div>
 
     </div>
@@ -297,14 +251,5 @@ const styles = {
     color: 'rgba(15,14,13,0.35)',
     margin: '0.2rem 0 0 0',
     letterSpacing: '0.04em',
-  },
-  btnMeInteresa: {
-    marginTop: '0.5rem', padding: '0.35rem 0',
-    background: 'transparent', border: 'none',
-    borderBottom: '1px solid rgba(15,14,13,0.3)',
-    fontFamily: SANS,
-    fontSize: '0.65rem', letterSpacing: '0.08em',
-    textTransform: 'uppercase', color: 'rgba(15,14,13,0.6)',
-    cursor: 'pointer', textAlign: 'left',
   },
 };

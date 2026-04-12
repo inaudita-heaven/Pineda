@@ -1,8 +1,5 @@
 {
   "app": {
-    "tab_ruta": "Route",
-    "tab_catalogo": "Catalogue",
-    "tab_cupon": "Coupon",
     "titulo": "Rafael Pineda, Painter of Córdoba",
     "subtitulo": "Route Expo · April - May 2025"
   },
@@ -70,7 +67,8 @@
     "dirígete_inaudita": "Go to La Inaudita to redeem your free wine tasting.",
     "sigue_explorando": "Keep exploring...",
     "completa_salas": "Complete the mandatory galleries and visit 2+ taverns.",
-    "narrativa": "Visit the three exhibition galleries and two taverns on the route. Once complete, you unlock a free wine tasting and a 30% discount on selected artwork."
+    "falta_salas": "Exhibition galleries pending",
+    "falta_tabernas": "Taverns still to visit"
   },
   "modal_cupon": {
     "titulo": "CONGRATULATIONS!",
@@ -203,8 +201,6 @@
     "english": "English",
     "francais": "French",
     "deutsch": "German",
-    "chino": "Chinese",
-    "japones": "Japanese",
     "atras": "← Back",
     "siguiente": "Next →",
     "cerrar": "Close",
@@ -243,6 +239,8 @@
     "medidas_label": "Dimensions",
     "año_label": "Year",
     "precio_label": "Price",
-    "precio_pendiente": "Ask at the till"
+    "precio_pendiente": "Ask at the till",
+    "me_interesa": "I'm interested",
+    "consulta_inaudita": "Ask about availability at La Inaudita"
   }
 }

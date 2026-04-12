@@ -68,7 +68,9 @@
     "dirígete_inaudita": "前往拉伊纳乌迪塔兑换免费品酒。",
     "sigue_explorando": "继续探索...",
     "completa_salas": "完成必选展厅并参观2家以上酒馆。",
-    "narrativa": "参观三个展厅和路线上的两家酒馆。完成后，您将解锁一杯免费品酒和所选艺术品七折优惠。"
+    "narrativa": "参观三个展厅和路线上的两家酒馆。完成后，您将解锁一杯免费品酒和所选艺术品七折优惠。",
+    "falta_salas": "展厅尚未完成",
+    "falta_tabernas": "酒馆尚未完成"
   },
   "modal_cupon": {
     "titulo": "恭喜！",
@@ -207,6 +209,8 @@
     "medidas_label": "尺寸",
     "año_label": "年份",
     "precio_label": "价格",
-    "precio_pendiente": "请在展厅咨询"
+    "precio_pendiente": "请在展厅咨询",
+    "me_interesa": "我感兴趣",
+    "consulta_inaudita": "请在拉伊纳乌迪塔咨询购买可能性"
   }
 }

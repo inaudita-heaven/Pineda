@@ -22,7 +22,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 // ── Componentes de pantalla ────────────────────────────────────────────────────
-import PantallaCreditos      from './components/PantallaCreditos';
 import PantallaBienvenida    from './components/PantallaBienvenida';
 import PantallaIntermedia    from './components/PantallaIntermedia';
 import CouponUnlockedModal   from './components/CouponUnlockedModal';
@@ -39,7 +38,7 @@ import PestañaCupon         from './components/PestañaCupon';
 import { stops, getStopByToken, isStopOpen, getNextOpenTime } from './data/stops';
 import {
   getSessionId, getVisitedStops, addVisitedStop,
-  isStopVisited, hasSeenCredits, markCreditsSeen,
+  isStopVisited,
   saveCoupon, getSavedCoupon, hasCoupon,
 } from './lib/session';
 import { checkCouponEligibility } from './lib/coupon';
@@ -47,6 +46,46 @@ import { supabase } from './lib/supabaseClient';
 
 // ── Constante anti-doble-escaneo ───────────────────────────────────────────────
 const SCAN_LOCK_MS = 3000;
+
+// ── Cola de sincronización offline ─────────────────────────────────────────────
+const SYNC_QUEUE_KEY = 'pineda_sync_queue';
+
+function getSyncQueue() {
+  try {
+    return JSON.parse(localStorage.getItem(SYNC_QUEUE_KEY) || '[]');
+  } catch { return []; }
+}
+
+function addToSyncQueue(item) {
+  const q = getSyncQueue();
+  if (!q.find(i => i.stopId === item.stopId && i.sessionId === item.sessionId)) {
+    q.push({ ...item, timestamp: Date.now() });
+    localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(q));
+  }
+}
+
+function removeFromSyncQueue(stopId, sessionId) {
+  const q = getSyncQueue().filter(
+    i => !(i.stopId === stopId && i.sessionId === sessionId)
+  );
+  localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(q));
+}
+
+async function syncQueueToSupabase(sessionId) {
+  const q = getSyncQueue();
+  if (q.length === 0) return;
+  for (const item of q) {
+    try {
+      const { error } = await supabase.rpc('registrar_escaneo', {
+        p_session_id:      item.sessionId,
+        p_stop_id:         item.stopId,
+        p_token:           item.token,
+        p_idempotency_key: item.idempotencyKey,
+      });
+      if (!error) removeFromSyncQueue(item.stopId, item.sessionId);
+    } catch { /* sin conexión, reintenta después */ }
+  }
+}
 
 // ══════════════════════════════════════════════════════════════════════════════
 export default function App() {
@@ -74,12 +113,7 @@ export default function App() {
   );
 
   // ── Pantalla activa ────────────────────────────────────────────────────────
-  // FIX [2]: El estado inicial SIEMPRE muestra creditos o bienvenida.
-  // Nunca salta a 'escaner' aunque haya QR en la URL.
-  const [pantalla, setPantalla] = useState(() => {
-    if (!hasSeenCredits()) return 'creditos';
-    return 'bienvenida'; // QR pendiente se procesa en onComenzar
-  });
+  const [pantalla, setPantalla] = useState('bienvenida');
 
   // ── Estado del escáner ─────────────────────────────────────────────────────
   const [scanLock, setScanLock]           = useState(false);
@@ -115,6 +149,14 @@ export default function App() {
     }
   }, [visitedStops]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Sync offline al recuperar conexión ────────────────────────────────────
+  useEffect(() => {
+    const handleOnline = () => syncQueueToSupabase(sessionId);
+    window.addEventListener('online', handleOnline);
+    if (navigator.onLine) syncQueueToSupabase(sessionId);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ══════════════════════════════════════════════════════════════════════════
   // Lógica de escaneo QR
   // ══════════════════════════════════════════════════════════════════════════
@@ -124,67 +166,63 @@ export default function App() {
     setScanLock(true);
     setScanError(null);
 
-    // 1. Validar token
-    const stop = getStopByToken(token);
-    if (!stop || stop.id !== stopId) {
+    // 1. Validación local inmediata
+    const stop = stops.find(s => s.id === stopId);
+    if (!stop) {
       setScanError(t('escaner.error_token'));
-      setTimeout(() => {
-        setScanLock(false);
-        setScanError(null);
-        setPantalla('app');
-      }, 2000);
+      setScanLock(false);
       return;
     }
-
-    // 2. Idempotencia: ya sellada
-    if (isStopVisited(stopId)) {
+    if (visitedStops.includes(stopId)) {
       setScanError(t('escaner.error_ya_sellada'));
-      setTimeout(() => {
-        setScanLock(false);
-        setScanError(null);
-        setPantalla('app');
-      }, 2000);
+      setScanLock(false);
+      return;
+    }
+    if (stop.token && token !== stop.token) {
+      setScanError(t('escaner.error_token'));
+      setScanLock(false);
       return;
     }
 
-    // 3. Registrar en Supabase (best-effort — no bloquea si falla)
-    try {
-      const idempotencyKey = `${sessionId}-${stopId}-${Math.floor(Date.now() / 60000)}`;
-      await supabase.from('escaneos_paradas').insert({
-        session_id:      sessionId,
-        parada_id:       stopId,
-        idempotency_key: idempotencyKey,
-      });
-    } catch (err) {
-      console.warn('[App] Supabase insert fallido (modo offline?):', err?.message);
-    }
-
-    // 4. Registrar visitante si es la primera parada
-    if (visitedStops.length === 0) {
-      try {
-        await supabase.from('visitantes').upsert(
-          { session_id: sessionId },
-          { onConflict: 'session_id' }
-        );
-      } catch (_) {}
-    }
-
-    // 5. Actualizar estado local
-    const updated = addVisitedStop(stopId);
-    setVisitedStops(updated);
+    // 2. UI Optimista: sellar inmediatamente sin esperar red
+    const newVisited = addVisitedStop(stopId);
+    setVisitedStops(newVisited);
     setParadaActiva(stop);
-
-    // FIX [3]: liberar scanLock con delay — anti-doble-escaneo
-    setTimeout(() => setScanLock(false), SCAN_LOCK_MS);
-
-    // 6. Limpiar token de URL (sin recargar)
-    window.history.replaceState({}, '', window.location.pathname);
-
-    // 7. Limpiar qrPendiente
-    setQrPendiente(null);
-
     setMostrarCatalogo(false);
+    window.history.replaceState({}, '', window.location.pathname);
+    setQrPendiente(null);
     setPantalla('parada_sellada');
+
+    // 3. Generar idempotency key
+    const idempotencyKey = `${sessionId}-${stopId}-${Math.floor(Date.now() / 60000)}`;
+    const syncItem = { sessionId, stopId, token, idempotencyKey };
+
+    // 4. Intentar sync con Supabase en background
+    if (navigator.onLine) {
+      try {
+        const { error } = await supabase.rpc('registrar_escaneo', {
+          p_session_id:      sessionId,
+          p_stop_id:         stopId,
+          p_token:           token,
+          p_idempotency_key: idempotencyKey,
+        });
+        if (error) addToSyncQueue(syncItem);
+      } catch {
+        addToSyncQueue(syncItem);
+      }
+    } else {
+      addToSyncQueue(syncItem);
+    }
+
+    // 5. Verificar cupón
+    const eligibility = checkCouponEligibility(newVisited);
+    if (eligibility.eligible && !hasCoupon()) {
+      generateCode();
+      setCouponYaMostrado(true);
+      setTimeout(() => setMostrarModalCupon(true), 800);
+    }
+
+    setTimeout(() => setScanLock(false), SCAN_LOCK_MS);
   }, [scanLock, sessionId, visitedStops, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Helper: genera código si no existe ────────────────────────────────────
@@ -225,47 +263,8 @@ export default function App() {
   return (
     <div style={styles.root}>
 
-      {/* Logo La Inaudita fijo — esquina superior derecha */}
-      {pantalla !== 'creditos' && (
-        <a
-          href="https://lainaudita.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            position: 'fixed',
-            top: '0.75rem',
-            right: '0.75rem',
-            zIndex: 200,
-          }}
-        >
-          <img
-            src="/logos/INA_Branding_Negro.png"
-            alt="La Inaudita"
-            style={{
-              height: '36px',
-              maxWidth: '130px',
-              objectFit: 'contain',
-              opacity: 0.85,
-            }}
-          />
-        </a>
-      )}
-
-      {/* Selector de idioma flotante — oculto en creditos */}
-      {pantalla !== 'creditos' && (
-        <LanguageSelector variant="floating" />
-      )}
-
-      {/* ── PantallaCreditos — solo una vez ─────────────────────────────── */}
-      {pantalla === 'creditos' && (
-        // FIX [4]: onClose siempre va a 'bienvenida' (correcto)
-        <PantallaCreditos
-          onClose={() => {
-            markCreditsSeen();
-            setPantalla('bienvenida');
-          }}
-        />
-      )}
+      {/* Selector de idioma flotante */}
+      <LanguageSelector variant="floating" />
 
       {/* ── PantallaBienvenida ───────────────────────────────────────────── */}
       {pantalla === 'bienvenida' && (
@@ -300,7 +299,6 @@ export default function App() {
           )}
           {tabActiva === 'catalogo' && (
             <PestañaCatalogo
-              sessionId={sessionId}
               onVerSala={(stop) => {
                 setParadaActiva(stop);
                 setMostrarCatalogo(true);
@@ -357,7 +355,6 @@ export default function App() {
       {mostrarCatalogo && paradaActiva && (
         <PantallaCatalogo
           stop={paradaActiva}
-          sessionId={sessionId}
           onVolver={() => setMostrarCatalogo(false)}
         />
       )}

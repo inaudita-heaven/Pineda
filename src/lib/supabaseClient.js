@@ -28,14 +28,11 @@ if (!supabaseUrl || !supabaseAnon) {
   );
 }
 
-// Fallback stub: evita que createClient() lance excepción en local sin .env.local.
-// Las llamadas a Supabase fallarán silenciosamente (try/catch en App.jsx).
 export const supabase = createClient(
   supabaseUrl  || 'https://placeholder.supabase.co',
   supabaseAnon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.stub',
   {
     auth: {
-      // Sin sesión de usuario: toda la app es anónima por diseño
       persistSession: false,
       autoRefreshToken: false,
       detectSessionInUrl: false,

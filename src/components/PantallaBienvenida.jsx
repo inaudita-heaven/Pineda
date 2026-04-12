@@ -75,6 +75,29 @@ export default function PantallaBienvenida({ onComenzar = () => {} }) {
           </div>
         </div>
 
+        <div style={styles.divisor} />
+
+        {/* 7. Participan */}
+        <div style={styles.seccionParticipan}>
+          <p style={styles.labelParticipan}>{t('creditos.participan')}</p>
+          <div style={styles.listaParticipantes}>
+            {[
+              t('paradas_nombres.p2'),
+              t('paradas_nombres.p3'),
+              t('paradas_nombres.p5'),
+              t('paradas_nombres.p6'),
+              t('paradas_nombres.p7'),
+              t('paradas_nombres.p8'),
+              t('paradas_nombres.p9'),
+              t('paradas_nombres.p10'),
+              t('paradas_nombres.p11'),
+              t('paradas_nombres.p12'),
+            ].map((nombre, i) => (
+              <p key={i} style={styles.participa}>{nombre}</p>
+            ))}
+          </div>
+        </div>
+
         {/* 8. Botón */}
         <div style={styles.footer}>
           <button className="bienvenida-boton" onClick={comenzar} style={styles.boton}>
@@ -165,10 +188,47 @@ const styles = {
     gap: '3rem',
   },
   logoSmall: {
-    height: '60px',
-    maxWidth: '320px',
+    width: '120px',
+    height: 'auto',
     objectFit: 'contain',
     opacity: 0.85,
+  },
+  divisor: {
+    height: '1px',
+    background: '#e8e6e3',
+  },
+  seccionParticipan: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  labelParticipan: {
+    fontFamily: SANS,
+    fontSize: '0.62rem',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+    color: 'rgba(15,14,13,0.4)',
+    textAlign: 'center',
+    margin: 0,
+  },
+  listaParticipantes: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '0.5rem 1.5rem',
+    width: '100%',
+  },
+  participa: {
+    fontFamily: PLAYFAIR,
+    fontSize: '0.78rem',
+    fontWeight: '400',
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    margin: 0,
+    color: 'rgba(15,14,13,0.65)',
+    lineHeight: '1.5',
+    textAlign: 'left',
   },
   labelColaboran: {
     fontFamily: SANS,

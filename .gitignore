@@ -12,3 +12,4 @@ catalogo/
 *.png
 !public/logos/
 !public/images/
+.claude/

@@ -1,7 +1,7 @@
 /**
  * ProgresoCupon.jsx
  * Widget de progreso hacia el cupón PINEDA30.
- * Muestra: paradas selladas, salas completadas, estado del cupón.
+ * Dos bloques: Exposición (3 salas) + Tabernas (contador X/2).
  */
 
 import React from 'react';
@@ -13,6 +13,9 @@ const SERIF = '"IM Fell English", "Cormorant Garamond", Georgia, serif';
 const SANS  = 'system-ui, -apple-system, sans-serif';
 
 const REQUIRED_IDS = [1, 4, 13];
+const TABERNA_IDS  = [2, 3, 5, 6, 7, 8, 9, 10, 11, 12];
+
+const SALA_LABELS = { 1: 'Viana', 4: '12PB', 13: 'Inaudita' };
 
 export default function ProgresoCupon({ visitedStopIds, onVerCupon }) {
   const { t }   = useTranslation();
@@ -21,7 +24,6 @@ export default function ProgresoCupon({ visitedStopIds, onVerCupon }) {
   const visited = new Set(visitedStopIds);
 
   if (eligib.eligible || coupon) {
-    // Cupón desbloqueado
     return (
       <div style={s.root} onClick={onVerCupon} role="button" tabIndex={0}
            onKeyDown={e => e.key === 'Enter' && onVerCupon()}>
@@ -37,51 +39,63 @@ export default function ProgresoCupon({ visitedStopIds, onVerCupon }) {
     );
   }
 
-  // En progreso
-  const totalVisited   = visitedStopIds.length;
-  const salasVisitadas = REQUIRED_IDS.filter(id => visited.has(id)).length;
+  const tavernasVisitadas = TABERNA_IDS.filter(id => visited.has(id)).length;
+  const tavernasOk = tavernasVisitadas >= 2;
 
   return (
     <div style={s.root}>
-      {/* Barra progreso */}
-      <div style={s.barraWrap}>
-        <div style={s.barraTrack}>
-          <div style={{ ...s.barraFill, width: `${(totalVisited / 13) * 100}%` }} />
-        </div>
-        <span style={s.barraLabel}>{totalVisited}/13</span>
-      </div>
 
-      {/* Píldoras de salas obligatorias */}
+      {/* BLOQUE A — Salas de la exposición */}
+      <p style={s.eyebrow}>Exposición</p>
       <div style={s.pillsRow}>
         {REQUIRED_IDS.map(id => {
           const ok = visited.has(id);
           return (
             <span key={id} style={{ ...s.pill, ...(ok ? s.pillOk : s.pillPend) }}>
-              {ok ? '✓ ' : ''}{t(`paradas_nombres.p${id}`).split(' ')[0]}
+              {ok ? '✓ ' : '○ '}{SALA_LABELS[id]}
             </span>
           );
         })}
       </div>
 
+      <div style={s.divisor} />
+
+      {/* BLOQUE B — Tabernas */}
+      <p style={s.eyebrow}>Tabernas</p>
+      <div style={s.tavernasRow}>
+        <div style={s.miniBarTrack}>
+          <div style={{
+            ...s.miniBarFill,
+            width: `${Math.min(tavernasVisitadas / 2, 1) * 100}%`,
+            backgroundColor: tavernasOk ? '#2d6e46' : '#000',
+          }} />
+        </div>
+        <span style={{ ...s.tavernasLabel, color: tavernasOk ? '#2d6e46' : '#888' }}>
+          {tavernasOk ? `✓ ${tavernasVisitadas}` : `${tavernasVisitadas}/2`}
+        </span>
+      </div>
+
       {/* Texto faltante */}
-      <p style={s.faltaTexto}>
-        {eligib.missingRequired.length > 0 && (
-          <>
-            {t('cupon.falta_salas', { n: eligib.missingRequired.length })}
-            {eligib.missingFree > 0 && ` · `}
-          </>
-        )}
-        {eligib.missingFree > 0 && t('cupon.falta_tabernas', { n: eligib.missingFree })}
-      </p>
+      {(eligib.missingRequired.length > 0 || eligib.missingFree > 0) && (
+        <p style={s.faltaTexto}>
+          {eligib.missingRequired.length > 0 && (
+            <>{t('cupon.falta_salas', { n: eligib.missingRequired.length })}{eligib.missingFree > 0 && ' · '}</>
+          )}
+          {eligib.missingFree > 0 && t('cupon.falta_tabernas', { n: eligib.missingFree })}
+        </p>
+      )}
     </div>
   );
 }
 
 const s = {
   root: {
-    padding: '1rem 1.25rem',
+    padding: '0.85rem 1.25rem',
     border: '1px solid #e8e6e3',
     backgroundColor: '#fafafa',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
   },
   // Cupón desbloqueado
   couponUnlocked: {
@@ -128,34 +142,20 @@ const s = {
     whiteSpace: 'nowrap',
   },
   // En progreso
-  barraWrap: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.6rem',
-    marginBottom: '0.75rem',
-  },
-  barraTrack: {
-    flex: 1,
-    height: '3px',
-    backgroundColor: '#e0e0e0',
-  },
-  barraFill: {
-    height: '100%',
-    backgroundColor: '#000',
-    transition: 'width 0.4s ease',
-  },
-  barraLabel: {
+  eyebrow: {
     fontFamily: SANS,
-    fontSize: '0.75rem',
-    fontWeight: '600',
-    color: '#999',
-    letterSpacing: '0.5px',
+    fontSize: '0.58rem',
+    fontWeight: '700',
+    letterSpacing: '0.14em',
+    textTransform: 'uppercase',
+    color: 'rgba(15,14,13,0.35)',
+    margin: '0',
   },
   pillsRow: {
     display: 'flex',
     gap: '0.4rem',
     flexWrap: 'wrap',
-    marginBottom: '0.6rem',
+    marginBottom: '0.25rem',
   },
   pill: {
     fontFamily: SANS,
@@ -167,20 +167,48 @@ const s = {
     border: '1px solid',
   },
   pillOk: {
-    backgroundColor: '#000',
+    backgroundColor: '#2d6e46',
     color: '#fff',
-    borderColor: '#000',
+    borderColor: '#2d6e46',
   },
   pillPend: {
     backgroundColor: '#fff',
     color: '#bbb',
     borderColor: '#ddd',
   },
+  divisor: {
+    height: '1px',
+    backgroundColor: '#e8e6e3',
+    margin: '0.25rem 0',
+  },
+  tavernasRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.6rem',
+    marginBottom: '0.25rem',
+  },
+  miniBarTrack: {
+    flex: 1,
+    height: '3px',
+    backgroundColor: '#e0e0e0',
+  },
+  miniBarFill: {
+    height: '100%',
+    transition: 'width 0.4s ease',
+  },
+  tavernasLabel: {
+    fontFamily: SANS,
+    fontSize: '0.72rem',
+    fontWeight: '700',
+    letterSpacing: '0.5px',
+    minWidth: '2rem',
+    textAlign: 'right',
+  },
   faltaTexto: {
     fontFamily: SANS,
-    fontSize: '0.75rem',
+    fontSize: '0.72rem',
     color: '#888',
-    margin: 0,
+    margin: '0',
     lineHeight: 1.4,
   },
 };

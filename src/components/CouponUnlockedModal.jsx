@@ -1,15 +1,13 @@
 /**
  * CouponUnlockedModal.jsx
  * Modal fullscreen que aparece cuando el visitante desbloquea el cupón PINEDA30.
- * Muestra el código, las condiciones de canje y el formulario RGPD de email.
+ * Muestra el código, las condiciones de canje y CTA WhatsApp.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { getSavedCoupon, saveCoupon } from '../lib/session';
 import { isCouponRedeemableToday } from '../lib/coupon';
-
-const EMAIL_DISMISSED_KEY = 'pineda_email_dismissed';
 
 const SERIF = '"IM Fell English", "Cormorant Garamond", Georgia, serif';
 const SANS  = 'system-ui, -apple-system, sans-serif';
@@ -17,25 +15,8 @@ const SANS  = 'system-ui, -apple-system, sans-serif';
 export default function CouponUnlockedModal({ sessionId, onClose }) {
   const { t } = useTranslation();
 
-  const code           = getSavedCoupon() || buildCode(sessionId);
-  const redeemableHoy  = isCouponRedeemableToday();
-  const emailDismissed = Boolean(localStorage.getItem(EMAIL_DISMISSED_KEY));
-
-  const [email, setEmail]         = useState('');
-  const [consent, setConsent]     = useState(false);
-  const [emailState, setEmailState] = useState(emailDismissed ? 'dismissed' : 'idle');
-
-  function handleGuardar(e) {
-    e.preventDefault();
-    if (!email || !consent) return;
-    localStorage.setItem('pineda_coupon_email', email);
-    setEmailState('saved');
-  }
-
-  function handleDismiss() {
-    localStorage.setItem(EMAIL_DISMISSED_KEY, '1');
-    setEmailState('dismissed');
-  }
+  const code          = getSavedCoupon() || buildCode(sessionId);
+  const redeemableHoy = isCouponRedeemableToday();
 
   return (
     <div style={s.overlay} onClick={onClose}>
@@ -71,47 +52,31 @@ export default function CouponUnlockedModal({ sessionId, onClose }) {
         {/* Fine print */}
         <p style={s.finePrint}>{t('cupon.fine_print')}</p>
 
-        {/* Formulario email RGPD */}
-        {emailState === 'idle' && (
-          <form style={s.emailForm} onSubmit={handleGuardar}>
-            <p style={s.emailLabel}>{t('cupon.email_label')}</p>
-            <input
-              type="email"
-              style={s.emailInput}
-              placeholder="tu@email.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              autoComplete="email"
-            />
-            <label style={s.rgpdLabel}>
-              <input
-                type="checkbox"
-                checked={consent}
-                onChange={e => setConsent(e.target.checked)}
-                style={s.checkbox}
-              />
-              <span style={s.rgpdTexto}>
-                {t('cupon.rgpd_texto_1')}{' '}
-                <a href="mailto:info@lainaudita.es" style={s.link}>info@lainaudita.es</a>
-                {t('cupon.rgpd_texto_2')}
-              </span>
-            </label>
-            <button
-              type="submit"
-              style={{ ...s.botonPrimario, opacity: (!email || !consent) ? 0.4 : 1 }}
-              disabled={!email || !consent}
-            >
-              {t('cupon.email_guardar')}
-            </button>
-            <button type="button" style={s.botonDismiss} onClick={handleDismiss}>
-              {t('cupon.email_dismiss')}
-            </button>
-          </form>
-        )}
-
-        {emailState === 'saved' && (
-          <p style={s.emailSaved}>{t('cupon.email_saved')}</p>
-        )}
+        {/* WhatsApp CTA */}
+        <div style={s.waSection}>
+          <p style={{
+            fontFamily: SANS, fontSize: '0.75rem',
+            color: 'rgba(15,14,13,0.6)', textAlign: 'center',
+            margin: '0.75rem 0 0.5rem', fontWeight: '300', lineHeight: 1.5,
+          }}>
+            ⚠️ Haz una captura de pantalla a este código antes de continuar
+          </p>
+          <a
+            href={`https://wa.me/34636291910?text=Hola%2C%20he%20completado%20la%20Ruta%20Pineda.%20Mi%20c%C3%B3digo%20es%20${encodeURIComponent(code)}.%20Quiero%20reclamar%20mi%20copa%20gratis.`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'block', padding: '0.85rem',
+              backgroundColor: '#0F0E0D', color: '#fff',
+              fontFamily: SANS, fontSize: '0.72rem',
+              letterSpacing: '0.1em', textTransform: 'uppercase',
+              textDecoration: 'none', textAlign: 'center',
+              marginBottom: '0.75rem',
+            }}
+          >
+            Solicitar mi premio por WhatsApp →
+          </a>
+        </div>
 
         {/* Botón cerrar */}
         <button style={s.botonCerrar} onClick={onClose}>
@@ -245,94 +210,21 @@ const s = {
     textAlign: 'center',
     margin: 0,
   },
-  // Email form
-  emailForm: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
+  waSection: {
     borderTop: '1px solid #e0e0e0',
     paddingTop: '1rem',
-  },
-  emailLabel: {
-    fontFamily: SERIF,
-    fontSize: '0.9rem',
-    fontStyle: 'italic',
-    margin: 0,
-    textAlign: 'center',
-  },
-  emailInput: {
-    fontFamily: SANS,
-    fontSize: '0.9rem',
-    padding: '0.75rem',
-    border: '1px solid #000',
-    width: '100%',
-    boxSizing: 'border-box',
-    outline: 'none',
-  },
-  rgpdLabel: {
-    display: 'flex',
-    gap: '0.6rem',
-    alignItems: 'flex-start',
-    cursor: 'pointer',
-  },
-  checkbox: {
-    marginTop: '3px',
-    flexShrink: 0,
-    accentColor: '#000',
-  },
-  rgpdTexto: {
-    fontFamily: SANS,
-    fontSize: '0.72rem',
-    color: '#666',
-    lineHeight: 1.5,
-  },
-  link: {
-    color: '#000',
-  },
-  botonPrimario: {
-    fontFamily: SANS,
-    fontSize: '0.85rem',
-    fontWeight: '600',
-    letterSpacing: '1px',
-    textTransform: 'uppercase',
-    padding: '0.9rem',
-    backgroundColor: '#000',
-    color: '#fff',
-    border: 'none',
-    cursor: 'pointer',
-    minHeight: '48px',
-  },
-  botonDismiss: {
-    fontFamily: SANS,
-    fontSize: '0.78rem',
-    color: '#aaa',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    textAlign: 'center',
-    textDecoration: 'underline',
-    textUnderlineOffset: '2px',
-    padding: '0.25rem',
-  },
-  emailSaved: {
-    fontFamily: SANS,
-    fontSize: '0.82rem',
-    color: '#333',
-    textAlign: 'center',
-    margin: 0,
-    fontWeight: '600',
   },
   botonCerrar: {
     fontFamily: SANS,
     fontSize: '0.85rem',
-    fontWeight: '600',
     letterSpacing: '1px',
     textTransform: 'uppercase',
     padding: '0.9rem',
-    backgroundColor: '#fff',
-    color: '#000',
-    border: '2px solid #000',
+    backgroundColor: 'transparent',
+    color: 'rgba(15,14,13,0.5)',
+    border: '1px solid #e8e6e3',
     cursor: 'pointer',
     minHeight: '48px',
+    width: '100%',
   },
 };
