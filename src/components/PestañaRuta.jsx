@@ -61,7 +61,9 @@ export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onV
           const abierta   = isStopOpen(stop, ahora);
           const proxima   = abierta === false ? getNextOpenTime(stop, ahora) : null;
           const obras     = getObrasByParada(stop.id);
-          const obraPreview = obras.find(o => o.imageUrl) ?? null;
+          const obraPreview = obras.find(o => o.imageUrl && o.title?.toLowerCase().includes('primer autorretrato'))
+            ?? obras.find(o => o.imageUrl)
+            ?? null;
 
           return (
             <TarjetaParada
