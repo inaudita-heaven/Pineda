@@ -67,9 +67,12 @@ export default function PantallaBienvenida({ onComenzar = () => {} }) {
         </div>
 
         {/* 6. Colaboran */}
-        <div style={styles.logoFila}>
-          <img src="/logos/logoviana.png" alt="Palacio de Viana" style={styles.logoSmall} />
-          <img src="/logos/logo-casa12pb.png.png" alt="Casa 12PB" style={styles.logoSmall} />
+        <div>
+          <p style={styles.labelColaboran}>Colaboran</p>
+          <div style={styles.logoFila}>
+            <img src="/logos/logoviana.png" alt="Palacio de Viana" style={styles.logoSmall} />
+            <img src="/logos/logo-casa12pb.png.png" alt="Casa 12PB" style={styles.logoSmall} />
+          </div>
         </div>
 
         {/* 8. Botón */}
@@ -123,7 +126,7 @@ const styles = {
   },
   titulo: {
     fontFamily: PLAYFAIR,
-    fontSize: 'clamp(1.1rem, 4vw, 1.4rem)',
+    fontSize: 'clamp(1.6rem, 6vw, 2.8rem)',
     fontWeight: '400',
     color: '#0F0E0D',
     textAlign: 'center',
@@ -163,9 +166,18 @@ const styles = {
   },
   logoSmall: {
     height: '60px',
-    maxWidth: '160px',
+    maxWidth: '320px',
     objectFit: 'contain',
     opacity: 0.85,
+  },
+  labelColaboran: {
+    fontFamily: SANS,
+    fontSize: '0.62rem',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+    color: 'rgba(15,14,13,0.4)',
+    textAlign: 'center',
+    margin: '0 0 0.75rem',
   },
   footer: {
     textAlign: 'center',

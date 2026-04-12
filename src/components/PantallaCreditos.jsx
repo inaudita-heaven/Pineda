@@ -149,7 +149,7 @@ const styles = {
   },
   titulo: {
     fontFamily: PLAYFAIR,
-    fontSize: 'clamp(1.1rem, 4vw, 1.4rem)',
+    fontSize: 'clamp(1.6rem, 6vw, 2.8rem)',
     fontWeight: '400',
     color: '#0F0E0D',
     textAlign: 'center',
@@ -198,7 +198,7 @@ const styles = {
   },
   logoSmall: {
     height: '60px',
-    maxWidth: '160px',
+    maxWidth: '320px',
     objectFit: 'contain',
     opacity: 0.85,
   },
