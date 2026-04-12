@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { catalog } from '../data/catalog';
 import { stops } from '../data/stops';
 import FormInteresado from './FormInteresado';
+import Lightbox from './Lightbox';
 
 const PLAYFAIR = '"Playfair Display","IM Fell English",Georgia,serif';
 const SANS = '"Rubik",system-ui,sans-serif';
@@ -78,6 +79,7 @@ export default function PestañaCatalogo({ onVerSala, sessionId }) {
 
 function GrupoSala({ stop, obras, t, setFormObra }) {
   const [imgErrors, setImgErrors] = React.useState({});
+  const [lightbox, setLightbox] = React.useState(null);
   const logo = LOGOS[stop.id];
 
   return (
@@ -99,11 +101,18 @@ function GrupoSala({ stop, obras, t, setFormObra }) {
         )}
       </div>
 
+      {lightbox && (
+        <Lightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />
+      )}
+
       {/* Grid obras */}
       <div style={styles.grid}>
         {obras.map(obra => (
           <div key={obra.id} style={styles.tarjeta}>
-            <div style={styles.imgWrap}>
+            <div
+              style={{ ...styles.imgWrap, cursor: obra.imageUrl && !imgErrors[obra.id] ? 'zoom-in' : 'default' }}
+              onClick={() => obra.imageUrl && !imgErrors[obra.id] && setLightbox({ src: obra.imageUrl, alt: obra.title })}
+            >
               {obra.imageUrl && !imgErrors[obra.id] ? (
                 <img
                   src={obra.imageUrl}

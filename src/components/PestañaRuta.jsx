@@ -141,7 +141,7 @@ function TarjetaParada({ stop, sellada, abierta, proximaApertura, obraPreview, o
 
       {/* Preview obra (solo salas de exposición con obras) */}
       {esExposicion && obraPreview && !imgErr && (
-        <div style={styles.previewWrap} onClick={onVerCatalogo}>
+        <div style={styles.previewWrap}>
           <img
             src={obraPreview.imageUrl}
             alt={obraPreview.title}
@@ -150,7 +150,6 @@ function TarjetaParada({ stop, sellada, abierta, proximaApertura, obraPreview, o
           />
           <div style={styles.previewOverlay}>
             <p style={styles.previewTitulo}>{obraPreview.title}</p>
-            <p style={styles.previewCta}>Ver todas las obras →</p>
           </div>
         </div>
       )}
@@ -287,14 +286,6 @@ const styles = {
     fontSize: '0.85rem',
     color: '#fff',
     margin: '0 0 0.1rem',
-  },
-  previewCta: {
-    fontFamily: SANS,
-    fontSize: '0.62rem',
-    letterSpacing: '0.08em',
-    color: 'rgba(255,255,255,0.7)',
-    margin: 0,
-    textTransform: 'uppercase',
   },
   tarjetaBotones: { display: 'flex', gap: '0.5rem', flexWrap: 'wrap' },
   sellada: {
