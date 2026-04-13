@@ -56,7 +56,7 @@ export default function PestañaRuta({ visitedStops, onEscanear, onVerCupon, onV
 
       {/* Lista de paradas */}
       <div style={styles.lista}>
-        {stops.map(stop => {
+        {stops.filter(s => !s.hidden).map(stop => {
           const sellada   = visitedStops.includes(stop.id);
           const abierta   = isStopOpen(stop, ahora);
           const proxima   = abierta === false ? getNextOpenTime(stop, ahora) : null;

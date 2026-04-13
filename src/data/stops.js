@@ -253,6 +253,7 @@ export const stops = [
   {
     id: 11,
     key: 'tasqueria',
+    hidden: true,
     required: false,
     zone: 'sur',
     address: 'Calle Rodríguez Marín, Córdoba',
