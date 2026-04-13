@@ -6,7 +6,6 @@
  * Coordenadas verificadas. Google Maps URLs validadas.
  *
  * ⭐ Paradas obligatorias para el cupón: 1, 4, 13
- * ⚠️  Horarios pendientes de confirmar: 2 (Santa Marina), 4 (Casa 12PB), 11 (La Tasquería)
  * ⚠️  La Inaudita (13) cierra domingos — lógica especial en coupon.js
  *
  * Estructura de horarios:
@@ -60,10 +59,18 @@ export const stops = [
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Taberna+Santa+Marina+Córdoba',
     token: 'stamarina-rp4t-2025',
     qrUrl: 'https://ruta.pineda.lainaudita.com/?stop=2&token=stamarina-rp4t-2025',
-    // ⚠️ Horario por confirmar
-    schedule: null,
+    // Todos los días 12–17h / 19–00h
+    schedule: {
+      0: [[t('12:00'), t('17:00')], [t('19:00'), t('24:00')]],
+      1: [[t('12:00'), t('17:00')], [t('19:00'), t('24:00')]],
+      2: [[t('12:00'), t('17:00')], [t('19:00'), t('24:00')]],
+      3: [[t('12:00'), t('17:00')], [t('19:00'), t('24:00')]],
+      4: [[t('12:00'), t('17:00')], [t('19:00'), t('24:00')]],
+      5: [[t('12:00'), t('17:00')], [t('19:00'), t('24:00')]],
+      6: [[t('12:00'), t('17:00')], [t('19:00'), t('24:00')]],
+    },
     closedDays: [],
-    hoursUnconfirmed: true,
+    hoursUnconfirmed: false,
   },
 
   {
@@ -100,10 +107,18 @@ export const stops = [
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Casa+12PB+Córdoba+Carbonell+Morand',
     token: 'casa12pb-zt7j-2025',
     qrUrl: 'https://ruta.pineda.lainaudita.com/?stop=4&token=casa12pb-zt7j-2025',
-    // ⚠️ Horario por confirmar (espacio cultural privado)
-    schedule: null,
+    // Todos los días 09–21:30h
+    schedule: {
+      0: [[t('09:00'), t('21:30')]],
+      1: [[t('09:00'), t('21:30')]],
+      2: [[t('09:00'), t('21:30')]],
+      3: [[t('09:00'), t('21:30')]],
+      4: [[t('09:00'), t('21:30')]],
+      5: [[t('09:00'), t('21:30')]],
+      6: [[t('09:00'), t('21:30')]],
+    },
     closedDays: [],
-    hoursUnconfirmed: true,
+    hoursUnconfirmed: false,
   },
 
   {
@@ -260,10 +275,18 @@ export const stops = [
     mapsUrl: 'https://maps.app.goo.gl/xSampleTasqueriaXX',  // ⚠️ sustituir por el enlace real de Pi
     token: 'tasqueria-gu4w-2025',
     qrUrl: 'https://ruta.pineda.lainaudita.com/?stop=11&token=tasqueria-gu4w-2025',
-    // ⚠️ Horario por confirmar
-    schedule: null,
-    closedDays: [],
-    hoursUnconfirmed: true,
+    // L–Ma cerrado · Mi–S 13–23:30h · D 12:30–16:30h
+    schedule: {
+      0: [[t('12:30'), t('16:30')]],                          // Domingo
+      1: null,                                                // Lunes — cerrado
+      2: null,                                                // Martes — cerrado
+      3: [[t('13:00'), t('23:30')]],
+      4: [[t('13:00'), t('23:30')]],
+      5: [[t('13:00'), t('23:30')]],
+      6: [[t('13:00'), t('23:30')]],
+    },
+    closedDays: [1, 2],
+    hoursUnconfirmed: false,
   },
 
   {
