@@ -90,7 +90,6 @@ export default function PantallaBienvenida({ onComenzar = () => {} }) {
               t('paradas_nombres.p8'),
               t('paradas_nombres.p9'),
               t('paradas_nombres.p10'),
-              t('paradas_nombres.p11'),
               t('paradas_nombres.p12'),
             ].map((nombre, i) => (
               <p key={i} style={styles.participa}>{nombre}</p>
