@@ -132,10 +132,23 @@ export default function App() {
 
   // ── Procesar QR pendiente cuando llegamos a 'escaner_pendiente' ────────────
   // FIX [2]: Solo se ejecuta desde onComenzar, no en el arranque.
+  // FIX [5]: Timeout de 8 s — si sigue en escaner_pendiente, redirige a 'app'.
   useEffect(() => {
-    if (pantalla === 'escaner_pendiente' && qrPendiente) {
+    if (pantalla !== 'escaner_pendiente') return;
+
+    if (qrPendiente) {
       procesarEscaneo(qrPendiente.stopId, qrPendiente.token);
     }
+
+    const timeout = setTimeout(() => {
+      if (pantalla === 'escaner_pendiente') {
+        setScanError(t('escaner.error_conexion'));
+        setQrPendiente(null);
+        setPantalla('app');
+      }
+    }, 8000);
+
+    return () => clearTimeout(timeout);
   }, [pantalla]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Comprobar elegibilidad de cupón tras cada sello ───────────────────────
@@ -334,9 +347,26 @@ export default function App() {
 
       {/* ── Validando QR de URL (pantalla de espera) ─────────────────────── */}
       {/* FIX [2]: Pantalla placeholder mientras procesarEscaneo corre */}
+      {/* FIX [5]: Botón de escape manual + timeout 8 s */}
       {pantalla === 'escaner_pendiente' && (
         <div style={styles.pendienteWrap}>
           <p style={styles.pendienteTexto}>Validando parada…</p>
+          <button
+            onClick={() => { setQrPendiente(null); setPantalla('app'); }}
+            style={{
+              marginTop: '2rem',
+              fontFamily: '"Rubik", system-ui, sans-serif',
+              fontSize: '0.72rem',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'rgba(15,14,13,0.4)',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            {t('general.atras')}
+          </button>
         </div>
       )}
 
