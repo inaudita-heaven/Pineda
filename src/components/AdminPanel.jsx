@@ -87,32 +87,37 @@ function TabEscaneos() {
     (async () => {
       setLoading(true);
       // Conteo de visitantes únicos (sesiones)
-      const { count: totalSesiones } = await supabaseAdmin
+      const { count: totalSesiones, error: e1 } = await supabaseAdmin
         .from('visitantes')
         .select('*', { count: 'exact', head: true });
+      if (e1) console.error('visitantes error:', e1);
 
       // Conteo de escaneos por parada
-      const { data: escaneos } = await supabaseAdmin
+      const { data: escaneos, error: e2 } = await supabaseAdmin
         .from('escaneos_paradas')
         .select('parada_id')
         .order('timestamp', { ascending: false });
+      if (e2) console.error('escaneos error:', e2);
 
       // Conteo de cupones desbloqueados
-      const { count: totalCupones } = await supabaseAdmin
+      const { count: totalCupones, error: e3 } = await supabaseAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true });
+      if (e3) console.error('cupones error:', e3);
 
       // Conteo de cupones canjeados
-      const { count: cuponesCanjeados } = await supabaseAdmin
+      const { count: cuponesCanjeados, error: e4 } = await supabaseAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true })
         .eq('canjeado', true);
+      if (e4) console.error('cupones canjeados error:', e4);
 
       // Conteo de copas usadas
-      const { count: copasUsadas } = await supabaseAdmin
+      const { count: copasUsadas, error: e5 } = await supabaseAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true })
         .eq('copa_usada', true);
+      if (e5) console.error('copas usadas error:', e5);
 
       // Agrupación por parada
       const porParada = {};
