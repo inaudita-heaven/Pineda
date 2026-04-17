@@ -92,23 +92,23 @@ function TabEscaneos() {
         .select('*', { count: 'exact', head: true });
 
       // Conteo de escaneos por parada
-      const { data: escaneos } = await supabaseAdminAdmin
+      const { data: escaneos } = await supabaseAdmin
         .from('escaneos_paradas')
         .select('parada_id');
 
       // Conteo de cupones desbloqueados
-      const { count: totalCupones } = await supabaseAdminAdmin
+      const { count: totalCupones } = await supabaseAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true });
 
       // Conteo de cupones canjeados
-      const { count: cuponesCanjeados } = await supabaseAdminAdmin
+      const { count: cuponesCanjeados } = await supabaseAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true })
         .eq('canjeado', true);
 
       // Conteo de copas usadas
-      const { count: copasUsadas } = await supabaseAdminAdmin
+      const { count: copasUsadas } = await supabaseAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true })
         .eq('copa_usada', true);
