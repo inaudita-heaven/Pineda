@@ -28,6 +28,7 @@ import CouponUnlockedModal   from './components/CouponUnlockedModal';
 import ProgresoCupon         from './components/ProgresoCupon';
 import LanguageSelector      from './components/LanguageSelector';
 import CajaPanelComponent    from './components/CajaPanelComponent';
+import AdminPanel            from './components/AdminPanel';
 import PantallaCatalogo      from './components/PantallaCatalogo';
 import NavBar               from './components/NavBar';
 import PestañaRuta          from './components/PestañaRuta';
@@ -90,6 +91,11 @@ async function syncQueueToSupabase(sessionId) {
 // ══════════════════════════════════════════════════════════════════════════════
 export default function App() {
   const { t } = useTranslation();
+
+  // ── /admin — panel de administración ─────────────────────────────────────
+  if (window.location.pathname.includes('/admin')) {
+    return <AdminPanel />;
+  }
 
   // ── /caja — ruta especial del personal ────────────────────────────────────
   if (window.location.pathname.includes('/caja')) {
