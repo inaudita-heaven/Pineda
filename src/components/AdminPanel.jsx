@@ -112,20 +112,13 @@ function TabEscaneos() {
         .eq('canjeado', true);
       if (e4) console.error('cupones canjeados error:', e4);
 
-      // Conteo de copas usadas
-      const { count: copasUsadas, error: e5 } = await supabaseAdmin
-        .from('cupones')
-        .select('*', { count: 'exact', head: true })
-        .eq('copa_usada', true);
-      if (e5) console.error('copas usadas error:', e5);
-
       // Agrupación por parada
       const porParada = {};
       (escaneos || []).forEach(({ parada_id }) => {
         porParada[parada_id] = (porParada[parada_id] || 0) + 1;
       });
 
-      setData({ totalSesiones, porParada, totalCupones, cuponesCanjeados, copasUsadas });
+      setData({ totalSesiones, porParada, totalCupones, cuponesCanjeados });
       setLoading(false);
     })();
   }, []);
@@ -143,8 +136,7 @@ function TabEscaneos() {
         {[
           { label: 'Sesiones iniciadas', value: data.totalSesiones || 0, color: '#0F0E0D' },
           { label: 'Cupones desbloqueados', value: data.totalCupones || 0, color: '#555' },
-          { label: 'Copas usadas', value: data.copasUsadas || 0, color: '#888' },
-          { label: 'Compras registradas', value: data.cuponesCanjeados || 0, color: '#bbb' },
+          { label: 'Cupones canjeados', value: data.cuponesCanjeados || 0, color: '#888' },
         ].map(({ label, value, color }) => (
           <div key={label} style={s.funnelRow}>
             <span style={s.funnelLabel}>{label}</span>
