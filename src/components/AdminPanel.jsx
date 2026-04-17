@@ -10,7 +10,12 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_SERVICE_KEY
+);
 
 const PIN_CORRECTO = import.meta.env.VITE_ADMIN_PIN
   || import.meta.env.VITE_CAJA_PIN
@@ -82,28 +87,28 @@ function TabEscaneos() {
     (async () => {
       setLoading(true);
       // Conteo de visitantes únicos (sesiones)
-      const { count: totalSesiones } = await supabase
+      const { count: totalSesiones } = await supabaseAdmin
         .from('visitantes')
         .select('*', { count: 'exact', head: true });
 
       // Conteo de escaneos por parada
-      const { data: escaneos } = await supabase
+      const { data: escaneos } = await supabaseAdminAdmin
         .from('escaneos_paradas')
         .select('parada_id');
 
       // Conteo de cupones desbloqueados
-      const { count: totalCupones } = await supabase
+      const { count: totalCupones } = await supabaseAdminAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true });
 
       // Conteo de cupones canjeados
-      const { count: cuponesCanjeados } = await supabase
+      const { count: cuponesCanjeados } = await supabaseAdminAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true })
         .eq('canjeado', true);
 
       // Conteo de copas usadas
-      const { count: copasUsadas } = await supabase
+      const { count: copasUsadas } = await supabaseAdminAdmin
         .from('cupones')
         .select('*', { count: 'exact', head: true })
         .eq('copa_usada', true);
@@ -175,7 +180,7 @@ function TabLeads() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await supabaseAdmin
         .from('interesados_obras')
         .select('*')
         .order('created_at', { ascending: false });
@@ -276,7 +281,7 @@ function TabCupones() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await supabaseAdmin
         .from('cupones')
         .select('*')
         .order('creado_en', { ascending: false })
