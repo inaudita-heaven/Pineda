@@ -1,82 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+
+const SERIF = '"Playfair Display","IM Fell English",Georgia,serif';
+const SANS  = '"Rubik",system-ui,sans-serif';
 
 /**
  * PantallaIntermedia
- * Se muestra entre paradas, antes de abrir Google Maps.
+ * Se muestra al pulsar "Cómo llegar" entre paradas.
  *
  * Props:
- *   fromStop   number  ID parada origen (1–13)
- *   toStop     number  ID parada destino (1–13)
- *   onAbrirMaps  callback cuando se dispara la apertura de Maps
- *   onVolver     callback cuando el visitante cancela
+ *   fromStop    number   ID parada origen
+ *   toStop      number   ID parada destino
+ *   onAbrirMaps callback abre Google Maps (nueva pestaña / app nativa)
+ *   onVolver    callback vuelve a la lista de paradas
  */
 export default function PantallaIntermedia({
   fromStop,
   toStop,
   onAbrirMaps = () => {},
-  onVolver   = () => {},
+  onVolver    = () => {},
 }) {
   const { t } = useTranslation();
-  const [countdown, setCountdown] = useState(3);
-  const [abriendo, setAbriendo]   = useState(false);
 
-  // Clave del anzuelo: inicio_p1 para la primera parada, pN_pM para el resto
-  const anzueloKey =
-    fromStop === 0
-      ? 'anzuelos.inicio_p1'
-      : `anzuelos.p${fromStop}_p${toStop}`;
+  const anzueloKey = fromStop === 0
+    ? 'anzuelos.inicio_p1'
+    : `anzuelos.p${fromStop}_p${toStop}`;
 
-  // Countdown automático → abre Maps al llegar a 0
-  useEffect(() => {
-    if (countdown <= 0) {
-      dispararMaps();
-      return;
-    }
-    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [countdown]);
-
-  const dispararMaps = () => {
-    if (abriendo) return;
-    setAbriendo(true);
-    setTimeout(() => onAbrirMaps(), 300);
-  };
+  const destino = t(`paradas_nombres.p${toStop}`);
 
   return (
-    <div style={styles.overlay}>
-      <div style={{ ...styles.modal, opacity: abriendo ? 0 : 1 }}>
+    <div style={s.overlay}>
+      <div style={s.panel}>
 
-        {/* Countdown */}
-        <div style={styles.countdown}>
-          <div style={styles.numero}>{countdown}</div>
-          <p style={styles.countdownLabel}>
-            {t('pantalla_intermedia.abriendo', { segundos: countdown })}
-          </p>
+        {/* Destino */}
+        <div style={s.header}>
+          <p style={s.eyebrow}>{t('pantalla_intermedia.siguiente_parada')}</p>
+          <h2 style={s.destino}>{destino}</h2>
         </div>
 
         {/* Anzuelo */}
-        <div style={styles.contenido}>
-          <p style={styles.anzuelo}>{t(anzueloKey)}</p>
-        </div>
+        <p style={s.anzuelo}>{t(anzueloKey)}</p>
 
         {/* Instrucción de retorno */}
-        <div style={styles.instruccion}>
-          <p style={styles.instruccionTexto}>
-            {t('pantalla_intermedia.instruccion')}
-          </p>
-        </div>
+        <p style={s.instruccion}>{t('pantalla_intermedia.instruccion')}</p>
 
         {/* Botones */}
-        <div style={styles.botones}>
-          <button
-            onClick={dispararMaps}
-            disabled={abriendo}
-            style={{ ...styles.botonPrimario, opacity: abriendo ? 0.6 : 1 }}
-          >
-            {t('pantalla_intermedia.boton_ir_ahora')}
+        <div style={s.botones}>
+          <button onClick={onAbrirMaps} style={s.btnMaps}>
+            {t('pantalla_intermedia.boton_maps')}
           </button>
-          <button onClick={onVolver} style={styles.botonSecundario}>
+          <button onClick={onVolver} style={s.btnVolver}>
             {t('pantalla_intermedia.boton_volver')}
           </button>
         </div>
@@ -86,109 +59,92 @@ export default function PantallaIntermedia({
   );
 }
 
-// ── Estilos ───────────────────────────────────────────────────────────────────
-const styles = {
+const s = {
   overlay: {
     position: 'fixed',
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    inset: 0,
+    backgroundColor: '#fff',
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 9997,
-    fontFamily: 'system-ui, sans-serif',
-    padding: '1rem',
+    padding: '2rem 1.5rem',
+    overflowY: 'auto',
   },
-
-  modal: {
-    backgroundColor: '#fff',
-    padding: '2rem',
-    maxWidth: '500px',
+  panel: {
     width: '100%',
-    boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
-    transition: 'opacity 0.3s ease',
+    maxWidth: '480px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem',
+    gap: '1.75rem',
   },
-
-  countdown: {
-    textAlign: 'center',
-    paddingBottom: '1.5rem',
-    borderBottom: '2px solid #f0f0f0',
+  header: {
+    borderBottom: '2px solid #0F0E0D',
+    paddingBottom: '1.25rem',
   },
-
-  numero: {
-    fontSize: '4rem',
-    fontWeight: 'bold',
-    color: '#000',
-    margin: 0,
-    lineHeight: '1',
-    fontFamily: '"IM Fell English", Georgia, serif',
-  },
-
-  countdownLabel: {
-    fontSize: '0.85rem',
-    color: '#666',
-    margin: '0.5rem 0 0 0',
+  eyebrow: {
+    fontFamily: SANS,
+    fontSize: '0.62rem',
+    letterSpacing: '0.16em',
     textTransform: 'uppercase',
-    letterSpacing: '1px',
+    color: 'rgba(15,14,13,0.4)',
+    margin: '0 0 0.4rem',
   },
-
-  contenido: {
-    padding: '0.5rem 0',
+  destino: {
+    fontFamily: SERIF,
+    fontSize: 'clamp(1.5rem, 5vw, 2.2rem)',
+    fontWeight: '400',
+    color: '#0F0E0D',
+    margin: 0,
+    lineHeight: 1.15,
   },
-
   anzuelo: {
-    fontSize: '1.1rem',
-    lineHeight: '1.7',
-    color: '#333',
+    fontFamily: SERIF,
+    fontSize: 'clamp(1rem, 3.5vw, 1.2rem)',
     fontStyle: 'italic',
+    lineHeight: 1.75,
+    color: '#0F0E0D',
     margin: 0,
-    textAlign: 'center',
-    fontFamily: '"IM Fell English", "Cormorant Garamond", Georgia, serif',
   },
-
   instruccion: {
-    backgroundColor: '#f8f8f8',
-    borderLeft: '3px solid #000',
-    padding: '1rem',
-  },
-
-  instruccionTexto: {
-    fontSize: '0.95rem',
-    color: '#555',
+    fontFamily: SANS,
+    fontSize: '0.8rem',
+    color: 'rgba(15,14,13,0.5)',
+    lineHeight: 1.6,
     margin: 0,
-    lineHeight: '1.5',
+    paddingLeft: '0.85rem',
+    borderLeft: '2px solid #e8e6e3',
   },
-
   botones: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.75rem',
+    gap: '0.65rem',
+    marginTop: '0.5rem',
   },
-
-  botonPrimario: {
+  btnMaps: {
+    fontFamily: SANS,
+    fontSize: '0.78rem',
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    fontWeight: '500',
     padding: '1rem',
-    backgroundColor: '#000',
+    backgroundColor: '#0F0E0D',
     color: '#fff',
     border: 'none',
-    fontSize: '1rem',
-    fontWeight: '600',
-    letterSpacing: '1px',
-    textTransform: 'uppercase',
     cursor: 'pointer',
-    transition: 'background-color 0.2s',
+    minHeight: '48px',
   },
-
-  botonSecundario: {
-    padding: '1rem',
-    backgroundColor: '#fff',
-    color: '#333',
-    border: '2px solid #000',
-    fontSize: '0.95rem',
-    fontWeight: '600',
+  btnVolver: {
+    fontFamily: SANS,
+    fontSize: '0.75rem',
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
+    padding: '0.9rem',
+    backgroundColor: 'transparent',
+    color: 'rgba(15,14,13,0.5)',
+    border: '1px solid #e8e6e3',
     cursor: 'pointer',
-    transition: 'all 0.2s',
+    minHeight: '48px',
   },
 };

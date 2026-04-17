@@ -30,13 +30,14 @@
     "p7_p8": "La Judería no se explica: se camina. Cada adoquín tiene tres civilizaciones debajo. Pineda las pintó todas a la vez.",
     "p8_p9": "Una casa del siglo XV al lado de las Caballerizas Reales. Aquí huele a patio cordobés y a cocina de siempre.",
     "p9_p10": "San Basilio es el barrio de los patios. La puerta que lo cierra por el sur lleva siglos dejando pasar a quien sabe mirar.",
-    "p10_p11": "Dicen que La Viuda guarda el salmorejo más frío de Córdoba y el cuadro más difícil de ver de la ruta.",
-    "p11_p12": "Ya casi estás. A dos puertas de La Inaudita hay una cazuela que lleva el nombre del oficio que llenó esta calle durante siglos.",
+    "p10_p11": "Rodríguez Marín. La calle donde termina el casco antiguo y empieza algo más tranquilo, más de barrio. Ya casi estás.",
     "p12_p13": "La última sala. El origen de todo. Aquí nació la exposición, aquí está la obra más importante."
   },
   "pantalla_intermedia": {
     "titulo": "Abriendo Maps en",
     "instruccion": "Cuando llegues, abre la cámara y apunta al cartel de Pineda en la entrada",
+    "siguiente_parada": "Siguiente parada",
+    "boton_maps": "Abrir en Google Maps →",
     "boton_ir_ahora": "Ir ahora",
     "boton_volver": "← Volver a la ruta",
     "abriendo": "Abriendo Maps en {{segundos}}..."
@@ -192,7 +193,7 @@
     "p5": "Taberna San Miguel",
     "p6": "Taberna El Olmo",
     "p7": "Casa Salinas",
-    "p8": "Posada del Caballo Blanco",
+    "p8": "Posada del Caballo Andaluz",
     "p9": "Puerta de Sevilla",
     "p10": "Taberna La Viuda",
     "p11": "",

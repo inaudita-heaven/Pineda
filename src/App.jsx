@@ -28,6 +28,7 @@ import CouponUnlockedModal   from './components/CouponUnlockedModal';
 import ProgresoCupon         from './components/ProgresoCupon';
 import LanguageSelector      from './components/LanguageSelector';
 import CajaPanelComponent    from './components/CajaPanelComponent';
+import AdminPanel            from './components/AdminPanel';
 import PantallaCatalogo      from './components/PantallaCatalogo';
 import NavBar               from './components/NavBar';
 import PestañaRuta          from './components/PestañaRuta';
@@ -90,6 +91,11 @@ async function syncQueueToSupabase(sessionId) {
 // ══════════════════════════════════════════════════════════════════════════════
 export default function App() {
   const { t } = useTranslation();
+
+  // ── /admin — panel de administración ─────────────────────────────────────
+  if (window.location.pathname.includes('/admin')) {
+    return <AdminPanel />;
+  }
 
   // ── /caja — ruta especial del personal ────────────────────────────────────
   if (window.location.pathname.includes('/caja')) {
@@ -213,14 +219,21 @@ export default function App() {
     // 4. Intentar sync con Supabase en background
     if (navigator.onLine) {
       try {
-        const { error } = await supabase.rpc('registrar_escaneo', {
+        const { data: rpcData, error } = await supabase.rpc('registrar_escaneo', {
           p_session_id:      sessionId,
           p_stop_id:         stopId,
           p_token:           token,
           p_idempotency_key: idempotencyKey,
         });
-        if (error) addToSyncQueue(syncItem);
+        if (error) {
+          // Error de red / auth → reintentable → encolar
+          addToSyncQueue(syncItem);
+        } else if (rpcData && rpcData.ok === false) {
+          // Error de lógica (token inválido, parada no encontrada) → no reintentable → solo log
+          console.warn('[scan] RPC rejected:', rpcData.error);
+        }
       } catch {
+        // Excepción de red → encolar para reintento
         addToSyncQueue(syncItem);
       }
     } else {
@@ -243,6 +256,15 @@ export default function App() {
     const clean = sessionId.replace(/-/g, '').substring(0, 6).toUpperCase();
     const code  = `PINEDA30-${clean}`;
     saveCoupon(code);
+    // Persistir en Supabase en background
+    supabase.from('cupones').insert({
+      session_id: sessionId,
+      codigo: code,
+      creado_en: new Date().toISOString(),
+      canjeado: false,
+    }).then(({ error }) => {
+      if (error) console.error('Error guardando cupón en Supabase:', error);
+    });
     return code;
   }
 

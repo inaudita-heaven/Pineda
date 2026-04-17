@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import QrScanner from './QrScanner';
+import { rpcMarcarCopaUsada, rpcRegistrarCompra } from '../lib/supabaseClient';
 
 const CAJA_PIN = import.meta.env.VITE_CAJA_PIN || '0000';
 const COUPON_RE = /^PINEDA30-[A-Z0-9]{6}$/;
@@ -92,7 +93,7 @@ export default function CajaPanel() {
     rec.start();
   }
 
-  function validate() {
+  async function validate() {
     const c = code.trim().toUpperCase();
     if (!COUPON_RE.test(c)) {
       setResult({ ok: false, message: t('caja.copa.invalid') });
@@ -105,10 +106,11 @@ export default function CajaPanel() {
     }
     localStorage.setItem(key, new Date().toISOString());
     setResult({ ok: true, message: t('caja.copa.success') });
-    // TODO: Supabase — UPDATE cupones SET copa_usada=true, copa_usada_en=NOW() WHERE codigo=c
+    // Supabase — fire and forget, localStorage is the source of truth for UX
+    try { await rpcMarcarCopaUsada(c); } catch (e) { console.warn('[caja] marcar_copa_usada:', e?.message); }
   }
 
-  function validateCompra() {
+  async function validateCompra() {
     const c = code.trim().toUpperCase();
     if (!COUPON_RE.test(c)) {
       setResult({ ok: false, message: t('caja.copa.invalid') });
@@ -129,8 +131,8 @@ export default function CajaPanel() {
       ts: new Date().toISOString(),
     }));
     setResult({ ok: true, message: t('caja.compra.success') });
-    // TODO: Supabase — UPDATE cupones SET canjeado=true, canjeado_en=NOW(),
-    //         obra_comprada=obra, precio_final=precio WHERE codigo=c
+    // Supabase — fire and forget
+    try { await rpcRegistrarCompra(c, obra.trim(), parseFloat(precio)); } catch (e) { console.warn('[caja] registrar_compra:', e?.message); }
   }
 
   function reset() {

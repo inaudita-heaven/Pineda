@@ -30,13 +30,14 @@
     "p7_p8": "The Judería cannot be explained: you have to walk it. Every cobblestone has three civilizations beneath it. Pineda painted them all at once.",
     "p8_p9": "A fifteenth-century house next to the Royal Stables. Here it smells of Córdoba courtyards and timeless cooking.",
     "p9_p10": "San Basilio is the neighborhood of courtyards. The gate that closes it to the south has been letting pass those who know how to look for centuries.",
-    "p10_p11": "They say La Viuda keeps the coldest salmorejo in Córdoba and the hardest painting to see on the route.",
-    "p11_p12": "Nearly there. Two doors from La Inaudita there's a cazuela named after the trade that filled this street for centuries.",
+    "p10_p11": "Rodríguez Marín. Where the old town ends and something quieter begins. You're almost there.",
     "p12_p13": "The final gallery. Where it all began. Here is the exhibition's heart, and its most important work."
   },
   "pantalla_intermedia": {
     "titulo": "Opening Maps in",
     "instruccion": "When you arrive, open the camera and point it at the Pineda sign at the entrance",
+    "siguiente_parada": "Next stop",
+    "boton_maps": "Open in Google Maps →",
     "boton_ir_ahora": "Go now",
     "boton_volver": "← Back to route",
     "abriendo": "Opening Maps in {{segundos}}..."
@@ -192,7 +193,7 @@
     "p5": "San Miguel Tavern",
     "p6": "El Olmo Tavern",
     "p7": "Casa Salinas",
-    "p8": "White Horse Inn",
+    "p8": "Andalusian Horse Inn",
     "p9": "Seville Gate",
     "p10": "La Viuda Tavern",
     "p11": "",
