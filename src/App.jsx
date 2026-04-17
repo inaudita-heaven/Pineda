@@ -206,14 +206,21 @@ export default function App() {
     // 4. Intentar sync con Supabase en background
     if (navigator.onLine) {
       try {
-        const { error } = await supabase.rpc('registrar_escaneo', {
+        const { data: rpcData, error } = await supabase.rpc('registrar_escaneo', {
           p_session_id:      sessionId,
           p_stop_id:         stopId,
           p_token:           token,
           p_idempotency_key: idempotencyKey,
         });
-        if (error) addToSyncQueue(syncItem);
+        if (error) {
+          // Error de red / auth → reintentable → encolar
+          addToSyncQueue(syncItem);
+        } else if (rpcData && rpcData.ok === false) {
+          // Error de lógica (token inválido, parada no encontrada) → no reintentable → solo log
+          console.warn('[scan] RPC rejected:', rpcData.error);
+        }
       } catch {
+        // Excepción de red → encolar para reintento
         addToSyncQueue(syncItem);
       }
     } else {
