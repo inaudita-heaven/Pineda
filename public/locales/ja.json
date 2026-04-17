@@ -34,6 +34,8 @@
   "pantalla_intermedia": {
     "titulo": "マップを開いています",
     "instruccion": "到着したら、カメラを開いて入口のピネダの看板に向けてください",
+    "siguiente_parada": "次の停留所",
+    "boton_maps": "Google マップで開く →",
     "boton_ir_ahora": "今すぐ行く",
     "boton_volver": "← ルートに戻る",
     "abriendo": "{{segundos}}秒でマップを開きます..."

@@ -36,6 +36,8 @@
   "pantalla_intermedia": {
     "titulo": "Opening Maps in",
     "instruccion": "When you arrive, open the camera and point it at the Pineda sign at the entrance",
+    "siguiente_parada": "Next stop",
+    "boton_maps": "Open in Google Maps →",
     "boton_ir_ahora": "Go now",
     "boton_volver": "← Back to route",
     "abriendo": "Opening Maps in {{segundos}}..."

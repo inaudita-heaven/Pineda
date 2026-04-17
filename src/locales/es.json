@@ -36,6 +36,8 @@
   "pantalla_intermedia": {
     "titulo": "Abriendo Maps en",
     "instruccion": "Cuando llegues, abre la cámara y apunta al cartel de Pineda en la entrada",
+    "siguiente_parada": "Siguiente parada",
+    "boton_maps": "Abrir en Google Maps →",
     "boton_ir_ahora": "Ir ahora",
     "boton_volver": "← Volver a la ruta",
     "abriendo": "Abriendo Maps en {{segundos}}..."
