@@ -249,6 +249,15 @@ export default function App() {
     const clean = sessionId.replace(/-/g, '').substring(0, 6).toUpperCase();
     const code  = `PINEDA30-${clean}`;
     saveCoupon(code);
+    // Persistir en Supabase en background
+    supabase.from('cupones').insert({
+      session_id: sessionId,
+      codigo: code,
+      creado_en: new Date().toISOString(),
+      canjeado: false,
+    }).then(({ error }) => {
+      if (error) console.error('Error guardando cupón en Supabase:', error);
+    });
     return code;
   }
 
