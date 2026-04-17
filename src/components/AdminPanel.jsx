@@ -95,9 +95,10 @@ function TabEscaneos() {
       // Conteo de escaneos por parada
       const { data: escaneos, error: e2 } = await supabaseAdmin
         .from('escaneos_paradas')
-        .select('parada_id')
+        .select('parada_id, visitor_id')
         .order('timestamp', { ascending: false });
       if (e2) console.error('escaneos error:', e2);
+      else console.log('escaneos data:', escaneos?.length, escaneos?.[0]);
 
       // Conteo de cupones desbloqueados
       const { count: totalCupones, error: e3 } = await supabaseAdmin
