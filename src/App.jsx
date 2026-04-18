@@ -29,6 +29,7 @@ import ProgresoCupon         from './components/ProgresoCupon';
 import LanguageSelector      from './components/LanguageSelector';
 import CajaPanelComponent    from './components/CajaPanelComponent';
 import AdminPanel            from './components/AdminPanel';
+import PreciosPanel          from './components/PreciosPanel';
 import PantallaCatalogo      from './components/PantallaCatalogo';
 import NavBar               from './components/NavBar';
 import PestañaRuta          from './components/PestañaRuta';
@@ -95,6 +96,11 @@ export default function App() {
   // ── /admin — panel de administración ─────────────────────────────────────
   if (window.location.pathname.includes('/admin')) {
     return <AdminPanel />;
+  }
+
+  // ── /precios — catálogo de precios para compradores ───────────────────────
+  if (window.location.pathname.includes('/precios')) {
+    return <PreciosPanel />;
   }
 
   // ── /caja — ruta especial del personal ────────────────────────────────────
