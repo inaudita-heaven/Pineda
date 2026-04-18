@@ -305,11 +305,10 @@ export default function App() {
       {pantalla === 'bienvenida' && (
         <PantallaBienvenida
           onComenzar={() => {
-            // FIX [2]: si hay QR pendiente, procesar ahora (ya vimos la intro)
+            setPantalla('app');
             if (qrPendiente) {
-              setPantalla('escaner_pendiente');
-            } else {
-              setPantalla('app');
+              procesarEscaneo(qrPendiente.stopId, qrPendiente.token);
+              setQrPendiente(null);
             }
           }}
         />
