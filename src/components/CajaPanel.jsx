@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import QrScanner from './QrScanner';
 import { rpcMarcarCopaUsada, rpcRegistrarCompra } from '../lib/supabaseClient';
+import { CATALOGO_CAJA } from '../data/precios';
+
+const OBRAS_O = CATALOGO_CAJA.filter(o => o.serie === 'O');
+const OBRAS_P = CATALOGO_CAJA.filter(o => o.serie === 'P');
 
 const CAJA_PIN = import.meta.env.VITE_CAJA_PIN || '0000';
 const COUPON_RE = /^PINEDA30-[A-Z0-9]{6}$/;
@@ -49,6 +53,25 @@ function PinScreen({ onSuccess }) {
   );
 }
 
+// ── Helpers de historial ────────────────────────────────────────
+function readHistory() {
+  const items = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.startsWith('caja_copa_')) {
+      const code = key.replace('caja_copa_', '');
+      items.push({ type: 'copa', code, ts: localStorage.getItem(key) });
+    } else if (key?.startsWith('caja_compra_')) {
+      const code = key.replace('caja_compra_', '');
+      try {
+        const d = JSON.parse(localStorage.getItem(key) || '{}');
+        items.push({ type: 'compra', code, ts: d.ts, obra: d.obra, precio: d.precio });
+      } catch { /* ignore */ }
+    }
+  }
+  return items.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+}
+
 // ── Main panel ──────────────────────────────────────────────────
 export default function CajaPanel() {
   const { t } = useTranslation();
@@ -60,8 +83,29 @@ export default function CajaPanel() {
   const [showScanner, setShowScanner] = useState(false);
   const [listening, setListening] = useState(false);
   const [result, setResult] = useState(null); // null | { ok: bool, message: string }
+  const [history, setHistory] = useState([]);
 
-  if (!authed) return <PinScreen onSuccess={() => setAuthed(true)} />;
+  // Cargar historial al autenticarse y tras cada operación
+  function refreshHistory() { setHistory(readHistory()); }
+
+  if (!authed) return <PinScreen onSuccess={() => { setAuthed(true); refreshHistory(); }} />;
+
+  // ── Obra seleccionada y lógica de cupón ────────────────────────
+  const obraSeleccionada = CATALOGO_CAJA.find(o => o.id === obra) || null;
+  const tieneCupon = COUPON_RE.test(code.trim().toUpperCase());
+  const cuponAplicado = tieneCupon && obraSeleccionada?.pvp_cupon;
+
+  function handleObraChange(id) {
+    setObra(id);
+    setResult(null);
+    const found = CATALOGO_CAJA.find(o => o.id === id);
+    if (found) {
+      const cuponActivo = COUPON_RE.test(code.trim().toUpperCase());
+      setPrecio(String(cuponActivo && found.pvp_cupon ? found.pvp_cupon : found.publico));
+    } else {
+      setPrecio('');
+    }
+  }
 
   // ── Handlers ──────────────────────────────────────────────────
 
@@ -106,7 +150,8 @@ export default function CajaPanel() {
     }
     localStorage.setItem(key, new Date().toISOString());
     setResult({ ok: true, message: t('caja.copa.success') });
-    // Supabase — fire and forget, localStorage is the source of truth for UX
+    refreshHistory();
+    // Supabase — fire and forget, localStorage is the source of truth para UX
     try { await rpcMarcarCopaUsada(c); } catch (e) { console.warn('[caja] marcar_copa_usada:', e?.message); }
   }
 
@@ -131,6 +176,7 @@ export default function CajaPanel() {
       ts: new Date().toISOString(),
     }));
     setResult({ ok: true, message: t('caja.compra.success') });
+    refreshHistory();
     // Supabase — fire and forget
     try { await rpcRegistrarCompra(c, obra.trim(), parseFloat(precio)); } catch (e) { console.warn('[caja] registrar_compra:', e?.message); }
   }
@@ -198,24 +244,63 @@ export default function CajaPanel() {
         {/* Compra-only fields */}
         {mode === 'compra' && (
           <div className="caja__compra-fields">
-            <input
+
+            {/* Selector de obra */}
+            <select
               className="caja__field"
-              type="text"
               value={obra}
-              onChange={e => { setObra(e.target.value); setResult(null); }}
-              placeholder={t('caja.compra.obra_placeholder')}
-              autoComplete="off"
-            />
-            <input
-              className="caja__field"
-              type="number"
-              inputMode="decimal"
-              value={precio}
-              onChange={e => { setPrecio(e.target.value); setResult(null); }}
-              placeholder={t('caja.compra.price_placeholder')}
-              min="0"
-              step="0.01"
-            />
+              onChange={e => handleObraChange(e.target.value)}
+            >
+              <option value="">-- Selecciona una obra --</option>
+              <optgroup label="Obras originales">
+                {OBRAS_O.map(o => (
+                  <option key={o.id} value={o.id}>{o.label}</option>
+                ))}
+              </optgroup>
+              <optgroup label="Obra en papel">
+                {OBRAS_P.map(o => (
+                  <option key={o.id} value={o.id}>{o.label}</option>
+                ))}
+              </optgroup>
+            </select>
+
+            {/* Precio (editable) + badge cupón */}
+            <div style={{ position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <input
+                  className="caja__field"
+                  style={{ flex: 1 }}
+                  type="number"
+                  inputMode="decimal"
+                  value={precio}
+                  onChange={e => { setPrecio(e.target.value); setResult(null); }}
+                  placeholder={t('caja.compra.price_placeholder')}
+                  min="0"
+                  step="0.01"
+                />
+                {cuponAplicado && (
+                  <span style={{
+                    fontSize: '0.7rem', fontWeight: '700', color: '#fff',
+                    background: '#2a7a2a', borderRadius: 4, padding: '0.2rem 0.5rem',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    Con cupón ✓
+                  </span>
+                )}
+              </div>
+
+              {/* Referencia de precios */}
+              {obraSeleccionada && (
+                <p style={{ fontSize: '0.72rem', color: '#888', margin: '0.3rem 0 0', lineHeight: 1.4 }}>
+                  PVP: {obraSeleccionada.publico.toLocaleString('es-ES')} €
+                  {obraSeleccionada.pvp_cupon && (
+                    <> · Con cupón: {obraSeleccionada.pvp_cupon.toLocaleString('es-ES')} €</>
+                  )}
+                  {' · '}Neto galería: {obraSeleccionada.neto.toLocaleString('es-ES')} €
+                </p>
+              )}
+            </div>
+
           </div>
         )}
 

@@ -1,7 +1,148 @@
-// Catálogo de precios — completar con datos reales de La Inaudita
-// Estructura: { [id]: { num, title, publico } }
-export const PRECIOS_OBRAS = {};
+/**
+ * precios.js — Tarifas completas de la exposición Rafael Pineda
+ * src/data/precios.js
+ *
+ * Serie O: obras originales (obra-001 … obra-049)
+ * Serie P: obra en papel — prints (#1-51), grabados (#52-56), Chapi (#57-59)
+ *
+ * neto:      precio neto familia
+ * publico:   PVP sin cupón
+ * pvp_cupon: PVP con cupón PINEDA30 (solo serie P)
+ */
 
-// Estructura: { [id]: { num, tipo, publico, pvp_cupon } }
-// tipo: 'grabado' | 'chapi' | 'print'
-export const PRECIOS_PAPEL = {};
+// Obras originales — serie O
+export const PRECIOS_OBRAS = {
+  'obra-001': { num: 1,  serie: 'O', title: 'Cartel Córdoba Gitana 1967',   neto: 750,  publico: 1071 },
+  'obra-002': { num: 2,  serie: 'O', title: 'Cartel Córdoba 1967',           neto: 750,  publico: 1071 },
+  'obra-003': { num: 3,  serie: 'O', title: 'Niña Campiña',                  neto: 2500, publico: 3571 },
+  'obra-004': { num: 4,  serie: 'O', title: 'Cousteau',                      neto: 1300, publico: 1857 },
+  'obra-005': { num: 5,  serie: 'O', title: 'Autorretrato (1994)',            neto: 1200, publico: 1714 },
+  'obra-006': { num: 6,  serie: 'O', title: 'Violinista',                    neto: 1500, publico: 2143 },
+  'obra-007': { num: 7,  serie: 'O', title: 'Campiña',                       neto: 2400, publico: 3429 },
+  'obra-008': { num: 8,  serie: 'O', title: 'Tejadillos de mi Córdoba',      neto: 3500, publico: 5000 },
+  'obra-009': { num: 9,  serie: 'O', title: 'Pan y Vino',                    neto: 2500, publico: 3571 },
+  'obra-010': { num: 10, serie: 'O', title: 'La Torera',                     neto: 3500, publico: 5000 },
+  'obra-011': { num: 11, serie: 'O', title: 'Jamón Salmón',                  neto: 2500, publico: 3571 },
+  'obra-012': { num: 12, serie: 'O', title: 'Autorretrato (2004)',            neto: 1500, publico: 2143 },
+  'obra-013': { num: 13, serie: 'O', title: 'Camino a 12PB',                 neto: 4000, publico: 5714 },
+  'obra-014': { num: 14, serie: 'O', title: 'Stella 1',                      neto: 2000, publico: 2857 },
+  'obra-015': { num: 15, serie: 'O', title: 'Stella 2',                      neto: 1800, publico: 2571 },
+  'obra-016': { num: 16, serie: 'O', title: 'Stella 3',                      neto: 1800, publico: 2571 },
+  'obra-017': { num: 17, serie: 'O', title: 'Stella 4',                      neto: 2000, publico: 2857 },
+  'obra-018': { num: 18, serie: 'O', title: 'Antonio Gomez Nucete',          neto: 2400, publico: 3429 },
+  'obra-019': { num: 19, serie: 'O', title: 'Salvador Morera',               neto: 2200, publico: 3143 },
+  'obra-020': { num: 20, serie: 'O', title: 'Rafael Gomez Sanchez',          neto: 1900, publico: 2714 },
+  'obra-021': { num: 21, serie: 'O', title: 'Aurelio Moreno',                neto: 1200, publico: 1714 },
+  'obra-022': { num: 22, serie: 'O', title: 'Juan Bernier Luque',            neto: 1000, publico: 1429 },
+  'obra-023': { num: 23, serie: 'O', title: 'Ribera Pueblo',                 neto: 4500, publico: 6429 },
+  'obra-024': { num: 24, serie: 'O', title: 'Señor Sombrero Cordobés',       neto: 2200, publico: 3143 },
+  'obra-025': { num: 25, serie: 'O', title: 'Retrato Pepe Arenas',           neto: 800,  publico: 1143 },
+  'obra-026': { num: 26, serie: 'O', title: 'Primer Autorretrato',           neto: 2500, publico: 3571 },
+  'obra-027': { num: 27, serie: 'O', title: 'Barandilla Ribera',             neto: 4000, publico: 5714 },
+  'obra-028': { num: 28, serie: 'O', title: 'Puente Romano',                 neto: 4000, publico: 5714 },
+  'obra-029': { num: 29, serie: 'O', title: 'Molino Ribera',                 neto: 5000, publico: 7143 },
+  'obra-030': { num: 30, serie: 'O', title: 'Ribera Nueva Córdoba',          neto: 5000, publico: 7143 },
+  'obra-031': { num: 31, serie: 'O', title: 'Rafael Ortiz',                  neto: 1500, publico: 2143 },
+  'obra-032': { num: 32, serie: 'O', title: 'Adoquines Puente Romano',       neto: 3500, publico: 5000 },
+  'obra-033': { num: 33, serie: 'O', title: 'La Capea',                      neto: 5500, publico: 7857 },
+  'obra-034': { num: 34, serie: 'O', title: 'Desnudo Acéfalo',               neto: 3000, publico: 4286 },
+  'obra-035': { num: 35, serie: 'O', title: 'Indecente Torera',              neto: 4500, publico: 6429 },
+  'obra-036': { num: 36, serie: 'O', title: 'Homenaje a Manolete',           neto: 2500, publico: 3571 },
+  'obra-037': { num: 37, serie: 'O', title: 'Cogida',                        neto: 3000, publico: 4286 },
+  'obra-038': { num: 38, serie: 'O', title: '3 Toreros',                     neto: 1600, publico: 2286 },
+  'obra-039': { num: 39, serie: 'O', title: 'Patio de Caballos',             neto: 3000, publico: 4286 },
+  'obra-040': { num: 40, serie: 'O', title: 'Desnudo Frontal 1',             neto: 2000, publico: 2857 },
+  'obra-041': { num: 41, serie: 'O', title: 'Desnudo Frontal 2',             neto: 2500, publico: 3571 },
+  'obra-042': { num: 42, serie: 'O', title: 'Desnudo en la Playa',           neto: 4000, publico: 5714 },
+  'obra-043': { num: 43, serie: 'O', title: 'Bodegón Gafas',                 neto: 2200, publico: 3143 },
+  'obra-044': { num: 44, serie: 'O', title: 'Bodegón La Lupa',               neto: 2200, publico: 3143 },
+  'obra-045': { num: 45, serie: 'O', title: 'Bodegón Cuenco Azul',           neto: 3000, publico: 4286 },
+  'obra-046': { num: 46, serie: 'O', title: 'Bodegón Lechuga Manzana',       neto: 2500, publico: 3571 },
+  'obra-047': { num: 47, serie: 'O', title: 'Girasoles',                     neto: 1800, publico: 2571 },
+  'obra-048': { num: 48, serie: 'O', title: 'Tabla Novia Verde',             neto: 1400, publico: 2000 },
+  'obra-049': { num: 49, serie: 'O', title: 'Bodegón Peros',                 neto: 4000, publico: 5714 },
+};
+
+// Obra en papel — serie P
+// pvp_cupon: precio con descuento cupón PINEDA30 · publico: PVP sin cupón
+export const PRECIOS_PAPEL = {
+  'papel-001': { num: 1,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-002': { num: 2,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-003': { num: 3,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-004': { num: 4,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-005': { num: 5,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-006': { num: 6,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-007': { num: 7,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-008': { num: 8,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-009': { num: 9,  serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-010': { num: 10, serie: 'P', tipo: 'print',   neto: 400,  pvp_cupon: 571,  publico: 816  },
+  'papel-011': { num: 11, serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-012': { num: 12, serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-013': { num: 13, serie: 'P', tipo: 'print',   neto: 150,  pvp_cupon: 214,  publico: 306  },
+  'papel-014': { num: 14, serie: 'P', tipo: 'print',   neto: 450,  pvp_cupon: 643,  publico: 918  },
+  'papel-015': { num: 15, serie: 'P', tipo: 'print',   neto: 650,  pvp_cupon: 929,  publico: 1327 },
+  'papel-016': { num: 16, serie: 'P', tipo: 'print',   neto: 950,  pvp_cupon: 1357, publico: 1939 },
+  'papel-017': { num: 17, serie: 'P', tipo: 'print',   neto: 750,  pvp_cupon: 1071, publico: 1530 },
+  'papel-018': { num: 18, serie: 'P', tipo: 'print',   neto: 1000, pvp_cupon: 1429, publico: 2041 },
+  'papel-019': { num: 19, serie: 'P', tipo: 'print',   neto: 1000, pvp_cupon: 1429, publico: 2041 },
+  'papel-020': { num: 20, serie: 'P', tipo: 'print',   neto: 1000, pvp_cupon: 1429, publico: 2041 },
+  'papel-021': { num: 21, serie: 'P', tipo: 'print',   neto: 1000, pvp_cupon: 1429, publico: 2041 },
+  'papel-022': { num: 22, serie: 'P', tipo: 'print',   neto: 1000, pvp_cupon: 1429, publico: 2041 },
+  'papel-023': { num: 23, serie: 'P', tipo: 'print',   neto: 1100, pvp_cupon: 1571, publico: 2245 },
+  'papel-024': { num: 24, serie: 'P', tipo: 'print',   neto: 1200, pvp_cupon: 1714, publico: 2449 },
+  'papel-025': { num: 25, serie: 'P', tipo: 'print',   neto: 1300, pvp_cupon: 1857, publico: 2653 },
+  'papel-026': { num: 26, serie: 'P', tipo: 'print',   neto: 900,  pvp_cupon: 1286, publico: 1837 },
+  'papel-027': { num: 27, serie: 'P', tipo: 'print',   neto: 1000, pvp_cupon: 1429, publico: 2041 },
+  'papel-028': { num: 28, serie: 'P', tipo: 'print',   neto: 900,  pvp_cupon: 1286, publico: 1837 },
+  'papel-029': { num: 29, serie: 'P', tipo: 'print',   neto: 750,  pvp_cupon: 1071, publico: 1530 },
+  'papel-030': { num: 30, serie: 'P', tipo: 'print',   neto: 1000, pvp_cupon: 1429, publico: 2041 },
+  'papel-031': { num: 31, serie: 'P', tipo: 'print',   neto: 1000, pvp_cupon: 1429, publico: 2041 },
+  'papel-032': { num: 32, serie: 'P', tipo: 'print',   neto: 900,  pvp_cupon: 1286, publico: 1837 },
+  'papel-033': { num: 33, serie: 'P', tipo: 'print',   neto: 400,  pvp_cupon: 571,  publico: 816  },
+  'papel-034': { num: 34, serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-035': { num: 35, serie: 'P', tipo: 'print',   neto: 750,  pvp_cupon: 1071, publico: 1530 },
+  'papel-036': { num: 36, serie: 'P', tipo: 'print',   neto: 450,  pvp_cupon: 643,  publico: 918  },
+  'papel-037': { num: 37, serie: 'P', tipo: 'print',   neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-038': { num: 38, serie: 'P', tipo: 'print',   neto: 1400, pvp_cupon: 2000, publico: 2857 },
+  'papel-039': { num: 39, serie: 'P', tipo: 'print',   neto: 600,  pvp_cupon: 857,  publico: 1224 },
+  'papel-040': { num: 40, serie: 'P', tipo: 'print',   neto: 750,  pvp_cupon: 1071, publico: 1530 },
+  'papel-041': { num: 41, serie: 'P', tipo: 'print',   neto: 600,  pvp_cupon: 857,  publico: 1224 },
+  'papel-042': { num: 42, serie: 'P', tipo: 'print',   neto: 1100, pvp_cupon: 1571, publico: 2245 },
+  'papel-043': { num: 43, serie: 'P', tipo: 'print',   neto: 900,  pvp_cupon: 1286, publico: 1837 },
+  'papel-044': { num: 44, serie: 'P', tipo: 'print',   neto: 1300, pvp_cupon: 1857, publico: 2653 },
+  'papel-045': { num: 45, serie: 'P', tipo: 'print',   neto: 900,  pvp_cupon: 1286, publico: 1837 },
+  'papel-046': { num: 46, serie: 'P', tipo: 'print',   neto: 400,  pvp_cupon: 571,  publico: 816  },
+  'papel-047': { num: 47, serie: 'P', tipo: 'print',   neto: 300,  pvp_cupon: 429,  publico: 613  },
+  'papel-048': { num: 48, serie: 'P', tipo: 'print',   neto: 1100, pvp_cupon: 1571, publico: 2245 },
+  'papel-049': { num: 49, serie: 'P', tipo: 'print',   neto: 1100, pvp_cupon: 1571, publico: 2245 },
+  'papel-050': { num: 50, serie: 'P', tipo: 'print',   neto: 900,  pvp_cupon: 1286, publico: 1837 },
+  'papel-051': { num: 51, serie: 'P', tipo: 'print',   neto: 1300, pvp_cupon: 1857, publico: 2653 },
+  'papel-052': { num: 52, serie: 'P', tipo: 'grabado', neto: 300,  pvp_cupon: 429,  publico: 613  },
+  'papel-053': { num: 53, serie: 'P', tipo: 'grabado', neto: 300,  pvp_cupon: 429,  publico: 613  },
+  'papel-054': { num: 54, serie: 'P', tipo: 'grabado', neto: 300,  pvp_cupon: 429,  publico: 613  },
+  'papel-055': { num: 55, serie: 'P', tipo: 'grabado', neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-056': { num: 56, serie: 'P', tipo: 'grabado', neto: 350,  pvp_cupon: 500,  publico: 714  },
+  'papel-057': { num: 57, serie: 'P', tipo: 'chapi',   neto: 1400, pvp_cupon: 2000, publico: 2857 },
+  'papel-058': { num: 58, serie: 'P', tipo: 'chapi',   neto: 1500, pvp_cupon: 2143, publico: 3061 },
+  'papel-059': { num: 59, serie: 'P', tipo: 'chapi',   neto: 1500, pvp_cupon: 2143, publico: 3061 },
+};
+
+// Catálogo unificado para el panel de caja
+export const CATALOGO_CAJA = [
+  ...Object.entries(PRECIOS_OBRAS).map(([id, o]) => ({
+    id,
+    label:     `O-${String(o.num).padStart(3, '0')} · ${o.title}`,
+    neto:      o.neto,
+    publico:   o.publico,
+    pvp_cupon: null,
+    serie:     'O',
+  })),
+  ...Object.entries(PRECIOS_PAPEL).map(([id, p]) => ({
+    id,
+    label:     `P-${String(p.num).padStart(3, '0')} · ${p.tipo.toUpperCase()}`,
+    neto:      p.neto,
+    publico:   p.publico,
+    pvp_cupon: p.pvp_cupon,
+    serie:     'P',
+  })),
+];
