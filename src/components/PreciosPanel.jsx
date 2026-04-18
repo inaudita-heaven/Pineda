@@ -40,11 +40,11 @@ export default function PreciosPanel() {
 
   const papeles = Object.entries(PRECIOS_PAPEL).map(([id, p]) => ({
     id, serie: 'P',
-    label: `Obra en papel · ${p.tipo === 'grabado' ? 'Grabado' : p.tipo === 'chapi' ? 'Chapi Pineda' : 'Print'}`,
+    label: p.tipo === 'grabado' ? 'Obra en papel · Grabado' : p.tipo === 'chapi' ? 'Obra en papel · Chapi Pineda' : 'Obra en papel',
     ref: `P-${String(p.num).padStart(3,'0')}`,
     precio: p.publico,
     precio_cupon: p.pvp_cupon,
-    tipo: p.tipo === 'grabado' ? 'Grabado' : p.tipo === 'chapi' ? 'Chapi Pineda' : 'Print',
+    tipo: p.tipo === 'grabado' ? 'Grabado' : p.tipo === 'chapi' ? 'Chapi Pineda' : 'Obra en papel',
   }));
 
   const todo = [...obras, ...papeles].filter(item => {
