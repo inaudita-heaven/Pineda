@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { PRECIOS_OBRAS, PRECIOS_PAPEL } from '../data/precios';
+import { catalog } from '../data/catalog';
 import FormInteresado from './FormInteresado';
+import Lightbox from './Lightbox';
 import { getSessionId } from '../lib/session';
+
+const catalogMap = Object.fromEntries(catalog.map(c => [c.id, c]));
 
 const SANS = '"Rubik", system-ui, sans-serif';
 const SERIF = '"Playfair Display", Georgia, serif';
@@ -14,6 +18,7 @@ export default function PreciosPanel() {
   const [busqueda, setBusqueda] = useState('');
   const [conCupon, setConCupon] = useState(false);
   const [formObra, setFormObra] = useState(null);
+  const [lightbox, setLightbox] = useState(null);
   const sessionId = getSessionId();
 
   if (!auth) return (
@@ -48,6 +53,7 @@ export default function PreciosPanel() {
     precio: o.publico,
     precio_cupon: null,
     tipo: 'Obra original',
+    imageUrl: catalogMap[id]?.imageUrl ?? null,
   }));
 
   const papeles = Object.entries(PRECIOS_PAPEL).map(([id, p]) => ({
@@ -57,6 +63,7 @@ export default function PreciosPanel() {
     precio: p.publico,
     precio_cupon: p.pvp_cupon,
     tipo: p.tipo === 'grabado' ? 'Grabado' : p.tipo === 'chapi' ? 'Chapi Pineda' : 'Obra en papel',
+    imageUrl: null,
   }));
 
   const todo = [...obras, ...papeles].filter(item => {
@@ -109,6 +116,16 @@ export default function PreciosPanel() {
           return (
             <div key={item.id} style={s.fila}>
               <div style={s.filaIzq}>
+                {item.imageUrl ? (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.label}
+                    onClick={() => setLightbox({ src: item.imageUrl, alt: item.label })}
+                    style={s.thumb}
+                  />
+                ) : (
+                  <div style={s.thumbPlaceholder} />
+                )}
                 <span style={s.ref}>{item.ref}</span>
                 <div>
                   <p style={s.nombre}>{item.label}</p>
@@ -139,6 +156,10 @@ export default function PreciosPanel() {
       <p style={s.pie}>
         Precios en euros, IVA incluido · La Inaudita · Rodríguez Marín 20 · Córdoba
       </p>
+
+      {lightbox && (
+        <Lightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />
+      )}
 
       {formObra && (
         <FormInteresado
@@ -172,6 +193,8 @@ const s = {
   lista:{ padding:'0 1.25rem'},
   fila:{ display:'flex',justifyContent:'space-between',alignItems:'center',padding:'0.85rem 0',borderBottom:'1px solid #f0efee',gap:'1rem'},
   filaIzq:{ display:'flex',alignItems:'center',gap:'0.75rem',flex:1},
+  thumb:{ width:'48px',height:'48px',objectFit:'cover',flexShrink:0,cursor:'zoom-in',backgroundColor:'#f9f8f7' },
+  thumbPlaceholder:{ width:'48px',height:'48px',flexShrink:0,backgroundColor:'#f9f8f7' },
   ref:{ fontFamily:'"Courier New",monospace',fontSize:'0.72rem',color:'rgba(15,14,13,0.35)',minWidth:'4.5rem',flexShrink:0},
   nombre:{ fontFamily:SERIF,fontSize:'0.95rem',color:'#0F0E0D',margin:'0 0 0.1rem'},
   tipo:{ fontFamily:SANS,fontSize:'0.68rem',color:'rgba(15,14,13,0.4)',margin:0,textTransform:'uppercase',letterSpacing:'0.06em'},

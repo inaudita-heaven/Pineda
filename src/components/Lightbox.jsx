@@ -18,6 +18,19 @@ export default function Lightbox({ src, alt, onClose }) {
         cursor: 'zoom-out',
       }}
     >
+      <button
+        onClick={onClose}
+        style={{
+          position: 'absolute', top: '1rem', right: '1rem',
+          background: 'transparent', border: 'none',
+          color: '#fff', fontSize: '1.5rem', lineHeight: 1,
+          cursor: 'pointer', padding: '0.5rem',
+          fontFamily: 'system-ui, sans-serif',
+        }}
+        aria-label="Cerrar"
+      >
+        ✕
+      </button>
       <img
         src={src}
         alt={alt}
