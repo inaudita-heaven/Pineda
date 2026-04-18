@@ -73,8 +73,8 @@ export default function PreciosPanel() {
         <div style={s.tabs}>
           {[
             { id: 'todo', label: 'Todo' },
-            { id: 'O', label: 'Originales' },
-            { id: 'P', label: 'Obra en papel' },
+            { id: 'O', label: 'Obra expuesta' },
+            { id: 'P', label: 'Fondo Rafael Pineda' },
           ].map(t => (
             <button key={t.id} onClick={() => setFiltro(t.id)}
               style={{ ...s.tab, ...(filtro === t.id ? s.tabOn : {}) }}>
