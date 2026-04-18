@@ -24,6 +24,8 @@ export default function FormInteresadoMulti({ obras, sessionId, onClose }) {
       }));
       const { error } = await supabase.from('interesados_obras').insert(rows);
       if (error) throw error;
+      const prev = JSON.parse(localStorage.getItem('pineda_en_negociacion') || '[]');
+      localStorage.setItem('pineda_en_negociacion', JSON.stringify([...new Set([...prev, ...obras.map(o => o.id)])]));
       setEstado('ok');
     } catch {
       setEstado('error');

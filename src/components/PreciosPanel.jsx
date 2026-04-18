@@ -19,6 +19,10 @@ export default function PreciosPanel() {
   const [conCupon, setConCupon] = useState(false);
   const [seleccionadas, setSeleccionadas] = useState(new Set());
   const [mostrarForm, setMostrarForm] = useState(false);
+  const [negociacionIds, setNegociacionIds] = useState(() => {
+    try { return new Set(JSON.parse(localStorage.getItem('pineda_en_negociacion') || '[]')); }
+    catch { return new Set(); }
+  });
   const [lightbox, setLightbox] = useState(null);
   const sessionId = getSessionId();
 
@@ -54,7 +58,7 @@ export default function PreciosPanel() {
     precio: o.publico,
     precio_cupon: null,
     tipo: 'Obra original',
-    enNegociacion: o.enNegociacion ?? false,
+    enNegociacion: (o.enNegociacion ?? false) || negociacionIds.has(id),
     imageUrl: catalogMap[id]?.imageUrl ?? null,
   }));
 
@@ -65,7 +69,7 @@ export default function PreciosPanel() {
     precio: p.publico,
     precio_cupon: p.pvp_cupon,
     tipo: p.tipo === 'grabado' ? 'Grabado' : p.tipo === 'chapi' ? 'Chapi Pineda' : 'Obra en papel',
-    enNegociacion: p.enNegociacion ?? false,
+    enNegociacion: (p.enNegociacion ?? false) || negociacionIds.has(id),
     imageUrl: null,
   }));
 
@@ -195,6 +199,8 @@ export default function PreciosPanel() {
           onClose={() => {
             setMostrarForm(false);
             setSeleccionadas(new Set());
+            try { setNegociacionIds(new Set(JSON.parse(localStorage.getItem('pineda_en_negociacion') || '[]'))); }
+            catch {}
           }}
         />
       )}
