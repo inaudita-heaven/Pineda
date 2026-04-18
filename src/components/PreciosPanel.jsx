@@ -154,7 +154,7 @@ export default function PreciosPanel() {
       </div>
 
       <p style={s.pie}>
-        Precios en euros, IVA incluido · La Inaudita · Rodríguez Marín 20 · Córdoba
+        Precios en euros, sin IVA · La Inaudita · Rodríguez Marín 20 · Córdoba
       </p>
 
       {lightbox && (
