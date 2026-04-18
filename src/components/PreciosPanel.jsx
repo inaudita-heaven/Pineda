@@ -18,6 +18,14 @@ export default function PreciosPanel() {
 
   if (!auth) return (
     <div style={s.login}>
+      <div style={{ width: '100%', maxWidth: '320px' }}>
+        <img src="/logos/INA_Branding_Negro.png" alt="La Inaudita"
+          style={{ width: '100%', objectFit: 'contain', opacity: 0.9 }} />
+      </div>
+      <div style={{ width: '100%', maxWidth: '320px' }}>
+        <img src="/images/autopineda.png" alt="Rafael Pineda"
+          style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }} />
+      </div>
       <p style={s.loginSub}>Rafael Pineda · Pintor de Córdoba</p>
       <p style={s.loginT}>Catálogo de precios</p>
       <input type="password" placeholder="Contraseña" value={pin}
