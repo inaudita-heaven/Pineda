@@ -115,38 +115,31 @@ export default function PreciosPanel() {
           const precioMostrar = tieneCupon ? item.precio_cupon : item.precio;
           return (
             <div key={item.id} style={s.fila}>
-              <div style={s.filaIzq}>
-                {item.imageUrl ? (
-                  <img
-                    src={item.imageUrl}
-                    alt={item.label}
-                    onClick={() => setLightbox({ src: item.imageUrl, alt: item.label })}
-                    style={s.thumb}
-                  />
-                ) : (
-                  <div style={s.thumbPlaceholder} />
-                )}
+              {item.imageUrl ? (
+                <img src={item.imageUrl} alt={item.label}
+                  onClick={() => setLightbox({ src: item.imageUrl, alt: item.label })}
+                  style={s.thumb} />
+              ) : (
+                <div style={s.thumbPlaceholder} />
+              )}
+              <div style={s.filaInfo}>
                 <span style={s.ref}>{item.ref}</span>
-                <div>
-                  <p style={s.nombre}>{item.label}</p>
-                  <p style={s.tipo}>{item.tipo}</p>
-                </div>
+                <p style={s.nombre}>{item.label}</p>
+                <p style={s.tipo}>{item.tipo}</p>
               </div>
               <div style={s.filaDer}>
-                {tieneCupon && (
-                  <span style={s.precioTachado}>{item.precio}€</span>
-                )}
+                {tieneCupon && <span style={s.precioTachado}>{item.precio}€</span>}
                 <span style={{ ...s.precio, color: tieneCupon ? '#1a6b3c' : '#0F0E0D' }}>
                   {precioMostrar}€
                 </span>
                 {tieneCupon && <span style={s.badgeCupon}>PINEDA30</span>}
+                <button
+                  onClick={() => setFormObra({ id: item.id, title: item.label, technique: item.tipo })}
+                  style={s.btnInteresa}
+                >
+                  Me interesa
+                </button>
               </div>
-              <button
-                onClick={() => setFormObra({ id: item.id, title: item.label, technique: item.tipo })}
-                style={s.btnInteresa}
-              >
-                Me interesa
-              </button>
             </div>
           );
         })}
@@ -179,7 +172,7 @@ const s = {
   pinInput:{ width:'160px',textAlign:'center',fontSize:'0.9rem',letterSpacing:'0.12em',padding:'0.65rem',border:'1px solid #e8e6e3',outline:'none',fontFamily:SANS},
   pinBtn:{ padding:'0.75rem 2rem',backgroundColor:'#0F0E0D',color:'#fff',border:'none',cursor:'pointer',fontFamily:SANS,fontSize:'0.72rem',letterSpacing:'0.1em',textTransform:'uppercase'},
   pinErr:{ fontFamily:SANS,fontSize:'0.75rem',color:'#b03030',margin:0},
-  wrap:{ backgroundColor:'#fff',minHeight:'100dvh',fontFamily:SANS},
+  wrap:{ backgroundColor:'#fff',minHeight:'100dvh',fontFamily:SANS,overflowX:'hidden'},
   header:{ display:'flex',justifyContent:'space-between',alignItems:'center',padding:'1.25rem',borderBottom:'2px solid #0F0E0D'},
   eyebrow:{ fontFamily:SANS,fontSize:'0.6rem',letterSpacing:'0.14em',textTransform:'uppercase',color:'rgba(15,14,13,0.35)',margin:'0 0 0.2rem'},
   titulo:{ fontFamily:SERIF,fontSize:'1.4rem',fontWeight:'400',color:'#0F0E0D',margin:0},
@@ -190,19 +183,19 @@ const s = {
   tabOn:{ backgroundColor:'#0F0E0D',color:'#fff',borderColor:'#0F0E0D'},
   buscador:{ padding:'0.6rem 0.75rem',border:'1px solid #e8e6e3',fontFamily:SANS,fontSize:'0.85rem',outline:'none',width:'100%',boxSizing:'border-box'},
   cuponLabel:{ fontFamily:SANS,fontSize:'0.82rem',color:'#0F0E0D',display:'flex',alignItems:'center',cursor:'pointer'},
-  lista:{ padding:'0 1.25rem'},
-  fila:{ display:'flex',justifyContent:'space-between',alignItems:'center',padding:'0.85rem 0',borderBottom:'1px solid #f0efee',gap:'1rem'},
-  filaIzq:{ display:'flex',alignItems:'center',gap:'0.75rem',flex:1},
-  thumb:{ width:'48px',height:'48px',objectFit:'cover',flexShrink:0,cursor:'zoom-in',backgroundColor:'#f9f8f7' },
-  thumbPlaceholder:{ width:'48px',height:'48px',flexShrink:0,backgroundColor:'#f9f8f7' },
-  ref:{ fontFamily:'"Courier New",monospace',fontSize:'0.72rem',color:'rgba(15,14,13,0.35)',minWidth:'4.5rem',flexShrink:0},
-  nombre:{ fontFamily:SERIF,fontSize:'0.95rem',color:'#0F0E0D',margin:'0 0 0.1rem'},
-  tipo:{ fontFamily:SANS,fontSize:'0.68rem',color:'rgba(15,14,13,0.4)',margin:0,textTransform:'uppercase',letterSpacing:'0.06em'},
-  filaDer:{ display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'0.15rem',flexShrink:0},
-  precioTachado:{ fontFamily:SANS,fontSize:'0.75rem',color:'rgba(15,14,13,0.35)',textDecoration:'line-through'},
-  precio:{ fontFamily:SERIF,fontSize:'1.25rem',fontWeight:'400'},
-  badgeCupon:{ fontFamily:SANS,fontSize:'0.55rem',letterSpacing:'0.08em',backgroundColor:'#1a6b3c',color:'#fff',padding:'0.15rem 0.4rem'},
+  lista:{ padding:'0 1rem'},
+  fila:{ display:'flex',alignItems:'flex-start',padding:'0.75rem 0',borderBottom:'1px solid #f0efee',gap:'0.6rem'},
+  filaInfo:{ flex:1,minWidth:0,display:'flex',flexDirection:'column',gap:'0.1rem'},
+  thumb:{ width:'44px',height:'44px',objectFit:'cover',flexShrink:0,cursor:'zoom-in',backgroundColor:'#f9f8f7' },
+  thumbPlaceholder:{ width:'44px',height:'44px',flexShrink:0 },
+  ref:{ fontFamily:'"Courier New",monospace',fontSize:'0.65rem',color:'rgba(15,14,13,0.35)'},
+  nombre:{ fontFamily:SERIF,fontSize:'0.9rem',color:'#0F0E0D',margin:0,lineHeight:1.3,overflowWrap:'break-word'},
+  tipo:{ fontFamily:SANS,fontSize:'0.62rem',color:'rgba(15,14,13,0.4)',margin:0,textTransform:'uppercase',letterSpacing:'0.06em'},
+  filaDer:{ display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'0.15rem',flexShrink:0,minWidth:'70px'},
+  precioTachado:{ fontFamily:SANS,fontSize:'0.7rem',color:'rgba(15,14,13,0.35)',textDecoration:'line-through'},
+  precio:{ fontFamily:SERIF,fontSize:'1.05rem',fontWeight:'400'},
+  badgeCupon:{ fontFamily:SANS,fontSize:'0.5rem',letterSpacing:'0.08em',backgroundColor:'#1a6b3c',color:'#fff',padding:'0.15rem 0.35rem'},
   vacio:{ fontFamily:SANS,fontSize:'0.82rem',color:'rgba(15,14,13,0.35)',textAlign:'center',padding:'3rem 0'},
-  btnInteresa:{ alignSelf:'flex-end',marginTop:'0.25rem',padding:'0.3rem 0',background:'transparent',border:'none',borderBottom:'1px solid rgba(15,14,13,0.3)',fontFamily:SANS,fontSize:'0.65rem',letterSpacing:'0.08em',textTransform:'uppercase',color:'rgba(15,14,13,0.6)',cursor:'pointer'},
+  btnInteresa:{ marginTop:'0.35rem',padding:'0.3rem 0',background:'transparent',border:'none',borderBottom:'1px solid rgba(15,14,13,0.3)',fontFamily:SANS,fontSize:'0.6rem',letterSpacing:'0.08em',textTransform:'uppercase',color:'rgba(15,14,13,0.6)',cursor:'pointer',whiteSpace:'nowrap'},
   pie:{ fontFamily:SANS,fontSize:'0.62rem',color:'rgba(15,14,13,0.3)',textAlign:'center',padding:'2rem 1.25rem',letterSpacing:'0.04em'},
 };
