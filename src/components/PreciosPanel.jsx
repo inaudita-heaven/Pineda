@@ -22,7 +22,7 @@ export default function PreciosPanel() {
         <img src="/logos/INA_Branding_Negro.png" alt="La Inaudita"
           style={{ width: '100%', objectFit: 'contain', opacity: 0.9 }} />
       </div>
-      <div style={{ width: '100%', maxWidth: '320px' }}>
+      <div style={{ width: '100%', maxWidth: '180px' }}>
         <img src="/images/autopineda.png" alt="Rafael Pineda"
           style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }} />
       </div>
@@ -155,7 +155,7 @@ const s = {
   login:{ minHeight:'100dvh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',backgroundColor:'#fff',fontFamily:SANS,gap:'1rem',padding:'2rem'},
   loginSub:{ fontFamily:SANS,fontSize:'0.72rem',color:'rgba(15,14,13,0.4)',letterSpacing:'0.1em',textTransform:'uppercase',margin:0},
   loginT:{ fontFamily:SERIF,fontSize:'1.6rem',color:'#0F0E0D',margin:0,textAlign:'center'},
-  pinInput:{ width:'140px',textAlign:'center',fontSize:'1.5rem',letterSpacing:'0.3em',padding:'0.75rem',border:'1px solid #e8e6e3',outline:'none',fontFamily:SANS},
+  pinInput:{ width:'160px',textAlign:'center',fontSize:'0.9rem',letterSpacing:'0.12em',padding:'0.65rem',border:'1px solid #e8e6e3',outline:'none',fontFamily:SANS},
   pinBtn:{ padding:'0.75rem 2rem',backgroundColor:'#0F0E0D',color:'#fff',border:'none',cursor:'pointer',fontFamily:SANS,fontSize:'0.72rem',letterSpacing:'0.1em',textTransform:'uppercase'},
   pinErr:{ fontFamily:SANS,fontSize:'0.75rem',color:'#b03030',margin:0},
   wrap:{ backgroundColor:'#fff',minHeight:'100dvh',fontFamily:SANS},
