@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { PRECIOS_OBRAS, PRECIOS_PAPEL } from '../data/precios';
+import FormInteresado from './FormInteresado';
+import { getSessionId } from '../lib/session';
 
 const SANS = '"Rubik", system-ui, sans-serif';
 const SERIF = '"Playfair Display", Georgia, serif';
@@ -11,6 +13,8 @@ export default function PreciosPanel() {
   const [filtro, setFiltro] = useState('todo');
   const [busqueda, setBusqueda] = useState('');
   const [conCupon, setConCupon] = useState(false);
+  const [formObra, setFormObra] = useState(null);
+  const sessionId = getSessionId();
 
   if (!auth) return (
     <div style={s.login}>
@@ -112,6 +116,12 @@ export default function PreciosPanel() {
                 </span>
                 {tieneCupon && <span style={s.badgeCupon}>PINEDA30</span>}
               </div>
+              <button
+                onClick={() => setFormObra({ id: item.id, title: item.label, technique: item.tipo })}
+                style={s.btnInteresa}
+              >
+                Me interesa
+              </button>
             </div>
           );
         })}
@@ -121,6 +131,14 @@ export default function PreciosPanel() {
       <p style={s.pie}>
         Precios en euros, IVA incluido · La Inaudita · Rodríguez Marín 20 · Córdoba
       </p>
+
+      {formObra && (
+        <FormInteresado
+          obra={formObra}
+          sessionId={sessionId}
+          onClose={() => setFormObra(null)}
+        />
+      )}
     </div>
   );
 }
@@ -154,5 +172,6 @@ const s = {
   precio:{ fontFamily:SERIF,fontSize:'1.25rem',fontWeight:'400'},
   badgeCupon:{ fontFamily:SANS,fontSize:'0.55rem',letterSpacing:'0.08em',backgroundColor:'#1a6b3c',color:'#fff',padding:'0.15rem 0.4rem'},
   vacio:{ fontFamily:SANS,fontSize:'0.82rem',color:'rgba(15,14,13,0.35)',textAlign:'center',padding:'3rem 0'},
+  btnInteresa:{ alignSelf:'flex-end',marginTop:'0.25rem',padding:'0.3rem 0',background:'transparent',border:'none',borderBottom:'1px solid rgba(15,14,13,0.3)',fontFamily:SANS,fontSize:'0.65rem',letterSpacing:'0.08em',textTransform:'uppercase',color:'rgba(15,14,13,0.6)',cursor:'pointer'},
   pie:{ fontFamily:SANS,fontSize:'0.62rem',color:'rgba(15,14,13,0.3)',textAlign:'center',padding:'2rem 1.25rem',letterSpacing:'0.04em'},
 };
