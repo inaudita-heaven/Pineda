@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PRECIOS_OBRAS, PRECIOS_PAPEL } from '../data/precios';
 import { catalog } from '../data/catalog';
-import FormInteresado from './FormInteresado';
+import FormInteresadoMulti from './FormInteresadoMulti';
 import Lightbox from './Lightbox';
 import { getSessionId } from '../lib/session';
 
@@ -17,7 +17,8 @@ export default function PreciosPanel() {
   const [filtro, setFiltro] = useState('todo');
   const [busqueda, setBusqueda] = useState('');
   const [conCupon, setConCupon] = useState(false);
-  const [formObra, setFormObra] = useState(null);
+  const [seleccionadas, setSeleccionadas] = useState(new Set());
+  const [mostrarForm, setMostrarForm] = useState(false);
   const [lightbox, setLightbox] = useState(null);
   const sessionId = getSessionId();
 
@@ -53,6 +54,7 @@ export default function PreciosPanel() {
     precio: o.publico,
     precio_cupon: null,
     tipo: 'Obra original',
+    enNegociacion: o.enNegociacion ?? false,
     imageUrl: catalogMap[id]?.imageUrl ?? null,
   }));
 
@@ -63,6 +65,7 @@ export default function PreciosPanel() {
     precio: p.publico,
     precio_cupon: p.pvp_cupon,
     tipo: p.tipo === 'grabado' ? 'Grabado' : p.tipo === 'chapi' ? 'Chapi Pineda' : 'Obra en papel',
+    enNegociacion: p.enNegociacion ?? false,
     imageUrl: null,
   }));
 
@@ -73,6 +76,19 @@ export default function PreciosPanel() {
         && !item.ref.toLowerCase().includes(busqueda.toLowerCase())) return false;
     return true;
   });
+
+  const toggleSeleccion = (id) => {
+    setSeleccionadas(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const obrasSeleccionadas = todo.filter(i => seleccionadas.has(i.id)).map(i => ({
+    id: i.id, title: i.label, ref: i.ref,
+  }));
 
   return (
     <div style={s.wrap}>
@@ -113,6 +129,7 @@ export default function PreciosPanel() {
         {todo.map(item => {
           const tieneCupon = conCupon && item.precio_cupon;
           const precioMostrar = tieneCupon ? item.precio_cupon : item.precio;
+          const checked = seleccionadas.has(item.id);
           return (
             <div key={item.id} style={s.fila}>
               {item.imageUrl ? (
@@ -126,6 +143,9 @@ export default function PreciosPanel() {
                 <span style={s.ref}>{item.ref}</span>
                 <p style={s.nombre}>{item.label}</p>
                 <p style={s.tipo}>{item.tipo}</p>
+                {item.enNegociacion && (
+                  <span style={s.badgeNegociacion}>En negociación</span>
+                )}
               </div>
               <div style={s.filaDer}>
                 {tieneCupon && <span style={s.precioTachado}>{item.precio}€</span>}
@@ -133,12 +153,18 @@ export default function PreciosPanel() {
                   {precioMostrar}€
                 </span>
                 {tieneCupon && <span style={s.badgeCupon}>PINEDA30</span>}
-                <button
-                  onClick={() => setFormObra({ id: item.id, title: item.label, technique: item.tipo })}
-                  style={s.btnInteresa}
-                >
-                  Me interesa
-                </button>
+                {item.enNegociacion ? (
+                  <span style={s.checkDisabled}>—</span>
+                ) : (
+                  <label style={s.checkLabel}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleSeleccion(item.id)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </label>
+                )}
               </div>
             </div>
           );
@@ -150,15 +176,26 @@ export default function PreciosPanel() {
         Precios en euros, sin IVA · La Inaudita · Rodríguez Marín 20 · Córdoba
       </p>
 
+      {seleccionadas.size > 0 && (
+        <div style={s.fab}>
+          <button onClick={() => setMostrarForm(true)} style={s.fabBtn}>
+            Enviar consulta ({seleccionadas.size})
+          </button>
+        </div>
+      )}
+
       {lightbox && (
         <Lightbox src={lightbox.src} alt={lightbox.alt} onClose={() => setLightbox(null)} />
       )}
 
-      {formObra && (
-        <FormInteresado
-          obra={formObra}
+      {mostrarForm && (
+        <FormInteresadoMulti
+          obras={obrasSeleccionadas}
           sessionId={sessionId}
-          onClose={() => setFormObra(null)}
+          onClose={() => {
+            setMostrarForm(false);
+            setSeleccionadas(new Set());
+          }}
         />
       )}
     </div>
@@ -172,7 +209,7 @@ const s = {
   pinInput:{ width:'160px',textAlign:'center',fontSize:'0.9rem',letterSpacing:'0.12em',padding:'0.65rem',border:'1px solid #e8e6e3',outline:'none',fontFamily:SANS},
   pinBtn:{ padding:'0.75rem 2rem',backgroundColor:'#0F0E0D',color:'#fff',border:'none',cursor:'pointer',fontFamily:SANS,fontSize:'0.72rem',letterSpacing:'0.1em',textTransform:'uppercase'},
   pinErr:{ fontFamily:SANS,fontSize:'0.75rem',color:'#b03030',margin:0},
-  wrap:{ backgroundColor:'#fff',minHeight:'100dvh',fontFamily:SANS,overflowX:'hidden'},
+  wrap:{ backgroundColor:'#fff',minHeight:'100dvh',fontFamily:SANS,overflowX:'hidden',paddingBottom:'5rem'},
   header:{ display:'flex',justifyContent:'space-between',alignItems:'center',padding:'1.25rem',borderBottom:'2px solid #0F0E0D'},
   eyebrow:{ fontFamily:SANS,fontSize:'0.6rem',letterSpacing:'0.14em',textTransform:'uppercase',color:'rgba(15,14,13,0.35)',margin:'0 0 0.2rem'},
   titulo:{ fontFamily:SERIF,fontSize:'1.4rem',fontWeight:'400',color:'#0F0E0D',margin:0},
@@ -191,11 +228,15 @@ const s = {
   ref:{ fontFamily:'"Courier New",monospace',fontSize:'0.65rem',color:'rgba(15,14,13,0.35)'},
   nombre:{ fontFamily:SERIF,fontSize:'0.9rem',color:'#0F0E0D',margin:0,lineHeight:1.3,overflowWrap:'break-word'},
   tipo:{ fontFamily:SANS,fontSize:'0.62rem',color:'rgba(15,14,13,0.4)',margin:0,textTransform:'uppercase',letterSpacing:'0.06em'},
-  filaDer:{ display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'0.15rem',flexShrink:0,minWidth:'70px'},
+  badgeNegociacion:{ fontFamily:SANS,fontSize:'0.55rem',letterSpacing:'0.06em',color:'rgba(15,14,13,0.5)',border:'1px solid rgba(15,14,13,0.2)',padding:'0.1rem 0.4rem',alignSelf:'flex-start',marginTop:'0.15rem'},
+  filaDer:{ display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'0.15rem',flexShrink:0,minWidth:'60px'},
   precioTachado:{ fontFamily:SANS,fontSize:'0.7rem',color:'rgba(15,14,13,0.35)',textDecoration:'line-through'},
   precio:{ fontFamily:SERIF,fontSize:'1.05rem',fontWeight:'400'},
   badgeCupon:{ fontFamily:SANS,fontSize:'0.5rem',letterSpacing:'0.08em',backgroundColor:'#1a6b3c',color:'#fff',padding:'0.15rem 0.35rem'},
+  checkLabel:{ marginTop:'0.35rem',display:'flex',alignItems:'center',justifyContent:'flex-end'},
+  checkDisabled:{ fontFamily:SANS,fontSize:'0.75rem',color:'rgba(15,14,13,0.25)',marginTop:'0.35rem'},
   vacio:{ fontFamily:SANS,fontSize:'0.82rem',color:'rgba(15,14,13,0.35)',textAlign:'center',padding:'3rem 0'},
-  btnInteresa:{ marginTop:'0.35rem',padding:'0.3rem 0',background:'transparent',border:'none',borderBottom:'1px solid rgba(15,14,13,0.3)',fontFamily:SANS,fontSize:'0.6rem',letterSpacing:'0.08em',textTransform:'uppercase',color:'rgba(15,14,13,0.6)',cursor:'pointer',whiteSpace:'nowrap'},
+  fab:{ position:'fixed',bottom:0,left:0,right:0,padding:'1rem 1.25rem',backgroundColor:'#fff',borderTop:'2px solid #0F0E0D',zIndex:1000},
+  fabBtn:{ width:'100%',padding:'0.9rem',backgroundColor:'#0F0E0D',color:'#fff',border:'none',cursor:'pointer',fontFamily:SANS,fontSize:'0.72rem',letterSpacing:'0.1em',textTransform:'uppercase'},
   pie:{ fontFamily:SANS,fontSize:'0.62rem',color:'rgba(15,14,13,0.3)',textAlign:'center',padding:'2rem 1.25rem',letterSpacing:'0.04em'},
 };
